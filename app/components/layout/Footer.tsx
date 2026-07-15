@@ -83,11 +83,11 @@ export default function Footer() {
           </span>
         </div>
         <div className="flex items-center gap-4">
-          <a href="#" className="hover:text-primary transition">Privacy Policy</a>
+          <a href="/privacy" className="hover:text-primary transition">Privacy Policy</a>
           <span>·</span>
-          <a href="#" className="hover:text-primary transition">Terms of Service</a>
+          <a href="/terms" className="hover:text-primary transition">Terms of Service</a>
           <span>·</span>
-          <a href="#" className="hover:text-primary transition">Usage Disclaimer</a>
+          <a href="/disclaimer" className="hover:text-primary transition">Usage Disclaimer</a>
         </div>
       </div>
     </footer>
