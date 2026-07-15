@@ -1,0 +1,10 @@
+{
+  "name": "admin",
+  "version": "1.0.0",
+  "description": "KSP Crime Intelligence Admin Controls Function",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.18.2",
+    "zcatalyst-sdk-node": "latest"
+  }
+}

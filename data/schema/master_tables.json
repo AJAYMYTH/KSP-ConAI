@@ -1,0 +1,171 @@
+{
+  "tables": [
+    {
+      "name": "State",
+      "description": "Represents Indian States (primarily Karnataka for this application)",
+      "columns": [
+        { "name": "ROWID", "type": "BigInt", "primaryKey": true },
+        { "name": "state_name", "type": "Var Char", "length": 255, "required": true, "unique": true }
+      ]
+    },
+    {
+      "name": "District",
+      "description": "Represents districts within a state",
+      "columns": [
+        { "name": "ROWID", "type": "BigInt", "primaryKey": true },
+        { "name": "district_name", "type": "Var Char", "length": 255, "required": true, "unique": true },
+        { "name": "state_id", "type": "Foreign Key", "references": "State.ROWID", "required": true }
+      ]
+    },
+    {
+      "name": "UnitType",
+      "description": "Type of police unit, e.g., Police Station, Circle Office, SDPO Office, District Office",
+      "columns": [
+        { "name": "ROWID", "type": "BigInt", "primaryKey": true },
+        { "name": "unit_type_name", "type": "Var Char", "length": 255, "required": true, "unique": true }
+      ]
+    },
+    {
+      "name": "Unit",
+      "description": "Represents a specific police unit or police station in a district",
+      "columns": [
+        { "name": "ROWID", "type": "BigInt", "primaryKey": true },
+        { "name": "unit_name", "type": "Var Char", "length": 255, "required": true },
+        { "name": "unit_type_id", "type": "Foreign Key", "references": "UnitType.ROWID", "required": true },
+        { "name": "district_id", "type": "Foreign Key", "references": "District.ROWID", "required": true }
+      ]
+    },
+    {
+      "name": "Rank",
+      "description": "Police ranks (e.g., Constable, Head Constable, ASI, Sub-Inspector, Inspector, DSP)",
+      "columns": [
+        { "name": "ROWID", "type": "BigInt", "primaryKey": true },
+        { "name": "rank_name", "type": "Var Char", "length": 255, "required": true, "unique": true }
+      ]
+    },
+    {
+      "name": "Designation",
+      "description": "Official designation or role (e.g., Station House Officer, Investigating Officer, General Duty)",
+      "columns": [
+        { "name": "ROWID", "type": "BigInt", "primaryKey": true },
+        { "name": "designation_name", "type": "Var Char", "length": 255, "required": true, "unique": true }
+      ]
+    },
+    {
+      "name": "Employee",
+      "description": "Represents police officers and staff",
+      "columns": [
+        { "name": "ROWID", "type": "BigInt", "primaryKey": true },
+        { "name": "employee_name", "type": "Var Char", "length": 255, "required": true },
+        { "name": "rank_id", "type": "Foreign Key", "references": "Rank.ROWID", "required": true },
+        { "name": "designation_id", "type": "Foreign Key", "references": "Designation.ROWID", "required": true },
+        { "name": "unit_id", "type": "Foreign Key", "references": "Unit.ROWID", "required": true },
+        { "name": "badge_number", "type": "Var Char", "length": 50, "required": true, "unique": true }
+      ]
+    },
+    {
+      "name": "Court",
+      "description": "Courts handling criminal matters in a district",
+      "columns": [
+        { "name": "ROWID", "type": "BigInt", "primaryKey": true },
+        { "name": "court_name", "type": "Var Char", "length": 255, "required": true },
+        { "name": "district_id", "type": "Foreign Key", "references": "District.ROWID", "required": true }
+      ]
+    },
+    {
+      "name": "CaseStatusMaster",
+      "description": "Master list of case statuses (e.g., Under Investigation, Chargesheeted, Untraceable, Mistake of Fact, Abated)",
+      "columns": [
+        { "name": "ROWID", "type": "BigInt", "primaryKey": true },
+        { "name": "status_name", "type": "Var Char", "length": 100, "required": true, "unique": true }
+      ]
+    },
+    {
+      "name": "GravityOffence",
+      "description": "Classification of offence gravity (e.g., Heinous, Non-Heinous)",
+      "columns": [
+        { "name": "ROWID", "type": "BigInt", "primaryKey": true },
+        { "name": "gravity_name", "type": "Var Char", "length": 100, "required": true, "unique": true }
+      ]
+    },
+    {
+      "name": "CaseCategory",
+      "description": "High level crime categories (e.g., Murder, Theft, Robbery, Burglary, Cybercrime, Assault)",
+      "columns": [
+        { "name": "ROWID", "type": "BigInt", "primaryKey": true },
+        { "name": "category_name", "type": "Var Char", "length": 100, "required": true, "unique": true }
+      ]
+    },
+    {
+      "name": "CrimeHead",
+      "description": "Major head of crime under KSP classification",
+      "columns": [
+        { "name": "ROWID", "type": "BigInt", "primaryKey": true },
+        { "name": "crime_head_name", "type": "Var Char", "length": 255, "required": true, "unique": true }
+      ]
+    },
+    {
+      "name": "CrimeSubHead",
+      "description": "Sub classification of the crime head",
+      "columns": [
+        { "name": "ROWID", "type": "BigInt", "primaryKey": true },
+        { "name": "crime_sub_head_name", "type": "Var Char", "length": 255, "required": true },
+        { "name": "crime_head_id", "type": "Foreign Key", "references": "CrimeHead.ROWID", "required": true }
+      ]
+    },
+    {
+      "name": "Act",
+      "description": "Acts of law (e.g., IPC 1860, Indian Penal Code, Information Technology Act, Karnataka Police Act)",
+      "columns": [
+        { "name": "ROWID", "type": "BigInt", "primaryKey": true },
+        { "name": "act_name", "type": "Var Char", "length": 255, "required": true, "unique": true },
+        { "name": "act_description", "type": "Text", "required": false }
+      ]
+    },
+    {
+      "name": "Section",
+      "description": "Specific sections of an Act",
+      "columns": [
+        { "name": "ROWID", "type": "BigInt", "primaryKey": true },
+        { "name": "section_number", "type": "Var Char", "length": 100, "required": true },
+        { "name": "section_description", "type": "Text", "required": false },
+        { "name": "act_id", "type": "Foreign Key", "references": "Act.ROWID", "required": true }
+      ]
+    },
+    {
+      "name": "CrimeHeadActSection",
+      "description": "Standard mapping between Crime Heads, Sub-heads, and their default Acts/Sections",
+      "columns": [
+        { "name": "ROWID", "type": "BigInt", "primaryKey": true },
+        { "name": "crime_head_id", "type": "Foreign Key", "references": "CrimeHead.ROWID", "required": true },
+        { "name": "crime_sub_head_id", "type": "Foreign Key", "references": "CrimeSubHead.ROWID", "required": true },
+        { "name": "act_id", "type": "Foreign Key", "references": "Act.ROWID", "required": true },
+        { "name": "section_id", "type": "Foreign Key", "references": "Section.ROWID", "required": true }
+      ]
+    },
+    {
+      "name": "OccupationMaster",
+      "description": "Standard occupations of victims, complainants, accused",
+      "columns": [
+        { "name": "ROWID", "type": "BigInt", "primaryKey": true },
+        { "name": "occupation_name", "type": "Var Char", "length": 255, "required": true, "unique": true }
+      ]
+    },
+    {
+      "name": "ReligionMaster",
+      "description": "Standard religions",
+      "columns": [
+        { "name": "ROWID", "type": "BigInt", "primaryKey": true },
+        { "name": "religion_name", "type": "Var Char", "length": 100, "required": true, "unique": true }
+      ]
+    },
+    {
+      "name": "CasteMaster",
+      "description": "Standard castes / community groupings",
+      "columns": [
+        { "name": "ROWID", "type": "BigInt", "primaryKey": true },
+        { "name": "caste_name", "type": "Var Char", "length": 100, "required": true, "unique": true }
+      ]
+    }
+  ]
+}

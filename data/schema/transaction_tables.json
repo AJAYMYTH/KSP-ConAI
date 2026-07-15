@@ -1,0 +1,120 @@
+{
+  "tables": [
+    {
+      "name": "CaseMaster",
+      "description": "Represents the primary FIR record",
+      "columns": [
+        { "name": "ROWID", "type": "BigInt", "primaryKey": true },
+        { "name": "fir_number", "type": "Var Char", "length": 50, "required": true, "unique": true },
+        { "name": "crime_registered_date", "type": "DateTime", "required": true },
+        { "name": "incident_from_date", "type": "DateTime", "required": true },
+        { "name": "incident_to_date", "type": "DateTime", "required": false },
+        { "name": "info_received_date", "type": "DateTime", "required": true },
+        { "name": "latitude", "type": "Double", "required": false },
+        { "name": "longitude", "type": "Double", "required": false },
+        { "name": "case_category_id", "type": "Foreign Key", "references": "CaseCategory.ROWID", "required": true },
+        { "name": "gravity_offence_id", "type": "Foreign Key", "references": "GravityOffence.ROWID", "required": true },
+        { "name": "crime_head_id", "type": "Foreign Key", "references": "CrimeHead.ROWID", "required": true },
+        { "name": "crime_sub_head_id", "type": "Foreign Key", "references": "CrimeSubHead.ROWID", "required": true },
+        { "name": "case_status_id", "type": "Foreign Key", "references": "CaseStatusMaster.ROWID", "required": true },
+        { "name": "court_id", "type": "Foreign Key", "references": "Court.ROWID", "required": true },
+        { "name": "district_id", "type": "Foreign Key", "references": "District.ROWID", "required": true },
+        { "name": "state_id", "type": "Foreign Key", "references": "State.ROWID", "required": true },
+        { "name": "unit_id", "type": "Foreign Key", "references": "Unit.ROWID", "required": true },
+        { "name": "registering_officer_id", "type": "Foreign Key", "references": "Employee.ROWID", "required": true },
+        { "name": "place_of_occurrence", "type": "Var Char", "length": 255, "required": true },
+        { "name": "summary_of_facts", "type": "Text", "required": true },
+        { "name": "fir_status", "type": "Var Char", "length": 50, "required": true }
+      ]
+    },
+    {
+      "name": "ComplainantDetails",
+      "description": "Information about the complainant(s) of the FIR",
+      "columns": [
+        { "name": "ROWID", "type": "BigInt", "primaryKey": true },
+        { "name": "case_id", "type": "Foreign Key", "references": "CaseMaster.ROWID", "required": true },
+        { "name": "name", "type": "Var Char", "length": 255, "required": true },
+        { "name": "age", "type": "Int", "required": false },
+        { "name": "gender", "type": "Var Char", "length": 20, "required": false },
+        { "name": "phone", "type": "Var Char", "length": 20, "required": false },
+        { "name": "address", "type": "Text", "required": false },
+        { "name": "occupation_id", "type": "Foreign Key", "references": "OccupationMaster.ROWID", "required": false },
+        { "name": "religion_id", "type": "Foreign Key", "references": "ReligionMaster.ROWID", "required": false },
+        { "name": "caste_id", "type": "Foreign Key", "references": "CasteMaster.ROWID", "required": false }
+      ]
+    },
+    {
+      "name": "Victim",
+      "description": "Information about the victims involved in the crime",
+      "columns": [
+        { "name": "ROWID", "type": "BigInt", "primaryKey": true },
+        { "name": "case_id", "type": "Foreign Key", "references": "CaseMaster.ROWID", "required": true },
+        { "name": "name", "type": "Var Char", "length": 255, "required": true },
+        { "name": "age", "type": "Int", "required": false },
+        { "name": "gender", "type": "Var Char", "length": 20, "required": false },
+        { "name": "injury_type", "type": "Var Char", "length": 100, "required": false },
+        { "name": "phone", "type": "Var Char", "length": 20, "required": false },
+        { "name": "address", "type": "Text", "required": false },
+        { "name": "occupation_id", "type": "Foreign Key", "references": "OccupationMaster.ROWID", "required": false },
+        { "name": "religion_id", "type": "Foreign Key", "references": "ReligionMaster.ROWID", "required": false },
+        { "name": "caste_id", "type": "Foreign Key", "references": "CasteMaster.ROWID", "required": false }
+      ]
+    },
+    {
+      "name": "Accused",
+      "description": "Details of the accused individuals listed in the FIR",
+      "columns": [
+        { "name": "ROWID", "type": "BigInt", "primaryKey": true },
+        { "name": "case_id", "type": "Foreign Key", "references": "CaseMaster.ROWID", "required": true },
+        { "name": "system_accused_id", "type": "Var Char", "length": 100, "required": true, "description": "Global unique identifier or Aadhaar hash for tracking repeat offenders across different cases" },
+        { "name": "name", "type": "Var Char", "length": 255, "required": true },
+        { "name": "alias_name", "type": "Var Char", "length": 255, "required": false },
+        { "name": "age", "type": "Int", "required": false },
+        { "name": "gender", "type": "Var Char", "length": 20, "required": false },
+        { "name": "address", "type": "Text", "required": false },
+        { "name": "occupation_id", "type": "Foreign Key", "references": "OccupationMaster.ROWID", "required": false },
+        { "name": "religion_id", "type": "Foreign Key", "references": "ReligionMaster.ROWID", "required": false },
+        { "name": "caste_id", "type": "Foreign Key", "references": "CasteMaster.ROWID", "required": false },
+        { "name": "status", "type": "Var Char", "length": 50, "required": true, "description": "e.g., Absconding, Arrested, Bailed, Surrendered, Suspect" }
+      ]
+    },
+    {
+      "name": "ArrestSurrender",
+      "description": "History of arrest or surrender events for the accused",
+      "columns": [
+        { "name": "ROWID", "type": "BigInt", "primaryKey": true },
+        { "name": "case_id", "type": "Foreign Key", "references": "CaseMaster.ROWID", "required": true },
+        { "name": "accused_id", "type": "Foreign Key", "references": "Accused.ROWID", "required": true },
+        { "name": "event_type", "type": "Var Char", "length": 50, "required": true, "description": "Arrest or Surrender" },
+        { "name": "date_time", "type": "DateTime", "required": true },
+        { "name": "place", "type": "Var Char", "length": 255, "required": false },
+        { "name": "arresting_officer_id", "type": "Foreign Key", "references": "Employee.ROWID", "required": true },
+        { "name": "remarks", "type": "Text", "required": false }
+      ]
+    },
+    {
+      "name": "ChargesheetDetails",
+      "description": "Details of the chargesheet filed for the case",
+      "columns": [
+        { "name": "ROWID", "type": "BigInt", "primaryKey": true },
+        { "name": "case_id", "type": "Foreign Key", "references": "CaseMaster.ROWID", "required": true },
+        { "name": "chargesheet_number", "type": "Var Char", "length": 50, "required": true },
+        { "name": "date_filed", "type": "Date", "required": true },
+        { "name": "submitting_officer_id", "type": "Foreign Key", "references": "Employee.ROWID", "required": true },
+        { "name": "court_id", "type": "Foreign Key", "references": "Court.ROWID", "required": true },
+        { "name": "summary_of_evidence", "type": "Text", "required": false },
+        { "name": "final_report_type", "type": "Var Char", "length": 50, "required": true, "description": "e.g., Chargesheet, B-Report, C-Report" }
+      ]
+    },
+    {
+      "name": "ActSectionAssociation",
+      "description": "Many-to-many relationship mapping cases to Acts and Sections violated",
+      "columns": [
+        { "name": "ROWID", "type": "BigInt", "primaryKey": true },
+        { "name": "case_id", "type": "Foreign Key", "references": "CaseMaster.ROWID", "required": true },
+        { "name": "act_id", "type": "Foreign Key", "references": "Act.ROWID", "required": true },
+        { "name": "section_id", "type": "Foreign Key", "references": "Section.ROWID", "required": true }
+      ]
+    }
+  ]
+}

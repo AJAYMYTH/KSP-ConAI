@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>KSP Crime Intelligence Report - FIR {{fir_number}}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            line-height: 1.5;
+            margin: 0;
+            padding: 20px;
+        }
+        .header-container {
+            border-bottom: 3px double #0d21a1;
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .header-container h1 {
+            color: #0d21a1;
+            margin: 0;
+            font-size: 24px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .header-container h2 {
+            margin: 5px 0 0 0;
+            font-size: 14px;
+            color: #555;
+            letter-spacing: 0.5px;
+        }
+        .meta-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+        }
+        .meta-table th, .meta-table td {
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            text-align: left;
+            font-size: 13px;
+        }
+        .meta-table th {
+            background-color: #f4f6f9;
+            color: #0d21a1;
+            width: 25%;
+        }
+        .section-title {
+            color: #0d21a1;
+            font-size: 16px;
+            border-bottom: 1.5px solid #0d21a1;
+            padding-bottom: 4px;
+            margin-top: 30px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 12px;
+        }
+        .data-table th, .data-table td {
+            border: 1px solid #ddd;
+            padding: 8px 10px;
+            text-align: left;
+        }
+        .data-table th {
+            background-color: #0d21a1;
+            color: #ffffff;
+            font-weight: bold;
+        }
+        .data-table tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+        .narrative-box {
+            background-color: #f4f6f9;
+            border-left: 4px solid #0d21a1;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            font-style: italic;
+            line-height: 1.6;
+        }
+        .footer {
+            margin-top: 50px;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+            font-size: 10px;
+            color: #777;
+            text-align: center;
+        }
+        .timestamp {
+            text-align: right;
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        @media print {
+            body {
+                padding: 0;
+            }
+            .section-title {
+                page-break-after: avoid;
+            }
+            .data-table {
+                page-break-inside: auto;
+            }
+            tr {
+                page-break-inside: avoid;
+                page-break-after: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-container">
+        <h1>Karnataka State Police</h1>
+        <h2>Crime Intelligence Copilot — Case Summary Document</h2>
+    </div>
+
+    <div class="timestamp">
+        <strong>Generated On:</strong> {{generated_at}}
+    </div>
+
+    <div class="section-title">Case Identification (FIR Details)</div>
+    <table class="meta-table">
+        <tr>
+            <th>FIR Number</th>
+            <td>{{fir_number}}</td>
+            <th>Crime Registered Date</th>
+            <td>{{crime_registered_date}}</td>
+        </tr>
+        <tr>
+            <th>District</th>
+            <td>{{district}}</td>
+            <th>Police Station</th>
+            <td>{{station}}</td>
+        </tr>
+        <tr>
+            <th>Case Category</th>
+            <td>{{category}}</td>
+            <th>Offence Gravity</th>
+            <td>{{gravity}}</td>
+        </tr>
+        <tr>
+            <th>Place of Occurrence</th>
+            <td colspan="3">{{place_of_occurrence}}</td>
+        </tr>
+    </table>
+
+    <div class="section-title">AI-Generated Case Summary Narrative</div>
+    <div class="narrative-box">
+        {{ai_summary}}
+    </div>
+
+    <div class="section-title">Acts & Sections charged</div>
+    {{acts_sections}}
+
+    <div class="section-title">Accused Details</div>
+    {{accused}}
+
+    <div class="section-title">Arrest & Surrender History</div>
+    {{arrests}}
+
+    <div class="section-title">Complainant Information</div>
+    {{complainants}}
+
+    <div class="section-title">Victim Details</div>
+    {{victims}}
+
+    <div class="section-title">Factual Summary of Facts (Raw Record)</div>
+    <div style="font-size: 12px; white-space: pre-wrap; background-color: #fafafa; border: 1px solid #eee; padding: 10px; border-radius: 4px;">
+        {{summary_of_facts}}
+    </div>
+
+    <div class="footer">
+        CONFIDENTIAL - For Internal Use Only. This report was compiled by the KSP Crime Intelligence Copilot. 
+        All AI-generated summaries are derived from officially recorded FIR data. Guilt determinations are sub-judice and must be verified against case files.
+    </div>
+
+</body>
+</html>

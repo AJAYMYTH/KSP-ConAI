@@ -1,0 +1,13 @@
+{
+  "name": "ksp-conai",
+  "version": "1.0.0",
+  "description": "KSP Crime Intelligence Copilot Backend",
+  "main": "index.js",
+  "scripts": {
+    "seed": "node data/mock/seed_data.js",
+    "serve": "catalyst serve"
+  },
+  "dependencies": {
+    "zcatalyst-sdk-node": "latest"
+  }
+}

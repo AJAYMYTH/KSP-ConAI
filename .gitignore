@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Zoho Catalyst Local Builds
+.build/
+**/dist/
+catalyst-debug.log
+.catalyst-history
+
+# Scratch folders and system settings
+scratch/
+.gemini/
+.vscode/
+.idea/
+
+# Binary media and assets not required in code repository
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.zip
+*.tar.gz
+*.pdf
