@@ -238,7 +238,7 @@ export default function AssistantChat() {
   };
 
   return (
-    <div className="flex-1 max-w-4xl mx-auto w-full p-6 md:p-8 flex flex-col justify-between overflow-hidden animate-in fade-in duration-300">
+    <div className="flex-1 max-w-4xl mx-auto w-full p-6 md:p-8 flex flex-col justify-between overflow-hidden min-h-0 max-h-full animate-in fade-in duration-300">
       {/* Assistant Header Info */}
       <div className="bg-canvas border border-hairline-soft p-4 rounded-xl flex items-center justify-between mb-4 card-product-shadow">
         <div className="flex items-center gap-3">
@@ -265,7 +265,7 @@ export default function AssistantChat() {
       </div>
 
       {/* Messages Feed */}
-      <div className="flex-1 bg-surface-soft/30 border border-hairline-soft rounded-xxxl p-5 overflow-y-auto space-y-4 mb-4 min-h-[300px]">
+      <div className="flex-1 bg-surface-soft/30 border border-hairline-soft rounded-xxxl p-5 overflow-y-auto space-y-4 mb-4 min-h-0">
         {messages.map((msg) => (
           <div
             key={msg.id}
