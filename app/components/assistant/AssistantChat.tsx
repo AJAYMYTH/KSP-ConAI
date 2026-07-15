@@ -238,7 +238,7 @@ export default function AssistantChat() {
   };
 
   return (
-    <div className="p-6 md:p-8 max-w-4xl mx-auto w-full h-[calc(100vh-64px)] flex flex-col justify-between animate-in fade-in duration-300">
+    <div className="flex-1 max-w-4xl mx-auto w-full p-6 md:p-8 flex flex-col justify-between overflow-hidden animate-in fade-in duration-300">
       {/* Assistant Header Info */}
       <div className="bg-canvas border border-hairline-soft p-4 rounded-xl flex items-center justify-between mb-4 card-product-shadow">
         <div className="flex items-center gap-3">
