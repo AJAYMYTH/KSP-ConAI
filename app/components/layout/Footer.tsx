@@ -42,6 +42,8 @@ export default function Footer() {
             <li><a href="/search" className="text-xs text-steel hover:text-primary transition">FIR Database</a></li>
             <li><a href="/map" className="text-xs text-steel hover:text-primary transition">Hotspot Mapping</a></li>
             <li><a href="/assistant" className="text-xs text-steel hover:text-primary transition">AI Assistant</a></li>
+            <li><a href="/graph" className="text-xs text-steel hover:text-primary transition">Relationship Network Graph</a></li>
+            <li><a href="/reports" className="text-xs text-steel hover:text-primary transition">Intelligence Reports</a></li>
           </ul>
         </div>
 
