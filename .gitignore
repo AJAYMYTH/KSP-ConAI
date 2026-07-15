@@ -25,3 +25,8 @@ desktop.ini
 
 # typescript
 tsconfig.tsbuildinfo
+
+# custom ignores
+.agents/
+skills-lock.json
+/public/
