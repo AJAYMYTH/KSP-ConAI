@@ -1,0 +1,27 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/dist
+
+# astro
+.astro
+
+# misc
+.DS_Store
+*.pem
+desktop.ini
+
+# local env files
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# typescript
+tsconfig.tsbuildinfo

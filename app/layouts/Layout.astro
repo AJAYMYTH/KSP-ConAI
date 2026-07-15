@@ -1,0 +1,35 @@
+---
+import Nav from '../components/layout/Nav.tsx';
+import Footer from '../components/layout/Footer.tsx';
+import '../styles/globals.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  hideNav?: boolean;
+  hideFooter?: boolean;
+}
+
+const { title, description = 'KSP-ConAI', hideNav = false, hideFooter = false } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title} — KSP-ConAI</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+  </head>
+  <body class="min-h-screen bg-canvas flex flex-col">
+    {!hideNav && <Nav currentPath={Astro.url.pathname} client:load />}
+    
+    <main class="flex-1 flex flex-col">
+      <slot />
+    </main>
+
+    {!hideFooter && <Footer client:load />}
+  </body>
+</html>

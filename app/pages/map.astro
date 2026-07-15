@@ -1,0 +1,8 @@
+---
+import Layout from '../layouts/Layout.astro';
+import HotspotMap from '../components/map/HotspotMap.tsx';
+---
+
+<Layout title="Crime Hotspot Maps">
+  <HotspotMap client:only="react" />
+</Layout>
