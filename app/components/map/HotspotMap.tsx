@@ -30,21 +30,12 @@ export default function HotspotMap() {
   useEffect(() => {
     if (typeof window === 'undefined' || loading) return;
 
-    // Load Leaflet styles dynamically
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
-    document.head.appendChild(link);
-
     let mapInstance: any = null;
 
-    // Dynamic import to avoid SSR errors
-    import('leaflet').then((L) => {
-      // Find or reset container
+    const initMap = (L: any) => {
       const container = document.getElementById('leaflet-hotspot-map');
       if (!container) return;
 
-      // Clean up previous instance if any
       const containerState = (container as any)._leaflet_id;
       if (containerState) {
         return; // Already initialized
@@ -83,10 +74,51 @@ export default function HotspotMap() {
       });
 
       setMapLoaded(true);
-    });
+    };
+
+    // Load Leaflet styles dynamically
+    if (!document.querySelector('link[href*="leaflet.css"]')) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+      document.head.appendChild(link);
+    }
+
+    let loadListener: (() => void) | null = null;
+    let scriptElement: HTMLScriptElement | null = null;
+
+    if ((window as any).L) {
+      initMap((window as any).L);
+    } else {
+      // Find or create leaflet.js script tag
+      let script = document.querySelector('script[src*="leaflet.js"]') as HTMLScriptElement;
+      if (!script) {
+        script = document.createElement('script');
+        script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+        script.async = true;
+        document.body.appendChild(script);
+      }
+      scriptElement = script;
+
+      loadListener = () => {
+        if ((window as any).L) {
+          initMap((window as any).L);
+        }
+      };
+      script.addEventListener('load', loadListener);
+    }
 
     return () => {
-      // Leaflet cleanup logic is handled automatically by letting map instance garbage collect or replacing html container
+      if (loadListener && scriptElement) {
+        scriptElement.removeEventListener('load', loadListener);
+      }
+      if (mapInstance) {
+        try {
+          mapInstance.remove();
+        } catch (e) {
+          console.warn('Leaflet cleanup warning:', e);
+        }
+      }
     };
   }, [loading, hotspots]);
 
