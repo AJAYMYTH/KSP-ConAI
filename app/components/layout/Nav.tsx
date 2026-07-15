@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { getCurrentSession, setSession, DEMO_USERS } from '../../lib/auth';
-import type { UserRole, UserSession } from '../../lib/auth';
-import { Menu, X, Search, User, LogOut } from 'lucide-react';
+import { getCurrentSession } from '../../lib/auth';
+import type { UserSession } from '../../lib/auth';
+import { Menu, X, Search, User, LogOut, Globe } from 'lucide-react';
 
 interface NavProps {
   currentPath?: string;
@@ -10,27 +10,29 @@ interface NavProps {
 export default function Nav({ currentPath = '/' }: NavProps) {
   const [session, setSessionState] = useState<UserSession | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [showRoleSelect, setShowRoleSelect] = useState(false);
+  const [lang, setLang] = useState<'EN' | 'KN'>('EN');
 
   useEffect(() => {
     setSessionState(getCurrentSession());
+    const saved = localStorage.getItem('ksp_language') as 'EN' | 'KN';
+    if (saved === 'EN' || saved === 'KN') {
+      setLang(saved);
+    }
   }, []);
 
-  const handleRoleChange = (role: UserRole) => {
-    const newSession = DEMO_USERS[role];
-    setSession(newSession);
-    setSessionState(newSession);
-    setShowRoleSelect(false);
-    // Reload page to re-trigger route/data authorization checks
-    window.location.reload();
+  const toggleLanguage = () => {
+    const newLang = lang === 'EN' ? 'KN' : 'EN';
+    setLang(newLang);
+    localStorage.setItem('ksp_language', newLang);
+    window.dispatchEvent(new CustomEvent('ksp-language-change', { detail: newLang }));
   };
 
   const navItems = [
-    { name: 'Dashboard', path: '/dashboard' },
-    { name: 'FIR Search', path: '/search' },
-    { name: 'Hotspot Map', path: '/map' },
-    { name: 'AI Assistant', path: '/assistant' },
-    { name: 'Reports', path: '/reports' },
+    { name: lang === 'EN' ? 'Dashboard' : 'ಡ್ಯಾಶ್‌ಬೋರ್ಡ್', path: '/dashboard' },
+    { name: lang === 'EN' ? 'FIR Search' : 'ಎಫ್‌ಐಆರ್ ಹುಡುಕಾಟ', path: '/search' },
+    { name: lang === 'EN' ? 'Hotspot Map' : 'ಹಾಟ್‌ಸ್ಪಾಟ್ ನಕ್ಷೆ', path: '/map' },
+    { name: lang === 'EN' ? 'AI Assistant' : 'ಎಐ ಸಹಾಯಕ', path: '/assistant' },
+    { name: lang === 'EN' ? 'Reports' : 'ವರದಿಗಳು', path: '/reports' },
   ];
 
   return (
@@ -70,42 +72,27 @@ export default function Nav({ currentPath = '/' }: NavProps) {
 
       {/* Right Actions & Role Swapper */}
       <div className="flex items-center gap-3">
-        {session && (
-          <div className="relative">
-            <button
-              onClick={() => setShowRoleSelect(!showRoleSelect)}
-              className="flex items-center gap-2.5 px-3 py-1.5 rounded-full border border-hairline-soft bg-surface-soft hover:bg-hairline focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none transition-all duration-150 cursor-pointer"
-            >
-              <div className="w-6 h-6 rounded-circle bg-ink-deep text-canvas text-[10px] font-bold flex items-center justify-center">
-                {session.role.substring(0, 2).toUpperCase()}
-              </div>
-              <div className="hidden sm:flex flex-col text-left">
-                <span className="text-xs font-bold text-ink-deep leading-none">{session.name}</span>
-                <span className="text-[9px] text-steel font-medium leading-tight mt-0.5 uppercase tracking-wider">
-                  {session.role} ({session.badgeNumber})
-                </span>
-              </div>
-            </button>
+        {/* Global Language Toggle */}
+        <button
+          onClick={toggleLanguage}
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-surface-soft border border-hairline-soft hover:bg-hairline hover:border-steel rounded-full text-[10px] font-bold text-ink cursor-pointer transition select-none"
+          aria-label="Toggle language between English and Kannada"
+        >
+          <Globe className="w-3.5 h-3.5 text-stone" />
+          <span>{lang === 'EN' ? 'English' : 'ಕನ್ನಡ'}</span>
+        </button>
 
-            {showRoleSelect && (
-              <div className="absolute right-0 mt-2 w-52 bg-canvas border border-hairline-soft rounded-xl shadow-lg py-1.5 animate-in fade-in slide-in-from-top-2 duration-100 z-50">
-                <div className="px-3 py-1 text-[10px] font-bold text-stone uppercase tracking-wider border-b border-hairline-soft pb-1.5 mb-1">
-                  Switch Active Role
-                </div>
-                {(Object.keys(DEMO_USERS) as UserRole[]).map((r) => (
-                  <button
-                    key={r}
-                    onClick={() => handleRoleChange(r)}
-                    className={`w-full px-3 py-2 text-xs text-left font-bold flex items-center justify-between hover:bg-surface-soft focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none cursor-pointer ${
-                      session.role === r ? 'text-primary' : 'text-ink'
-                    }`}
-                  >
-                    <span className="capitalize">{r}</span>
-                    {session.role === r && <div className="w-1.5 h-1.5 rounded-circle bg-primary" />}
-                  </button>
-                ))}
-              </div>
-            )}
+        {session && (
+          <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-full border border-hairline-soft bg-surface-soft select-none">
+            <div className="w-6 h-6 rounded-circle bg-ink-deep text-canvas text-[10px] font-bold flex items-center justify-center">
+              {session.role.substring(0, 2).toUpperCase()}
+            </div>
+            <div className="hidden sm:flex flex-col text-left">
+              <span className="text-xs font-bold text-ink-deep leading-none">{session.name}</span>
+              <span className="text-[9px] text-steel font-medium leading-tight mt-0.5 uppercase tracking-wider">
+                {session.role} ({session.badgeNumber})
+              </span>
+            </div>
           </div>
         )}
 
