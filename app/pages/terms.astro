@@ -8,9 +8,14 @@ import { ArrowLeft, FileText } from 'lucide-react';
     {/* Navigation header */}
     <div class="flex items-center justify-between border-b border-hairline-soft pb-4">
       <a href="/dashboard" class="flex items-center gap-1 text-xs font-bold text-steel hover:text-primary transition">
-        <ArrowLeft className="w-3.5 h-3.5" /> Back to Dashboard
+        <ArrowLeft className="w-3.5 h-3.5" /> 
+        <span class="lang-en">Back to Dashboard</span>
+        <span class="lang-kn">ಡ್ಯಾಶ್‌ಬೋರ್ಡ್‌ಗೆ ಹಿಂತಿರುಗಿ</span>
       </a>
-      <span class="text-[9px] uppercase tracking-wider font-bold text-slate-400">Classified // Internal Use Only</span>
+      <span class="text-[9px] uppercase tracking-wider font-bold text-slate-400">
+        <span class="lang-en">Classified // Internal Use Only</span>
+        <span class="lang-kn">ವರ್ಗೀಕೃತ // ಆಂತರಿಕ ಬಳಕೆಗೆ ಮಾತ್ರ</span>
+      </span>
     </div>
 
     {/* Document Container */}
@@ -21,66 +26,112 @@ import { ArrowLeft, FileText } from 'lucide-react';
         </div>
         <div>
           <span class="text-[10px] uppercase tracking-wider text-steel font-bold">KSP-ConAI Compliance</span>
-          <h1 class="text-xl font-bold text-ink-deep">Terms of Service</h1>
+          <h1 class="text-xl font-bold text-ink-deep">
+            <span class="lang-en">Terms of Service</span>
+            <span class="lang-kn">ಸೇವೆಯ ನಿಯಮಗಳು</span>
+          </h1>
         </div>
       </div>
 
       <div class="text-[11px] text-stone font-medium">
-        Last Updated: July 2026 | Authority: Karnataka State Police Command Centre
+        <span class="lang-en">Last Updated: July 2026 | Authority: Karnataka State Police Command Centre</span>
+        <span class="lang-kn">ಕೊನೆಯದಾಗಿ ನವೀಕರಿಸಿದ್ದು: ಜುಲೈ 2026 | ಪ್ರಾಧಿಕಾರ: ಕರ್ನಾಟಕ ರಾಜ್ಯ ಪೊಲೀಸ್ ನಿಯಂತ್ರಣ ಕೊಠಡಿ</span>
       </div>
 
       <div class="space-y-5 text-xs text-steel leading-relaxed">
         <section class="space-y-2">
-          <h2 class="text-sm font-bold text-ink-deep">1. Acceptance of Terms</h2>
-          <p>
+          <h2 class="text-sm font-bold text-ink-deep">
+            <span class="lang-en">1. Acceptance of Terms</span>
+            <span class="lang-kn">1. ನಿಯಮಗಳ ಸ್ವೀಕಾರ</span>
+          </h2>
+          <p class="lang-en">
             By logging into the KSP-ConAI platform, you acknowledge that you have read, understood, and agreed to follow these Terms of Service. If you do not agree to these terms, you must terminate your session immediately and report to your Station Administrator.
           </p>
+          <p class="lang-kn">
+            KSP-ConAI ವೇದಿಕೆಗೆ ಲಾಗ್ ಇನ್ ಮಾಡುವ ಮೂಲಕ, ನೀವು ಈ ಸೇವೆಯ ನಿಯಮಗಳನ್ನು ಓದಿದ್ದೀರಿ, ಅರ್ಥಮಾಡಿಕೊಂಡಿದ್ದೀರಿ ಮತ್ತು ಅನುಸರಿಸಲು ಒಪ್ಪಿಕೊಂಡಿದ್ದೀರಿ ಎಂದು ಒಪ್ಪಿಕೊಳ್ಳುತ್ತೀರಿ. ನೀವು ಈ ನಿಯಮಗಳಿಗೆ ಒಪ್ಪದಿದ್ದರೆ, ತಕ್ಷಣವೇ ನಿಮ್ಮ ಸೆಷನ್ ಅನ್ನು ಕೊನೆಗೊಳಿಸಬೇಕು ಮತ್ತು ನಿಮ್ಮ ಸ್ಟೇಷನ್ ಅಡ್ಮಿನಿಸ್ಟ್ರೇಟರ್‌ಗೆ ವರದಿ ಮಾಡಬೇಕು.
+          </p>
         </section>
 
         <section class="space-y-2">
-          <h2 class="text-sm font-bold text-ink-deep">2. Authorized Use Only</h2>
-          <p>
+          <h2 class="text-sm font-bold text-ink-deep">
+            <span class="lang-en">2. Authorized Use Only</span>
+            <span class="lang-kn">2. ಅಧಿಕೃತ ಬಳಕೆಗೆ ಮಾತ್ರ</span>
+          </h2>
+          <p class="lang-en">
             This portal is exclusively for the official use of personnel belonging to the Karnataka State Police. Access by any other person, or use for non-official purposes (including personal curiosity, tracking acquaintances, or unauthorized research), is strictly prohibited and constitutes a punishable offense under Section 66 of the Information Technology Act.
           </p>
+          <p class="lang-kn">
+            ಈ ಪೋರ್ಟಲ್ ಪ್ರತ್ಯೇಕವಾಗಿ ಕರ್ನಾಟಕ ರಾಜ್ಯ ಪೊಲೀಸ್ ಸಿಬ್ಬಂದಿಯ ಅಧಿಕೃತ ಬಳಕೆಗಾಗಿ ಮಾತ್ರ. ಯಾವುದೇ ಇತರ ವ್ಯಕ್ತಿಯ ಪ್ರವೇಶ, ಅಥವಾ ಅನಧಿಕೃತ ಉದ್ದೇಶಗಳಿಗಾಗಿ ಬಳಕೆ (ವೈಯಕ್ತಿಕ ಕುತೂಹಲ ಅಥವಾ ಅನಧಿಕೃತ ಸಂಶೋಧನೆ ಸೇರಿದಂತೆ) ಕಟ್ಟುನಿಟ್ಟಾಗಿ ನಿಷೇಧಿಸಲಾಗಿದೆ ಮತ್ತು ಮಾಹಿತಿ ತಂತ್ರಜ್ಞಾನ ಕಾಯ್ದೆಯ ಸೆಕ್ಷನ್ 66 ರ ಅಡಿಯಲ್ಲಿ ಶಿಕ್ಷಾರ್ಹ ಅಪರಾಧವಾಗಿದೆ.
+          </p>
         </section>
 
         <section class="space-y-2">
-          <h2 class="text-sm font-bold text-ink-deep">3. Account Security & Responsibility</h2>
-          <p>
+          <h2 class="text-sm font-bold text-ink-deep">
+            <span class="lang-en">3. Account Security & Responsibility</span>
+            <span class="lang-kn">3. ಖಾತೆ ಭದ್ರತೆ ಮತ್ತು ಹೊಣೆಗಾರಿಕೆ</span>
+          </h2>
+          <p class="lang-en">
             Officers are solely responsible for all activities conducted under their credentials. You must not share passwords, session tokens, or bypass authentication gates. If you suspect your account has been compromised, notify the IT Support Cell immediately.
           </p>
+          <p class="lang-kn">
+            ಅಧಿಕಾರಿಗಳು ತಮ್ಮ ಖಾತೆಯಡಿಯಲ್ಲಿ ನಡೆಯುವ ಎಲ್ಲಾ ಚಟುವಟಿಕೆಗಳಿಗೆ ಸಂಪೂರ್ಣ ಜವಾಬ್ದಾರರಾಗಿರುತ್ತಾರೆ. ನೀವು ಪಾಸ್‌ವರ್ಡ್‌ಗಳು, ಸೆಷನ್ ಟೋಕನ್‌ಗಳನ್ನು ಹಂಚಿಕೊಳ್ಳಬಾರದು. ನಿಮ್ಮ ಖಾತೆಯು ದುರುಪಯೋಗಗೊಂಡಿದೆ ಎಂದು ನೀವು ಶಂಕಿಸಿದರೆ, ತಕ್ಷಣವೇ ಐಟಿ ಬೆಂಬಲ ಸೆಲ್‌ಗೆ ತಿಳಿಸಿ.
+          </p>
         </section>
 
         <section class="space-y-2">
-          <h2 class="text-sm font-bold text-ink-deep">4. Prohibited Activities</h2>
-          <p>
+          <h2 class="text-sm font-bold text-ink-deep">
+            <span class="lang-en">4. Prohibited Activities</span>
+            <span class="lang-kn">4. ನಿಷೇಧಿತ ಚಟುವಟಿಕೆಗಳು</span>
+          </h2>
+          <p class="lang-en">
             Users are strictly forbidden from:
           </p>
+          <p class="lang-kn">
+            ಬಳಕೆದಾರರಿಗೆ ಈ ಕೆಳಗಿನವುಗಳನ್ನು ಕಟ್ಟುನಿಟ್ಟಾಗಿ ನಿಷೇಧಿಸಲಾಗಿದೆ:
+          </p>
           <ul class="list-disc pl-5 space-y-1">
-            <li>Exporting raw database files, suspect graph mappings, or hotspot overlays without an authorized supervisor signature.</li>
-            <li>Inputting non-police files or queries containing malicious payloads into the AI Assistant.</li>
-            <li>Sharing or copying KSP-ConAI screenshots onto public networks or personal devices.</li>
+            <li class="lang-en">Exporting raw database files, suspect graph mappings, or hotspot overlays without an authorized supervisor signature.</li>
+            <li class="lang-kn">ಅಧಿಕೃತ ಮೇಲ್ವಿಚಾರಕರ ಸಹಿ ಇಲ್ಲದೆ ಕಚ್ಚಾ ಡೇಟಾಬೇಸ್ ಫೈಲ್‌ಗಳನ್ನು, ನಕ್ಷೆಗಳನ್ನು ಅಥವಾ ಹಾಟ್‌ಸ್ಪಾಟ್ ಮೇಲ್ಪದರಗಳನ್ನು ರಫ್ತು ಮಾಡುವುದು.</li>
+            <li class="lang-en">Inputting non-police files or queries containing malicious payloads into the AI Assistant.</li>
+            <li class="lang-kn">AI ಸಹಾಯಕಕ್ಕೆ ಹಾನಿಕಾರಕ ಪ್ರೋಗ್ರಾಂಗಳು ಅಥವಾ ಫೈಲ್‌ಗಳನ್ನು ಇನ್‌ಪುಟ್ ಮಾಡುವುದು.</li>
+            <li class="lang-en">Sharing or copying KSP-ConAI screenshots onto public networks or personal devices.</li>
+            <li class="lang-kn">KSP-ConAI ಸ್ಕ್ರೀನ್‌ಶಾಟ್‌ಗಳನ್ನು ಸಾರ್ವಜನಿಕ ನೆಟ್‌ವರ್ಕ್‌ಗಳು ಅಥವಾ ವೈಯಕ್ತಿಕ ಸಾಧನಗಳಲ್ಲಿ ಹಂಚಿಕೊಳ್ಳುವುದು ಅಥವಾ ನಕಲಿಸುವುದು.</li>
           </ul>
         </section>
 
         <section class="space-y-2">
-          <h2 class="text-sm font-bold text-ink-deep">5. Monitoring and Audit Consent</h2>
-          <p>
+          <h2 class="text-sm font-bold text-ink-deep">
+            <span class="lang-en">5. Monitoring and Audit Consent</span>
+            <span class="lang-kn">5. ಮಾನಿಟರಿಂಗ್ ಮತ್ತು ಆಡಿಟ್ ಒಪ್ಪಿಗೆ</span>
+          </h2>
+          <p class="lang-en">
             All network activities, database searches, and AI chatbot prompts are actively recorded, stored, and audited. KSP reserves the right to intercept, investigate, and present these session logs in administrative hearings or court proceedings.
+          </p>
+          <p class="lang-kn">
+            ಎಲ್ಲಾ ನೆಟ್‌ವರ್ಕ್ ಚಟುವಟಿಕೆಗಳು, ಡೇಟಾಬೇಸ್ ಹುಡುಕಾಟಗಳು ಮತ್ತು AI ಚಾಟ್‌ಬಾಟ್ ಪ್ರಶ್ನೆಗಳನ್ನು ಸಕ್ರಿಯವಾಗಿ ದಾಖಲಿಸಲಾಗುತ್ತದೆ ಮತ್ತು ಆಡಿಟ್ ಮಾಡಲಾಗುತ್ತದೆ. ಈ ಸೆಷನ್ ಲಾಗ್‌ಗಳನ್ನು ಆಡಳಿತಾತ್ಮಕ ವಿಚಾರಣೆ ಅಥವಾ ನ್ಯಾಯಾಲಯದ ನಡಾವಳಿಗಳಲ್ಲಿ ಪ್ರಸ್ತುತಪಡಿಸುವ ಹಕ್ಕನ್ನು KSP ಕಾಯ್ದಿರಿಸಿಕೊಂಡಿದೆ.
           </p>
         </section>
 
         <section class="space-y-2">
-          <h2 class="text-sm font-bold text-ink-deep">6. Term Violations & Penalties</h2>
-          <p>
+          <h2 class="text-sm font-bold text-ink-deep">
+            <span class="lang-en">6. Term Violations & Penalties</span>
+            <span class="lang-kn">6. ನಿಯಮ ಉಲ್ಲಂಘನೆ ಮತ್ತು ದಂಡಗಳು</span>
+          </h2>
+          <p class="lang-en">
             Violations of these terms will lead to immediate revocation of access permissions, disciplinary inquiry under the Karnataka Civil Services Rules, suspension, and legal prosecution under the Indian Penal Code (IPC) or relevant cybercrime laws.
+          </p>
+          <p class="lang-kn">
+            ಈ ನಿಯಮಗಳ ಉಲ್ಲಂಘನೆಯು ಪ್ರವೇಶದ ತಕ್ಷಣದ ರದ್ದತಿಗೆ, ಕರ್ನಾಟಕ ನಾಗರಿಕ ಸೇವಾ ನಿಯಮಗಳ ಅಡಿಯಲ್ಲಿ ಶಿಸ್ತು ಕ್ರಮಕ್ಕೆ, ಅಮಾನತು ಮತ್ತು ಸಂಬಂಧಿತ ಸೈಬರ್ ಅಪರಾಧ ಕಾನೂನುಗಳ ಅಡಿಯಲ್ಲಿ ಕಾನೂನು ಕ್ರಮಕ್ಕೆ ಕಾರಣವಾಗುತ್ತದೆ.
           </p>
         </section>
       </div>
 
       <div class="border-t border-hairline-soft pt-4 flex justify-between items-center text-[10px] text-stone">
         <span>KSP-ConAI Protocol V1.0</span>
-        <button onclick="window.print()" class="text-primary hover:underline font-bold cursor-pointer">Print Document</button>
+        <button onclick="window.print()" class="text-primary hover:underline font-bold cursor-pointer">
+          <span class="lang-en">Print Document</span>
+          <span class="lang-kn">ದಾಖಲೆಯನ್ನು ಪ್ರಿಂಟ್ ಮಾಡಿ</span>
+        </button>
       </div>
     </div>
   </div>

@@ -113,3 +113,11 @@
   background-size: 200% 100%;
   animation: shimmer 1.6s infinite linear;
 }
+
+/* Global Language Visibility Utilities */
+html.lang-kn-active .lang-en {
+  display: none !important;
+}
+html:not(.lang-kn-active) .lang-kn {
+  display: none !important;
+}

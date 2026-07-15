@@ -35,10 +35,50 @@ export default function AssistantChat() {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  useEffect(() => {
+    const saved = localStorage.getItem('ksp_language') as 'EN' | 'KN';
+    if (saved === 'EN' || saved === 'KN') {
+      setLanguage(saved);
+    }
+
+    const handleLangChange = (e: Event) => {
+      const customEvent = e as CustomEvent<'EN' | 'KN'>;
+      setLanguage(customEvent.detail);
+    };
+
+    window.addEventListener('ksp-language-change', handleLangChange);
+    return () => {
+      window.removeEventListener('ksp-language-change', handleLangChange);
+    };
+  }, []);
+
+  useEffect(() => {
+    setMessages(prev => prev.map(m => {
+      if (m.id === 'welcome') {
+        return {
+          ...m,
+          content: language === 'EN'
+            ? 'Welcome to the KSP Crime Intelligence Copilot. I am a retrieval-grounded assistant. I can run deterministic database lookups or summarize case details based on your queries. All inquiries are audited under KSP protocols.'
+            : 'ಕೆಎಸ್‌ಪಿ ಅಪರಾಧ ಗುಪ್ತಚರ ಸಹಾಯಕಕ್ಕೆ ಸುಸ್ವಾಗತ. ನಾನು ಡೇಟಾಬೇಸ್ ಹುಡುಕಾಟಗಳನ್ನು ನಡೆಸಬಲ್ಲೆ ಮತ್ತು ಪ್ರಕರಣದ ವಿವರಗಳನ್ನು ಸಂಕ್ಷೇಪಿಸಬಲ್ಲೆ. ಎಲ್ಲಾ ವಿಚಾರಣೆಗಳನ್ನು ಕೆಎಸ್‌ಪಿ ಪ್ರೋಟೋಕಾಲ್ ಅಡಿಯಲ್ಲಿ ಆಡಿಟ್ ಮಾಡಲಾಗುತ್ತದೆ.'
+        };
+      }
+      return m;
+    }));
+  }, [language]);
+
   const suggestedPrompts = [
-    { label: 'Summarize burglary case in Bengaluru', query: 'Summarize case KA-BC-2026-00812' },
-    { label: 'Show recent highway robberies in Mysuru', query: 'Show highway robberies registered in Mysuru City' },
-    { label: 'Compare crime totals by category', query: 'Compare total cases by major categories' }
+    { 
+      label: language === 'EN' ? 'Summarize burglary case in Bengaluru' : 'ಬೆಂಗಳೂರಿನ ಕಳ್ಳತನ ಪ್ರಕರಣವನ್ನು ಸಂಕ್ಷೇಪಿಸಿ', 
+      query: 'Summarize case KA-BC-2026-00812' 
+    },
+    { 
+      label: language === 'EN' ? 'Show recent highway robberies in Mysuru' : 'ಮೈಸೂರಿನ ಇತ್ತೀಚಿನ ಹೆದ್ದಾರಿ ದರೋಡೆಗಳನ್ನು ತೋರಿಸಿ', 
+      query: 'Show highway robberies registered in Mysuru City' 
+    },
+    { 
+      label: language === 'EN' ? 'Compare crime totals by category' : 'ವಿಭಾಗವಾರು ಒಟ್ಟು ಅಪರಾಧಗಳನ್ನು ಹೋಲಿಕೆ ಮಾಡಿ', 
+      query: 'Compare total cases by major categories' 
+    }
   ];
 
   const handleSuggestionClick = (queryText: string) => {
@@ -245,23 +285,24 @@ export default function AssistantChat() {
           <img src="/karnataka_emblem.png" alt="KSP Logo" className="w-10 h-10 object-contain" width="40" height="40" />
           <div>
             <h1 className="text-sm font-bold text-ink-deep flex items-center gap-1.5">
-              Crime Intelligence Assistant
+              {language === 'EN' ? 'Crime Intelligence Assistant' : 'ಅಪರಾಧ ಗುಪ್ತಚರ ಸಹಾಯಕ'}
               <span className="text-[8px] bg-primary/10 text-primary px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">
                 Grounded AI
               </span>
             </h1>
-            <p className="text-[10px] text-steel">Connected to local SQL Gateway & Catalyst QuickML</p>
+            <p className="text-[10px] text-steel">
+              {language === 'EN' ? 'Connected to local SQL Gateway & Catalyst QuickML' : 'ಸ್ಥಳೀಯ SQL ಗೇಟ್‌ವೇ ಮತ್ತು ಕ್ಯಾಟಲಿಸ್ಟ್ ಕ್ವಿಕ್‌ಎಂಎಲ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗಿದೆ'}
+            </p>
           </div>
         </div>
 
-        {/* Translation Toggle */}
-        <button
-          onClick={() => setLanguage(language === 'EN' ? 'KN' : 'EN')}
-          className="flex items-center gap-1 px-3 py-1.5 bg-surface-soft border border-hairline-soft rounded-full text-[10px] font-bold text-ink hover:bg-hairline-soft cursor-pointer transition"
+        {/* Active Language Badge */}
+        <div
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-surface-soft border border-hairline-soft rounded-full text-[10px] font-bold text-ink select-none"
         >
           <Globe className="w-3.5 h-3.5 text-stone" />
-          <span>{language === 'EN' ? 'English' : 'ಕನ್ನಡ (Kannada)'}</span>
-        </button>
+          <span>{language === 'EN' ? 'English' : 'ಕನ್ನಡ'}</span>
+        </div>
       </div>
 
       {/* Messages Feed */}
@@ -314,7 +355,7 @@ export default function AssistantChat() {
                   {msg.sources && msg.sources.length > 0 && (
                     <div className="flex flex-wrap gap-1.5 items-center">
                       <span className="text-[9px] font-bold text-stone flex items-center gap-0.5">
-                        <Link2 className="w-3 h-3" /> Citations:
+                        <Link2 className="w-3 h-3" /> {language === 'EN' ? 'Citations:' : 'ಉಲ್ಲೇಖಗಳು:'}
                       </span>
                       {msg.sources.map((srcId) => (
                         <a
@@ -338,7 +379,9 @@ export default function AssistantChat() {
       {/* Suggested prompts list */}
       {messages.length === 1 && (
         <div className="mb-4">
-          <span className="text-[10px] font-bold text-stone uppercase tracking-wider block mb-2">Suggested Investigations:</span>
+          <span className="text-[10px] font-bold text-stone uppercase tracking-wider block mb-2">
+            {language === 'EN' ? 'Suggested Investigations:' : 'ಸೂಚಿಸಲಾದ ತನಿಖೆಗಳು:'}
+          </span>
           <div className="flex flex-wrap gap-2">
             {suggestedPrompts.map((p, i) => (
               <button
@@ -377,7 +420,9 @@ export default function AssistantChat() {
             name="chat-query"
             autoComplete="off"
             aria-label="AI Assistant input field"
-            placeholder={isRecording ? "Listening under voice mode…" : "Query copilot assistant…"}
+            placeholder={isRecording 
+              ? (language === 'EN' ? "Listening under voice mode…" : "ಧ್ವನಿ ಮೋಡ್ ಅಡಿಯಲ್ಲಿ ಆಲಿಸಲಾಗುತ್ತಿದೆ...") 
+              : (language === 'EN' ? "Query copilot assistant…" : "ಸಹಾಯಕನಿಗೆ ಪ್ರಶ್ನೆಯನ್ನು ಕೇಳಿ...")}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             disabled={isRecording}

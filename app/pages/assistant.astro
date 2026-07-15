@@ -4,7 +4,7 @@ import AssistantChat from '../components/assistant/AssistantChat.tsx';
 ---
 
 <Layout title="AI Assistant" hideFooter={true}>
-  <div class="flex-1 h-[calc(100vh-64px)] flex flex-col overflow-hidden">
+  <div class="w-full h-[calc(100vh-64px)] max-h-[calc(100vh-64px)] flex flex-col overflow-hidden">
     <AssistantChat client:load />
   </div>
 </Layout>

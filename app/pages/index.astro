@@ -12,38 +12,61 @@ import {
     <div class="flex items-center gap-3">
       <img src="/karnataka_emblem.png" alt="Karnataka Coat of Arms" class="w-10 h-10 object-contain" width="40" height="40" />
       <div class="flex flex-col text-left border-l border-gov-border pl-3">
-        <span class="text-[9px] font-sans font-semibold tracking-wider text-slate-500 uppercase">Government of Karnataka</span>
-        <span class="text-[9px] font-sans font-semibold tracking-wider text-slate-500 uppercase leading-none">Karnataka State Police</span>
+        <span class="text-[9px] font-sans font-semibold tracking-wider text-slate-500 uppercase">
+          <span class="lang-en">Government of Karnataka</span>
+          <span class="lang-kn">ಕರ್ನಾಟಕ ಸರ್ಕಾರ</span>
+        </span>
+        <span class="text-[9px] font-sans font-semibold tracking-wider text-slate-500 uppercase leading-none">
+          <span class="lang-en">Karnataka State Police</span>
+          <span class="lang-kn">ಕರ್ನಾಟಕ ರಾಜ್ಯ ಪೊಲೀಸ್</span>
+        </span>
         <span class="font-display font-semibold text-xs text-gov-navy mt-1 tracking-tight">KSP-ConAI</span>
       </div>
     </div>
 
     {/* Center Navigation Links */}
     <nav class="hidden lg:flex items-center gap-6 font-display font-medium text-xs text-slate-600">
-      <a href="#about" class="hover:text-gov-blue focus-visible:ring-2 focus-visible:ring-gov-blue focus-visible:outline-none rounded-sm transition">Home</a>
-      <a href="#about" class="hover:text-gov-blue focus-visible:ring-2 focus-visible:ring-gov-blue focus-visible:outline-none rounded-sm transition">About</a>
-      <a href="#capabilities" class="hover:text-gov-blue focus-visible:ring-2 focus-visible:ring-gov-blue focus-visible:outline-none rounded-sm transition">Capabilities</a>
-      <a href="#workflow" class="hover:text-gov-blue focus-visible:ring-2 focus-visible:ring-gov-blue focus-visible:outline-none rounded-sm transition">Workflow</a>
-      <a href="#faq" class="hover:text-gov-blue focus-visible:ring-2 focus-visible:ring-gov-blue focus-visible:outline-none rounded-sm transition">FAQ</a>
+      <a href="#about" class="hover:text-gov-blue focus-visible:ring-2 focus-visible:ring-gov-blue focus-visible:outline-none rounded-sm transition">
+        <span class="lang-en">Home</span>
+        <span class="lang-kn">ಮುಖಪುಟ</span>
+      </a>
+      <a href="#about" class="hover:text-gov-blue focus-visible:ring-2 focus-visible:ring-gov-blue focus-visible:outline-none rounded-sm transition">
+        <span class="lang-en">About</span>
+        <span class="lang-kn">ಬಗ್ಗೆ</span>
+      </a>
+      <a href="#capabilities" class="hover:text-gov-blue focus-visible:ring-2 focus-visible:ring-gov-blue focus-visible:outline-none rounded-sm transition">
+        <span class="lang-en">Capabilities</span>
+        <span class="lang-kn">ಸಾಮರ್ಥ್ಯಗಳು</span>
+      </a>
+      <a href="#workflow" class="hover:text-gov-blue focus-visible:ring-2 focus-visible:ring-gov-blue focus-visible:outline-none rounded-sm transition">
+        <span class="lang-en">Workflow</span>
+        <span class="lang-kn">ಕಾರ್ಯವಿಧಾನ</span>
+      </a>
+      <a href="#faq" class="hover:text-gov-blue focus-visible:ring-2 focus-visible:ring-gov-blue focus-visible:outline-none rounded-sm transition">
+        <span class="lang-en">FAQ</span>
+        <span class="lang-kn">ಪ್ರಶ್ನೆಗಳು</span>
+      </a>
     </nav>
 
     {/* Right side controls */}
     <div class="flex items-center gap-4">
-      {/* Language Switcher Mock */}
+      {/* Language Switcher Button */}
       <button 
         id="lang-toggle"
         class="flex items-center gap-1 px-3 py-1.5 bg-gov-bg border border-gov-border rounded-full text-[10px] font-display font-medium text-slate-700 hover:bg-slate-100 focus-visible:ring-2 focus-visible:ring-gov-blue focus-visible:outline-none transition cursor-pointer select-none"
         aria-label="Toggle language between English and Kannada"
       >
         <Globe className="w-3.5 h-3.5 text-slate-400" />
-        <span id="lang-label">English</span>
+        <span class="lang-en">English</span>
+        <span class="lang-kn">ಕನ್ನಡ</span>
       </button>
 
       <a 
         href="/login" 
         class="px-5 py-2 bg-gov-navy text-white hover:bg-gov-blue rounded-full text-xs font-display font-medium focus-visible:ring-2 focus-visible:ring-gov-blue focus-visible:outline-none transition select-none shadow-sm"
       >
-        Login
+        <span class="lang-en">Login</span>
+        <span class="lang-kn">ಲಾಗಿನ್</span>
       </a>
     </div>
   </header>
@@ -55,22 +78,26 @@ import {
     <section class="max-w-7xl mx-auto px-6 md:px-8 py-16 md:py-24 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
       <div class="lg:col-span-7 space-y-6">
         <span class="font-display font-semibold text-xs tracking-wider text-gov-red uppercase block">
-          Karnataka State Police — Official Release
+          <span class="lang-en">Karnataka State Police — Official Release</span>
+          <span class="lang-kn">ಕರ್ನಾಟಕ ರಾಜ್ಯ ಪೊಲೀಸ್ — ಅಧಿಕೃತ ಬಿಡುಗಡೆ</span>
         </span>
         <h1 class="text-3xl md:text-4xl lg:text-5xl font-display font-semibold text-gov-navy leading-[1.15] tracking-tight">
-          KSP-ConAI: <br/>
-          <span class="text-gov-blue">Intelligent Conversational Crime Intelligence Platform</span>
+          <span class="lang-en">KSP-ConAI: <br/><span class="text-gov-blue">Intelligent Conversational Crime Intelligence Platform</span></span>
+          <span class="lang-kn">KSP-ConAI: <br/><span class="text-gov-blue">ಅಪರಾಧ ಗುಪ್ತಚರ ಸಂಭಾಷಣಾ ವೇದಿಕೆ</span></span>
         </h1>
         <p class="text-xs md:text-sm text-slate-600 leading-relaxed max-w-xl">
-          An AI-powered investigation and crime analytics platform developed to assist investigators, analysts, supervisors, and policymakers in discovering criminal relationships, analyzing crime patterns, and generating evidence-backed investigative insights using natural language.
+          <span class="lang-en">An AI-powered investigation and crime analytics platform developed to assist investigators, analysts, supervisors, and policymakers in discovering criminal relationships, analyzing crime patterns, and generating evidence-backed investigative insights using natural language.</span>
+          <span class="lang-kn">ಅಪರಾಧ ತನಿಖೆ ಮತ್ತು ವಿಶ್ಲೇಷಣೆಗಾಗಿ ಅಭಿವೃದ್ಧಿಪಡಿಸಲಾದ ಕೃತಕ ಬುದ್ಧಿಮತ್ತೆ ಆಧಾರಿತ ವೇದಿಕೆ. ಇದು ತನಿಖಾಧಿಕಾರಿಗಳಿಗೆ ಅಪರಾಧ ಜಾಲಗಳನ್ನು ಗುರುತಿಸಲು ಮತ್ತು ಸಂಶೋಧನಾ ಮಾಹಿತಿಗಳನ್ನು ಪಡೆಯಲು ಸಹಾಯ ಮಾಡುತ್ತದೆ.</span>
         </p>
         
         <div class="flex flex-wrap gap-3.5 pt-2">
           <a href="/login" class="px-6 py-3 bg-gov-navy text-white hover:bg-gov-blue rounded-full text-xs font-display font-medium focus-visible:ring-2 focus-visible:ring-gov-blue focus-visible:outline-none transition shadow-sm select-none">
-            Launch Platform
+            <span class="lang-en">Launch Platform</span>
+            <span class="lang-kn">ವೇದಿಕೆ ಪ್ರವೇಶಿಸಿ</span>
           </a>
           <a href="#capabilities" class="px-6 py-3 bg-white border border-gov-border text-slate-700 hover:bg-slate-50 rounded-full text-xs font-display font-medium focus-visible:ring-2 focus-visible:ring-gov-blue focus-visible:outline-none transition select-none">
-            Explore Features
+            <span class="lang-en">Explore Features</span>
+            <span class="lang-kn">ವೈಶಿಷ್ಟ್ಯಗಳನ್ನು ಅನ್ವೇಷಿಸಿ</span>
           </a>
         </div>
       </div>
@@ -154,23 +181,33 @@ import {
     <section id="about" class="border-t border-gov-border bg-white py-16">
       <div class="max-w-7xl mx-auto px-6 md:px-8 space-y-12">
         <div class="max-w-3xl mx-auto text-center space-y-4">
-          <span class="text-[9px] font-display font-bold text-gov-red uppercase tracking-widest block">Strategic Protocol</span>
-          <h2 class="text-2xl font-display font-semibold text-gov-navy leading-tight">Empowering Law Enforcement via Responsible Intelligence</h2>
+          <span class="text-[9px] font-display font-bold text-gov-red uppercase tracking-widest block">
+            <span class="lang-en">Strategic Protocol</span>
+            <span class="lang-kn">ಕಾರ್ಯತಂತ್ರದ ಶಿಷ್ಟಾಚಾರ</span>
+          </span>
+          <h2 class="text-2xl font-display font-semibold text-gov-navy leading-tight">
+            <span class="lang-en">Empowering Law Enforcement via Responsible Intelligence</span>
+            <span class="lang-kn">ಜವಾಬ್ದಾರಿಯುತ ತಂತ್ರಜ್ಞಾನದಿಂದ ಕಾನೂನು ಜಾರಿ ಸಬಲೀಕರಣ</span>
+          </h2>
           <p class="text-xs md:text-sm text-slate-600 leading-relaxed italic max-w-2xl mx-auto">
-            "Providing explainable analytics, relation mapping, and natural language query capability to support state investigators, accelerate prosecution parameters, and ensure complete digital auditing compliance."
+            <span class="lang-en">"Providing explainable analytics, relation mapping, and natural language query capability to support state investigators, accelerate prosecution parameters, and ensure complete digital auditing compliance."</span>
+            <span class="lang-kn">"ತನಿಖಾಧಿಕಾರಿಗಳಿಗೆ ಸಹಾಯ ಮಾಡಲು, ತನಿಖಾ ಪ್ರಕ್ರಿಯೆಗಳನ್ನು ವೇಗಗೊಳಿಸಲು ಮತ್ತು ಡಿಜಿಟಲ್ ಆಡಿಟಿಂಗ್ ಅನುಸರಣೆಯನ್ನು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಲು ಸಂಬಂಧ ನಕ್ಷೆಗಳು ಮತ್ತು ಪ್ರಶ್ನೆ ಸಾಮರ್ಥ್ಯ ಒದಗಿಸುವುದು."</span>
           </p>
         </div>
 
         <div class="grid grid-cols-2 md:grid-cols-4 gap-6 pt-4 max-w-5xl mx-auto text-center">
           {[
-            { value: '45,000+', label: 'FIR Case Files Ingested' },
-            { value: '25,000+', label: 'Criminal Nodes Linked' },
-            { value: '100%', label: 'Grounded Query Accountability' },
-            { value: '24/7', label: 'Tactical On-demand Access' }
+            { value: '45,000+', labelEn: 'FIR Case Files Ingested', labelKn: 'ದಾಖಲಿಸಲಾದ ಒಟ್ಟು ಎಫ್‌ಐಆರ್‌ಗಳು' },
+            { value: '25,000+', labelEn: 'Criminal Nodes Linked', labelKn: 'ಸಂಪರ್ಕಿತ ಶಂಕಿತ ವ್ಯಕ್ತಿಗಳು' },
+            { value: '100%', labelEn: 'Grounded Query Accountability', labelKn: 'ನಿಖರವಾದ ಪ್ರಶ್ನೆ ಹೊಣೆಗಾರಿಕೆ' },
+            { value: '24/7', labelEn: 'Tactical On-demand Access', labelKn: 'ನಿರಂತರ ಲಭ್ಯತೆ' }
           ].map((stat) => (
             <div class="space-y-1.5 p-4 border border-gov-border bg-gov-bg/30 rounded-xl">
               <div class="text-xl md:text-2xl font-display font-bold text-gov-blue tabular-nums">{stat.value}</div>
-              <div class="text-[9px] font-sans font-bold text-slate-500 uppercase tracking-wider leading-tight">{stat.label}</div>
+              <div class="text-[9px] font-sans font-bold text-slate-500 uppercase tracking-wider leading-tight">
+                <span class="lang-en">{stat.labelEn}</span>
+                <span class="lang-kn">{stat.labelKn}</span>
+              </div>
             </div>
           ))}
         </div>
@@ -181,9 +218,18 @@ import {
     <section id="capabilities" class="border-t border-gov-border py-16 md:py-24">
       <div class="max-w-7xl mx-auto px-6 md:px-8 space-y-12">
         <div class="text-center space-y-2 max-w-xl mx-auto">
-          <span class="text-[9px] font-display font-bold text-gov-blue uppercase tracking-widest block">System Capabilities</span>
-          <h2 class="text-xl md:text-2xl font-display font-semibold text-gov-navy">Consolidated Analytical Workspace</h2>
-          <p class="text-xs text-slate-500 leading-relaxed">Discover relations, search registers, and generate audit-grounded briefs from a single interface.</p>
+          <span class="text-[9px] font-display font-bold text-gov-blue uppercase tracking-widest block">
+            <span class="lang-en">System Capabilities</span>
+            <span class="lang-kn">ವ್ಯವಸ್ಥೆಯ ಸಾಮರ್ಥ್ಯಗಳು</span>
+          </span>
+          <h2 class="text-xl md:text-2xl font-display font-semibold text-gov-navy">
+            <span class="lang-en">Consolidated Analytical Workspace</span>
+            <span class="lang-kn">ಕ್ರೋಢೀಕೃತ ವಿಶ್ಲೇಷಣಾತ್ಮಕ ಕಾರ್ಯಕ್ಷೇತ್ರ</span>
+          </h2>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            <span class="lang-en">Discover relations, search registers, and generate audit-grounded briefs from a single interface.</span>
+            <span class="lang-kn">ಒಂದೇ ಇಂಟರ್ಫೇಸ್‌ನಿಂದ ಸಂಬಂಧಗಳನ್ನು ಪತ್ತೆ ಮಾಡಿ, ರೆಜಿಸ್ಟರ್‌ಗಳನ್ನು ಹುಡುಕಿ ಮತ್ತು ದೃಢೀಕೃತ ವರದಿಗಳನ್ನು ರಚಿಸಿ.</span>
+          </p>
         </div>
 
         {/* Bento Grid Layout */}
@@ -194,10 +240,14 @@ import {
             <div class="space-y-2">
               <div class="flex items-center gap-2 text-gov-blue">
                 <Bot className="w-5 h-5" />
-                <h3 class="text-xs font-display font-bold text-gov-navy uppercase tracking-wider">Conversational Crime Assistant</h3>
+                <h3 class="text-xs font-display font-bold text-gov-navy uppercase tracking-wider">
+                  <span class="lang-en">Conversational Crime Assistant</span>
+                  <span class="lang-kn">ಅಪರಾಧ ಗುಪ್ತಚರ ಸಂಭಾಷಣಾ ಸಹಾಯಕ</span>
+                </h3>
               </div>
               <p class="text-xs text-slate-600 leading-relaxed">
-                Query the police database in plain English or Kannada. Retrieve statistical breakdowns, offender registers, and active trends using Retrieval-Augmented Generation (RAG) backed by explicit database records.
+                <span class="lang-en">Query the police database in plain English or Kannada. Retrieve statistical breakdowns, offender registers, and active trends using Retrieval-Augmented Generation (RAG) backed by explicit database records.</span>
+                <span class="lang-kn">ಪೊಲೀಸ್ ಡೇಟಾಬೇಸ್ ಅನ್ನು ಸರಳ ಇಂಗ್ಲಿಷ್ ಅಥವಾ ಕನ್ನಡದಲ್ಲಿ ಪ್ರಶ್ನಿಸಿ. ಅಧಿಕೃತ ಡೇಟಾಬೇಸ್ ದಾಖಲೆಗಳಿಂದ ಬೆಂಬಲಿತವಾಗಿರುವ ಅಂಕಿಅಂಶಗಳ ವಿವರಗಳನ್ನು, ಅಪರಾಧಿಗಳ ರಿಜಿಸ್ಟರ್‌ಗಳನ್ನು ಮತ್ತು ಪ್ರಚಲಿತ ಪ್ರವೃತ್ತಿಗಳನ್ನು ಪಡೆಯಿರಿ.</span>
               </p>
             </div>
             <div class="pt-4 border-t border-gov-border flex gap-4 text-[9px] text-slate-400 font-mono">
@@ -212,10 +262,14 @@ import {
             <div class="space-y-2">
               <div class="flex items-center gap-2 text-gov-red">
                 <Network className="w-5 h-5" />
-                <h3 class="text-xs font-display font-bold text-gov-navy uppercase tracking-wider">Association Mapping</h3>
+                <h3 class="text-xs font-display font-bold text-gov-navy uppercase tracking-wider">
+                  <span class="lang-en">Association Mapping</span>
+                  <span class="lang-kn">ಸಂಬಂಧ ನಕ್ಷೆಗಳ ಪತ್ತೆ</span>
+                </h3>
               </div>
               <p class="text-xs text-slate-600 leading-relaxed">
-                Discover association pathways between co-accused entities. Inspect visual maps of recidivism connections across municipal police stations.
+                <span class="lang-en">Discover association pathways between co-accused entities. Inspect visual maps of recidivism connections across municipal police stations.</span>
+                <span class="lang-kn">ಸಹ-ಆರೋಪಿಗಳ ನಡುವಿನ ಸಂಬಂಧದ ಕೊಂಡಿಗಳನ್ನು ಪತ್ತೆ ಹಚ್ಚಿ. ವಿವಿಧ ಪೊಲೀಸ್ ಠಾಣೆಗಳ ವ್ಯಾಪ್ತಿಯಲ್ಲಿ ಅಪರಾಧ ಮರುಕಳಿಸುವಿಕೆಯ ಸಂಪರ್ಕಗಳ ದೃಶ್ಯ ನಕ್ಷೆಗಳನ್ನು ವೀಕ್ಷಿಸಿ.</span>
               </p>
             </div>
             <div class="pt-4 border-t border-gov-border text-[9px] text-slate-400 font-mono">
@@ -228,10 +282,14 @@ import {
             <div class="space-y-2">
               <div class="flex items-center gap-2 text-gov-blue">
                 <Activity className="w-5 h-5" />
-                <h3 class="text-xs font-display font-bold text-gov-navy uppercase tracking-wider">Spatio-Temporal Trends</h3>
+                <h3 class="text-xs font-display font-bold text-gov-navy uppercase tracking-wider">
+                  <span class="lang-en">Spatio-Temporal Trends</span>
+                  <span class="lang-kn">ಭೂ-ಸ್ಥಳೀಯ ಪ್ರವೃತ್ತಿಗಳು</span>
+                </h3>
               </div>
               <p class="text-xs text-slate-600 leading-relaxed">
-                Investigate active hot-spots and track regional distributions. Filter by crime head categories, registration volumes, and disposal rates.
+                <span class="lang-en">Investigate active hot-spots and track regional distributions. Filter by crime head categories, registration volumes, and disposal rates.</span>
+                <span class="lang-kn">ಸಕ್ರಿಯ ಹಾಟ್‌ಸ್ಪಾಟ್‌ಗಳನ್ನು ತನಿಖೆ ಮಾಡಿ ಮತ್ತು ಪ್ರಾದೇಶಿಕ ವಿತರಣೆಯನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ. ಅಪರಾಧ ವರ್ಗಗಳು ಮತ್ತು ಪ್ರಕರಣಗಳ ಇತ್ಯರ್ಥ ದರಗಳ ಮೂಲಕ ಫಿಲ್ಟರ್ ಮಾಡಿ.</span>
               </p>
             </div>
             <div class="pt-4 border-t border-gov-border text-[9px] text-slate-400 font-mono">
@@ -244,10 +302,14 @@ import {
             <div class="space-y-2">
               <div class="flex items-center gap-2 text-gov-navy">
                 <FileText className="w-5 h-5" />
-                <h3 class="text-xs font-display font-bold text-gov-navy uppercase tracking-wider">Explainable Evidence Briefs</h3>
+                <h3 class="text-xs font-display font-bold text-gov-navy uppercase tracking-wider">
+                  <span class="lang-en">Explainable Evidence Briefs</span>
+                  <span class="lang-kn">ವಿವರಣಾತ್ಮಕ ಸಾಕ್ಷ್ಯ ವರದಿಗಳು</span>
+                </h3>
               </div>
               <p class="text-xs text-slate-600 leading-relaxed">
-                Compile investigation briefs instantly. KSP-ConAI parses raw timelines, registers missing milestones, and exports formatted PDF outputs using Catalyst SmartBrowz functions.
+                <span class="lang-en">Compile investigation briefs instantly. KSP-ConAI parses raw timelines, registers missing milestones, and exports formatted PDF outputs using Catalyst SmartBrowz functions.</span>
+                <span class="lang-kn">ತನಿಖಾ ವರದಿಗಳನ್ನು ಕ್ಷಣಾರ್ಧದಲ್ಲಿ ಕ್ರೋಢೀಕರಿಸಿ. KSP-ConAI ಕಚ್ಚಾ ಟೈಮ್‌ಲೈನ್‌ಗಳನ್ನು ಪಾರ್ಸ್ ಮಾಡುತ್ತದೆ ಮತ್ತು ಸ್ಮಾರ್ಟ್ ಬ್ರೌಸ್ ಕಾರ್ಯಗಳನ್ನು ಬಳಸಿಕೊಂಡು ಪಿಡಿಎಫ್ ರೂಪದಲ್ಲಿ ರಫ್ತು ಮಾಡುತ್ತದೆ.</span>
               </p>
             </div>
             <div class="pt-4 border-t border-gov-border flex gap-4 text-[9px] text-slate-400 font-mono">
@@ -265,9 +327,18 @@ import {
     <section id="workflow" class="border-t border-gov-border bg-white py-16 md:py-24">
       <div class="max-w-7xl mx-auto px-6 md:px-8 space-y-12">
         <div class="text-center space-y-2 max-w-xl mx-auto">
-          <span class="text-[9px] font-display font-bold text-gov-red uppercase tracking-widest block">Pipeline Execution</span>
-          <h2 class="text-xl md:text-2xl font-display font-semibold text-gov-navy">Grounded Investigation Timeline</h2>
-          <p class="text-xs text-slate-500 leading-relaxed">The secure processing pipeline from FIR ingestion to actionable supervisor analytics.</p>
+          <span class="text-[9px] font-display font-bold text-gov-red uppercase tracking-widest block">
+            <span class="lang-en">Pipeline Execution</span>
+            <span class="lang-kn">ಪೈಪ್‌ಲೈನ್ ಕಾರ್ಯಗತಗೊಳಿಸುವಿಕೆ</span>
+          </span>
+          <h2 class="text-xl md:text-2xl font-display font-semibold text-gov-navy">
+            <span class="lang-en">Grounded Investigation Timeline</span>
+            <span class="lang-kn">ದೃಢೀಕೃತ ತನಿಖಾ ಪ್ರಕ್ರಿಯೆ</span>
+          </h2>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            <span class="lang-en">The secure processing pipeline from FIR ingestion to actionable supervisor analytics.</span>
+            <span class="lang-kn">ಎಫ್‌ಐಆರ್ ದಾಖಲೀಕರಣದಿಂದ ಮೇಲ್ವಿಚಾರಕರ ವಿಶ್ಲೇಷಣೆಯವರೆಗಿನ ಸುರಕ್ಷಿತ ಸಂಸ್ಕರಣಾ ಪೈಪ್‌ಲೈನ್.</span>
+          </p>
         </div>
 
         {/* Chronological horizontal timeline */}
@@ -277,17 +348,23 @@ import {
             <div class="hidden md:block absolute top-6 left-1/8 right-1/8 h-0.5 bg-slate-200 z-0"></div>
 
             {[
-              { title: 'Ingest Records', desc: 'Securely sync daily FIR records to the Zoho Catalyst relational Data Store.' },
-              { title: 'Vector & Indexing', desc: 'Zia Services semantic engine indexes names, offenses, and crime parameters.' },
-              { title: 'Graph Computation', desc: 'Analyze relationship links to identify offender associations.' },
-              { title: 'Resolve Insights', desc: 'Generate grounded summaries, execute audit logging, and export briefs.' }
+              { titleEn: 'Ingest Records', titleKn: 'ದಾಖಲೆಗಳ ಸೇರ್ಪಡೆ', descEn: 'Securely sync daily FIR records to the Zoho Catalyst relational Data Store.', descKn: 'ದೈನಂದಿನ ಎಫ್‌ಐಆರ್ ದಾಖಲೆಗಳನ್ನು ಜೋಹೋ ಕ್ಯಾಟಲಿಸ್ಟ್ ಡೇಟಾ ಸ್ಟೋರ್‌ಗೆ ಸುರಕ್ಷಿತವಾಗಿ ಸಿಂಕ್ ಮಾಡಿ.' },
+              { titleEn: 'Vector & Indexing', titleKn: 'ವೆಕ್ಟರ್ ಮತ್ತು ಇಂಡೆಕ್ಸಿಂಗ್', descEn: 'Zia Services semantic engine indexes names, offenses, and crime parameters.', descKn: 'ಜಿಯಾ ಸೇವೆಗಳ ಸೆಮ್ಯಾಂಟಿಕ್ ಎಂಜಿನ್ ಹೆಸರುಗಳು ಮತ್ತು ಅಪರಾಧ ನಿಯತಾಂಕಗಳನ್ನು ಇಂಡೆಕ್ಸ್ ಮಾಡುತ್ತದೆ.' },
+              { titleEn: 'Graph Computation', titleKn: 'ಗ್ರಾಫ್ ಕಂಪ್ಯೂಟೇಶನ್', descEn: 'Analyze relationship links to identify offender associations.', descKn: 'ಅಪರಾಧಿಗಳ ಒಡನಾಟವನ್ನು ಗುರುತಿಸಲು ಸಂಬಂಧದ ಕೊಂಡಿಗಳನ್ನು ವಿಶ್ಲೇಷಿಸಿ.' },
+              { titleEn: 'Resolve Insights', titleKn: 'ಒಳನೋಟಗಳ ಪರಿಹಾರ', descEn: 'Generate grounded summaries, execute audit logging, and export briefs.', descKn: 'ವಿವರವಾದ ಸಾರಾಂಶಗಳನ್ನು ರಚಿಸಿ, ಆಡಿಟ್ ಲಾಗಿಂಗ್ ಮಾಡಿ ಮತ್ತು ವರದಿಗಳನ್ನು ರಫ್ತು ಮಾಡಿ.' }
             ].map((step, idx) => (
               <div class="relative flex flex-col items-center text-center space-y-3 z-10">
                 <div class="w-12 h-12 rounded-full bg-gov-bg border-2 border-gov-blue text-gov-blue font-display font-bold text-sm flex items-center justify-center shadow-sm">
                   {idx + 1}
                 </div>
-                <h3 class="text-xs font-display font-bold text-gov-navy uppercase tracking-wider">{step.title}</h3>
-                <p class="text-[11px] text-slate-500 leading-relaxed max-w-[200px]">{step.desc}</p>
+                <h3 class="text-xs font-display font-bold text-gov-navy uppercase tracking-wider">
+                  <span class="lang-en">{step.titleEn}</span>
+                  <span class="lang-kn">{step.titleKn}</span>
+                </h3>
+                <p class="text-[11px] text-slate-500 leading-relaxed max-w-[200px]">
+                  <span class="lang-en">{step.descEn}</span>
+                  <span class="lang-kn">{step.descKn}</span>
+                </p>
               </div>
             ))}
           </div>
@@ -299,26 +376,41 @@ import {
     <section class="border-t border-gov-border py-16 md:py-24">
       <div class="max-w-7xl mx-auto px-6 md:px-8 space-y-12">
         <div class="text-center space-y-2 max-w-xl mx-auto">
-          <span class="text-[9px] font-display font-bold text-gov-blue uppercase tracking-widest block">System Integrity</span>
-          <h2 class="text-xl md:text-2xl font-display font-semibold text-gov-navy">Security & Regulatory Compliance</h2>
-          <p class="text-xs text-slate-500 leading-relaxed">KSP-ConAI ensures strict operational boundaries aligned with state governance standards.</p>
+          <span class="text-[9px] font-display font-bold text-gov-blue uppercase tracking-widest block">
+            <span class="lang-en">System Integrity</span>
+            <span class="lang-kn">ವ್ಯವಸ್ಥೆಯ ಸಮಗ್ರತೆ</span>
+          </span>
+          <h2 class="text-xl md:text-2xl font-display font-semibold text-gov-navy">
+            <span class="lang-en">Security & Regulatory Compliance</span>
+            <span class="lang-kn">ಭದ್ರತೆ ಮತ್ತು ನಿಯಂತ್ರಕ ಅನುಸರಣೆ</span>
+          </h2>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            <span class="lang-en">KSP-ConAI ensures strict operational boundaries aligned with state governance standards.</span>
+            <span class="lang-kn">KSP-ConAI ರಾಜ್ಯ ಆಡಳಿತದ ಮಾನದಂಡಗಳೊಂದಿಗೆ ಹೊಂದಿಕೆಯಾಗುವ ಕಟ್ಟುನಿಟ್ಟಾದ ಕಾರ್ಯಾಚರಣೆಯ ಗಡಿಗಳನ್ನು ಖಚಿತಪಡಿಸುತ್ತದೆ.</span>
+          </p>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
           {[
-            { title: 'Role-Based Authorization', desc: 'Restricted dashboard access. Investigators edit cases, analysts view metrics, and supervisors authorize records.' },
-            { title: 'Secure Session Logs', desc: 'Every SQL query generated by the AI model is logged alongside user identity metadata.' },
-            { title: 'Network Encryption', desc: 'All data operations leverage encrypted transport tunnels with state server standards.' },
-            { title: 'Data Grounding Validation', desc: 'Zero hallucination architecture ensures queries fallback immediately if database links are missing.' },
-            { title: 'Confidentiality Audits', desc: 'Compliant with national guidelines governing sensitive public information storage.' },
-            { title: 'Bilingual Interface', desc: 'Bilingual system architecture natively rendering reports in English and Kannada.' }
+            { titleEn: 'Role-Based Authorization', titleKn: 'ಪಾತ್ರ-ಆಧಾರಿತ ದೃಢೀಕರಣ', descEn: 'Restricted dashboard access. Investigators edit cases, analysts view metrics, and supervisors authorize records.', descKn: 'ನಿಯಂತ್ರಿತ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್ ಪ್ರವೇಶ. ತನಿಖಾಧಿಕಾರಿಗಳು ಪ್ರಕರಣಗಳನ್ನು ಸಂಪಾದಿಸುತ್ತಾರೆ ಮತ್ತು ಮೇಲ್ವಿಚಾರಕರು ದಾಖಲೆಗಳನ್ನು ಅಧಿಕೃತಗೊಳಿಸುತ್ತಾರೆ.' },
+            { titleEn: 'Secure Session Logs', titleKn: 'ಸುರಕ್ಷಿತ ಸೆಷನ್ ಲಾಗ್‌ಗಳು', descEn: 'Every SQL query generated by the AI model is logged alongside user identity metadata.', descKn: 'AI ಮಾದರಿಯಿಂದ ರಚಿಸಲಾದ ಪ್ರತಿಯೊಂದು SQL ಪ್ರಶ್ನೆಯನ್ನು ಬಳಕೆದಾರರ ಗುರುತಿನ ಮೆಟಾಡೇಟಾದೊಂದಿಗೆ ಲಾಗ್ ಮಾಡಲಾಗುತ್ತದೆ.' },
+            { titleEn: 'Network Encryption', titleKn: 'ನೆಟ್‌ವರ್ಕ್ ಎನ್‌ಕ್ರಿಪ್ಷನ್', descEn: 'All data operations leverage encrypted transport tunnels with state server standards.', descKn: 'ಎಲ್ಲಾ ಡೇಟಾ ಕಾರ್ಯಾಚರಣೆಗಳು ರಾಜ್ಯ ಸರ್ವರ್ ಮಾನದಂಡಗಳೊಂದಿಗೆ ಎನ್‌ಕ್ರಿಪ್ಟ್ ಮಾಡಲಾದ ಸಾರಿಗೆ ಸುರಂಗಗಳನ್ನು ಬಳಸಿಕೊಳ್ಳುತ್ತವೆ.' },
+            { titleEn: 'Data Grounding Validation', titleKn: 'ಡೇಟಾ ಗ್ರೌಂಡಿಂಗ್ ಸಿಂಧುತ್ವ', descEn: 'Zero hallucination architecture ensures queries fallback immediately if database links are missing.', descKn: 'ಡೇಟಾಬೇಸ್ ಕೊಂಡಿಗಳು ಕಾಣೆಯಾಗಿದ್ದರೆ ತಕ್ಷಣವೇ ಪ್ರಶ್ನೆಗಳನ್ನು ತಡೆಹಿಡಿಯುವ ಶೂನ್ಯ ಭ್ರಮೆ ವಿನ್ಯಾಸ.' },
+            { titleEn: 'Confidentiality Audits', titleKn: 'ಗೌಪ್ಯತೆ ಆಡಿಟ್‌ಗಳು', descEn: 'Compliant with national guidelines governing sensitive public information storage.', descKn: 'ಸೂಕ್ಷ್ಮ ಸಾರ್ವಜನಿಕ ಮಾಹಿತಿ ಸಂಗ್ರಹಣೆಯನ್ನು ನಿಯಂತ್ರಿಸುವ ರಾಷ್ಟ್ರೀಯ ಮಾರ್ಗಸೂಚಿಗಳಿಗೆ ಅನುಗುಣವಾಗಿದೆ.' },
+            { titleEn: 'Bilingual Interface', titleKn: 'ದ್ವಿಭಾಷಾ ಇಂಟರ್ಫೇಸ್', descEn: 'Bilingual system architecture natively rendering reports in English and Kannada.', descKn: 'ಇಂಗ್ಲಿಷ್ ಮತ್ತು ಕನ್ನಡದಲ್ಲಿ ವರದಿಗಳನ್ನು ಸ್ಥಳೀಯವಾಗಿ ನಿರೂಪಿಸುವ ದ್ವಿಭಾಷಾ ವ್ಯವಸ್ಥೆ.' }
           ].map((item) => (
             <div class="bg-white border border-gov-border p-5 rounded-xl space-y-2.5">
               <div class="flex items-center gap-2 text-gov-red">
                 <Lock className="w-4 h-4" />
-                <h3 class="text-xs font-display font-bold text-gov-navy uppercase tracking-wider">{item.title}</h3>
+                <h3 class="text-xs font-display font-bold text-gov-navy uppercase tracking-wider">
+                  <span class="lang-en">{item.titleEn}</span>
+                  <span class="lang-kn">{item.titleKn}</span>
+                </h3>
               </div>
-              <p class="text-xs text-slate-500 leading-relaxed">{item.desc}</p>
+              <p class="text-xs text-slate-500 leading-relaxed">
+                <span class="lang-en">{item.descEn}</span>
+                <span class="lang-kn">{item.descKn}</span>
+              </p>
             </div>
           ))}
         </div>
@@ -329,24 +421,34 @@ import {
     <section id="faq" class="border-t border-gov-border bg-white py-16 md:py-24">
       <div class="max-w-4xl mx-auto px-6 space-y-10">
         <div class="text-center space-y-2">
-          <span class="text-[9px] font-display font-bold text-gov-blue uppercase tracking-widest block">Onboarding Support</span>
-          <h2 class="text-xl md:text-2xl font-display font-semibold text-gov-navy">Frequently Asked Questions</h2>
+          <span class="text-[9px] font-display font-bold text-gov-blue uppercase tracking-widest block">
+            <span class="lang-en">Onboarding Support</span>
+            <span class="lang-kn">ಆನ್‌ಬೋರ್ಡಿಂಗ್ ಬೆಂಬಲ</span>
+          </span>
+          <h2 class="text-xl md:text-2xl font-display font-semibold text-gov-navy">
+            <span class="lang-en">Frequently Asked Questions</span>
+            <span class="lang-kn">ಪದೇ ಪದೇ ಕೇಳಲಾಗುವ ಪ್ರಶ್ನೆಗಳು</span>
+          </h2>
         </div>
 
         <div class="space-y-4">
           {[
-            { q: 'What is KSP-ConAI?', a: 'KSP-ConAI is a conversational crime intelligence and analytics platform developed for the Karnataka State Police to assist in case analysis.' },
-            { q: 'Who can access the portal?', a: 'Authorized law enforcement officers, investigators, supervisors, and policymakers with approved Catalyst credentials.' },
-            { q: 'How are AI answers verified?', a: 'KSP-ConAI renders active SQL logs alongside every summary, allowing investigators to audit the database records retrieved.' },
-            { q: 'Is there a bilingual toggle?', a: 'Yes. Toggle language switchers natively render dashboard templates, search controls, and generated reports in English and Kannada.' }
+            { qEn: 'What is KSP-ConAI?', qKn: 'KSP-ConAI ಎಂದರೇನು?', aEn: 'KSP-ConAI is a conversational crime intelligence and analytics platform developed for the Karnataka State Police to assist in case analysis.', aKn: 'KSP-ConAI ಎಂಬುದು ಕರ್ನಾಟಕ ರಾಜ್ಯ ಪೊಲೀಸರಿಗಾಗಿ ಪ್ರಕರಣಗಳ ವಿಶ್ಲೇಷಣೆಯಲ್ಲಿ ಸಹಾಯ ಮಾಡಲು ಅಭಿವೃದ್ಧಿಪಡಿಸಲಾದ ಅಪರಾಧ ಗುಪ್ತಚರ ಮತ್ತು ವಿಶ್ಲೇಷಣಾತ್ಮಕ ಸಂಭಾಷಣಾ ವೇದಿಕೆಯಾಗಿದೆ.' },
+            { qEn: 'Who can access the portal?', qKn: 'ಈ ಪೋರ್ಟಲ್ ಅನ್ನು ಯಾರು ಪ್ರವೇಶಿಸಬಹುದು?', aEn: 'Authorized law enforcement officers, investigators, supervisors, and policymakers with approved Catalyst credentials.', aKn: 'ಅಧಿಕೃತ ಕಾನೂನು ಜಾರಿ ಅಧಿಕಾರಿಗಳು, ತನಿಖಾಧಿಕಾರಿಗಳು, ಮೇಲ್ವಿಚಾರಕರು ಮತ್ತು ನೀತಿ ನಿರೂಪಕರು ಮಾತ್ರ ಅನುಮೋದಿತ ರುಜುವಾತುಗಳೊಂದಿಗೆ ಪ್ರವೇಶಿಸಬಹುದು.' },
+            { qEn: 'How are AI answers verified?', qKn: 'AI ಉತ್ತರಗಳನ್ನು ಹೇಗೆ ಪರಿಶೀಲಿಸಲಾಗುತ್ತದೆ?', aEn: 'KSP-ConAI renders active SQL logs alongside every summary, allowing investigators to audit the database records retrieved.', aKn: 'KSP-ConAI ಪ್ರತಿ ಸಾರಾಂಶದ ಜೊತೆಗೆ ಸಕ್ರಿಯ SQL ಲಾಗ್‌ಗಳನ್ನು ಒದಗಿಸುತ್ತದೆ, ಇದರಿಂದ ತನಿಖಾಧಿಕಾರಿಗಳು ಮಾಹಿತಿಯನ್ನು ಪರಿಶೀಲಿಸಬಹುದು.' },
+            { qEn: 'Is there a bilingual toggle?', qKn: 'ದ್ವಿಭಾಷಾ ಆಯ್ಕೆ ಇದೆಯೇ?', aEn: 'Yes. Toggle language switchers natively render dashboard templates, search controls, and generated reports in English and Kannada.', aKn: 'ಹೌದು. ಭಾಷಾ ಸ್ವಿಚರ್‌ಗಳು ಡ್ಯಾಶ್‌ಬೋರ್ಡ್ ಟೆಂಪ್ಲೇಟ್‌ಗಳು, ಹುಡುಕಾಟ ನಿಯಂತ್ರಣಗಳು ಮತ್ತು ವರದಿಗಳನ್ನು ಇಂಗ್ಲಿಷ್ ಮತ್ತು ಕನ್ನಡದಲ್ಲಿ ತೋರಿಸುತ್ತವೆ.' }
           ].map((item) => (
             <details class="group bg-white border border-gov-border rounded-xl overflow-hidden transition">
               <summary class="px-5 py-4 text-xs font-display font-semibold text-gov-navy flex items-center justify-between cursor-pointer select-none">
-                <span>{item.q}</span>
+                <span>
+                  <span class="lang-en">{item.qEn}</span>
+                  <span class="lang-kn">{item.qKn}</span>
+                </span>
                 <span class="text-slate-400 group-open:rotate-180 transition">▼</span>
               </summary>
               <div class="px-5 pb-4 border-t border-gov-border pt-3 text-xs text-slate-500 leading-relaxed bg-gov-bg/30">
-                {item.a}
+                <span class="lang-en">{item.aEn}</span>
+                <span class="lang-kn">{item.aKn}</span>
               </div>
             </details>
           ))}
@@ -357,16 +459,24 @@ import {
     <!-- ================= 8. CALL TO ACTION ================= -->
     <section class="border-t border-gov-border py-16 bg-gov-bg/50">
       <div class="max-w-4xl mx-auto px-6 text-center space-y-6">
-        <span class="text-[9px] font-display font-bold text-gov-red uppercase tracking-widest block">Access Authorization</span>
-        <h2 class="text-xl md:text-2xl font-display font-semibold text-gov-navy leading-tight">Ready to begin an investigation?</h2>
+        <span class="text-[9px] font-display font-bold text-gov-red uppercase tracking-widest block">
+          <span class="lang-en">Access Authorization</span>
+          <span class="lang-kn">ಪ್ರವೇಶ ದೃಢೀಕರಣ</span>
+        </span>
+        <h2 class="text-xl md:text-2xl font-display font-semibold text-gov-navy leading-tight">
+          <span class="lang-en">Ready to begin an investigation?</span>
+          <span class="lang-kn">ತನಿಖೆಯನ್ನು ಪ್ರಾರಂಭಿಸಲು ಸಿದ್ಧರಿದ್ದೀರಾ?</span>
+        </h2>
         <p class="text-xs text-slate-500 leading-relaxed max-w-md mx-auto">
-          Access the platform to explore AI-assisted crime intelligence, case summary generation, and analytical capabilities.
+          <span class="lang-en">Access the platform to explore AI-assisted crime intelligence, case summary generation, and analytical capabilities.</span>
+          <span class="lang-kn">AI-ಸಹಾಯದ ಅಪರಾಧ ಗುಪ್ತಚರ ಮಾಹಿತಿ, ಪ್ರಕರಣಗಳ ವಿವರ ಮತ್ತು ವಿಶ್ಲೇಷಣಾತ್ಮಕ ಸಾಮರ್ಥ್ಯಗಳನ್ನು ಅನ್ವೇಷಿಸಲು ವೇದಿಕೆಯನ್ನು ಪ್ರವೇಶಿಸಿ.</span>
         </p>
         <a 
           href="/login" 
           class="inline-block px-7 py-3.5 bg-gov-navy text-white hover:bg-gov-blue rounded-full text-xs font-display font-semibold focus-visible:ring-2 focus-visible:ring-gov-blue focus-visible:outline-none transition shadow-sm select-none"
         >
-          Launch Dashboard
+          <span class="lang-en">Launch Dashboard</span>
+          <span class="lang-kn">ಡ್ಯಾಶ್‌ಬೋರ್ಡ್ ಪ್ರಾರಂಭಿಸಿ</span>
         </a>
       </div>
     </section>
@@ -377,21 +487,42 @@ import {
         <div class="flex items-center gap-3">
           <img src="/karnataka_emblem.png" alt="Government Seal" class="w-9 h-9 object-contain" width="36" height="36" />
           <div class="flex flex-col text-left">
-            <span class="font-bold text-slate-200 leading-tight">Government of Karnataka</span>
-            <span class="text-slate-450 leading-none mt-0.5">Karnataka State Police</span>
+            <span class="font-bold text-slate-200 leading-tight">
+              <span class="lang-en">Government of Karnataka</span>
+              <span class="lang-kn">ಕರ್ನಾಟಕ ಸರ್ಕಾರ</span>
+            </span>
+            <span class="text-slate-450 leading-none mt-0.5">
+              <span class="lang-en">Karnataka State Police</span>
+              <span class="lang-kn">ಕರ್ನಾಟಕ ರಾಜ್ಯ ಪೊಲೀಸ್</span>
+            </span>
           </div>
         </div>
         
         <div class="flex flex-wrap items-center justify-center md:justify-start gap-4 text-[10px]">
-          <a href="#" class="hover:text-white focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none rounded-sm transition">About</a>
+          <a href="#" class="hover:text-white focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none rounded-sm transition">
+            <span class="lang-en">About</span>
+            <span class="lang-kn">ನಮ್ಮ ಬಗ್ಗೆ</span>
+          </a>
           <span>•</span>
-          <a href="#" class="hover:text-white focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none rounded-sm transition">Privacy Policy</a>
+          <a href="/privacy" class="hover:text-white focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none rounded-sm transition">
+            <span class="lang-en">Privacy Policy</span>
+            <span class="lang-kn">ಗೌಪ್ಯತಾ ನೀತಿ</span>
+          </a>
           <span>•</span>
-          <a href="#" class="hover:text-white focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none rounded-sm transition">Terms of Service</a>
+          <a href="/terms" class="hover:text-white focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none rounded-sm transition">
+            <span class="lang-en">Terms of Service</span>
+            <span class="lang-kn">ಸೇವೆಯ ನಿಯಮಗಳು</span>
+          </a>
           <span>•</span>
-          <a href="#" class="hover:text-white focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none rounded-sm transition">Accessibility</a>
+          <a href="/disclaimer" class="hover:text-white focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none rounded-sm transition">
+            <span class="lang-en">Disclaimer</span>
+            <span class="lang-kn">ಹಕ್ಕುತ್ಯಾಗ</span>
+          </a>
           <span>•</span>
-          <a href="#" class="hover:text-white focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none rounded-sm transition">Contact Support</a>
+          <a href="#" class="hover:text-white focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none rounded-sm transition">
+            <span class="lang-en">Contact Support</span>
+            <span class="lang-kn">ಬೆಂಬಲವನ್ನು ಸಂಪರ್ಕಿಸಿ</span>
+          </a>
         </div>
 
         <div class="text-center md:text-right text-slate-500">
@@ -400,25 +531,23 @@ import {
       </div>
       
       <div class="max-w-7xl mx-auto border-t border-slate-800 pt-6 text-center text-[9px] text-slate-550 leading-relaxed">
-        © 2026 Government of Karnataka. All Rights Reserved. Confidential law-enforcement tool. Access and actions are governed under official information security guidelines.
+        <span class="lang-en">© 2026 Government of Karnataka. All Rights Reserved. Confidential law-enforcement tool. Access and actions are governed under official information security guidelines.</span>
+        <span class="lang-kn">© 2026 ಕರ್ನಾಟಕ ಸರ್ಕಾರ. ಎಲ್ಲ ಹಕ್ಕುಗಳನ್ನು ಕಾಯ್ದಿರಿಸಲಾಗಿದೆ. ಗೌಪ್ಯ ಕಾನೂನು ಜಾರಿ ಸಾಧನ. ಪ್ರವೇಶ ಮತ್ತು ಕ್ರಮಗಳನ್ನು ಅಧಿಕೃತ ಮಾಹಿತಿ ಭದ್ರತಾ ಮಾರ್ಗಸೂಚಿಗಳ ಅಡಿಯಲ್ಲಿ ನಿಯಂತ್ರಿಸಲಾಗುತ್ತದೆ.</span>
       </div>
     </footer>
   </div>
 </Layout>
 
 <script>
-  // Simple bilingual toggle simulator
+  // Global language toggle dispatcher
   const toggleBtn = document.getElementById('lang-toggle');
-  const label = document.getElementById('lang-label');
   
-  if (toggleBtn && label) {
+  if (toggleBtn) {
     toggleBtn.addEventListener('click', () => {
-      const current = label.innerText;
-      if (current === 'English') {
-        label.innerText = 'ಕನ್ನಡ (Kannada)';
-      } else {
-        label.innerText = 'English';
-      }
+      const current = localStorage.getItem('ksp_language') || 'EN';
+      const newLang = current === 'EN' ? 'KN' : 'EN';
+      localStorage.setItem('ksp_language', newLang);
+      window.dispatchEvent(new CustomEvent('ksp-language-change', { detail: newLang }));
     });
   }
 </script>

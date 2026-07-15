@@ -20,8 +20,28 @@ const { title, description = 'KSP-ConAI', hideNav = false, hideFooter = false } 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title} — KSP-ConAI</title>
     <meta name="description" content={description} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link class="fav-icon" rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
+    
+    <script is:inline>
+      // Sync document-level language class with localStorage
+      function syncLang() {
+        const lang = localStorage.getItem('ksp_language') || 'EN';
+        if (lang === 'KN') {
+          document.documentElement.classList.add('lang-kn-active');
+          document.documentElement.classList.remove('lang-en-active');
+        } else {
+          document.documentElement.classList.add('lang-en-active');
+          document.documentElement.classList.remove('lang-kn-active');
+        }
+      }
+      
+      syncLang();
+      window.addEventListener('ksp-language-change', syncLang);
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'ksp_language') syncLang();
+      });
+    </script>
   </head>
   <body class="min-h-screen bg-canvas flex flex-col">
     {!hideNav && <Nav currentPath={Astro.url.pathname} client:load />}
