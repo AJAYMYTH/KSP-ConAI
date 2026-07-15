@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { getMapHotspots } from '../../lib/api';
 import type { MapHotspot } from '../../types';
 import { Shield, Filter, MapPin, ChevronDown } from 'lucide-react';
@@ -9,6 +9,9 @@ export default function HotspotMap() {
   const [loading, setLoading] = useState(true);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+
+  const mapRef = useRef<any>(null);
+  const markersRef = useRef<any[]>([]);
 
   useEffect(() => {
     fetchHotspots();
@@ -30,23 +33,30 @@ export default function HotspotMap() {
   useEffect(() => {
     if (typeof window === 'undefined' || loading) return;
 
-    let mapInstance: any = null;
-
-    const initMap = (L: any) => {
+    const setupMap = (L: any) => {
       const container = document.getElementById('leaflet-hotspot-map');
       if (!container) return;
 
-      const containerState = (container as any)._leaflet_id;
-      if (containerState) {
-        return; // Already initialized
+      // Initialize map instance only once
+      if (!mapRef.current) {
+        // Bengaluru center coordinates
+        const mapInstance = L.map('leaflet-hotspot-map').setView([12.9716, 77.5946], 7);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(mapInstance);
+        mapRef.current = mapInstance;
+
+        // Force a layout recalculation in case container size transitioned
+        setTimeout(() => {
+          mapInstance.invalidateSize();
+        }, 100);
       }
 
-      // Bengaluru center coordinates
-      mapInstance = L.map('leaflet-hotspot-map').setView([12.9716, 77.5946], 7);
+      const map = mapRef.current;
 
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
-      }).addTo(mapInstance);
+      // Clear previous markers
+      markersRef.current.forEach((marker) => marker.remove());
+      markersRef.current = [];
 
       // Custom marker icon creation
       const customIcon = L.icon({
@@ -57,22 +67,26 @@ export default function HotspotMap() {
         popupAnchor: [1, -34]
       });
 
-      hotspots.forEach((point) => {
-        if (!point.latitude || !point.longitude) return;
+      // Add new markers
+      const newMarkers = hotspots
+        .filter((point) => point.latitude && point.longitude)
+        .map((point) => {
+          const marker = L.marker([point.latitude, point.longitude], { icon: customIcon })
+            .addTo(map);
 
-        const marker = L.marker([point.latitude, point.longitude], { icon: customIcon })
-          .addTo(mapInstance);
+          marker.bindPopup(`
+            <div style="font-family: sans-serif; font-size: 11px; line-height: 1.4;">
+              <strong style="color: #0a1317; font-size: 12px;">${point.firNumber}</strong><br/>
+              <strong>Category:</strong> ${point.category}<br/>
+              <strong>District:</strong> ${point.district}<br/>
+              <strong>Density Weight:</strong> ${point.weight}
+            </div>
+          `);
 
-        marker.bindPopup(`
-          <div style="font-family: sans-serif; font-size: 11px; line-height: 1.4;">
-            <strong style="color: #0a1317; font-size: 12px;">${point.firNumber}</strong><br/>
-            <strong>Category:</strong> ${point.category}<br/>
-            <strong>District:</strong> ${point.district}<br/>
-            <strong>Density Weight:</strong> ${point.weight}
-          </div>
-        `);
-      });
+          return marker;
+        });
 
+      markersRef.current = newMarkers;
       setMapLoaded(true);
     };
 
@@ -88,7 +102,7 @@ export default function HotspotMap() {
     let scriptElement: HTMLScriptElement | null = null;
 
     if ((window as any).L) {
-      initMap((window as any).L);
+      setupMap((window as any).L);
     } else {
       // Find or create leaflet.js script tag
       let script = document.querySelector('script[src*="leaflet.js"]') as HTMLScriptElement;
@@ -102,7 +116,7 @@ export default function HotspotMap() {
 
       loadListener = () => {
         if ((window as any).L) {
-          initMap((window as any).L);
+          setupMap((window as any).L);
         }
       };
       script.addEventListener('load', loadListener);
@@ -112,15 +126,22 @@ export default function HotspotMap() {
       if (loadListener && scriptElement) {
         scriptElement.removeEventListener('load', loadListener);
       }
-      if (mapInstance) {
+    };
+  }, [loading, hotspots]);
+
+  // Clean up map instance on unmount
+  useEffect(() => {
+    return () => {
+      if (mapRef.current) {
         try {
-          mapInstance.remove();
+          mapRef.current.remove();
         } catch (e) {
           console.warn('Leaflet cleanup warning:', e);
         }
+        mapRef.current = null;
       }
     };
-  }, [loading, hotspots]);
+  }, []);
 
   return (
     <div className="p-6 md:p-8 space-y-6 max-w-7xl mx-auto w-full animate-in fade-in duration-200">

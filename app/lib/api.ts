@@ -90,7 +90,11 @@ export async function getMapHotspots(params?: Record<string, string>): Promise<M
     return result.data;
   } catch (error) {
     console.warn('Map hotspots API failed, using mock hotspots:', error);
-    return mock.MOCK_MAP_HOTSPOTS;
+    let items = [...mock.MOCK_MAP_HOTSPOTS];
+    if (params && params.category && params.category !== 'all') {
+      items = items.filter(h => h.category.toLowerCase() === params.category.toLowerCase());
+    }
+    return items;
   }
 }
 
