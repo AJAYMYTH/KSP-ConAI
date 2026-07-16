@@ -2,84 +2,22 @@ import React, { useState, useEffect, useRef } from 'react';
 import { getMapHotspots } from '../../lib/api';
 import type { MapHotspot } from '../../types';
 import { Shield, Filter, MapPin, ChevronDown } from 'lucide-react';
-
-const TRANSLATIONS = {
-  EN: {
-    geospatialIntel: "Geospatial Intelligence",
-    pageTitle: "Crime Hotspots Map",
-    spatialDist: "Spatial Distribution",
-    incidentsBreakdown: "Incidents Breakdown",
-    locatingClusters: "Locating crime clusters…",
-    allCategories: "All Crime Categories"
-  },
-  KN: {
-    geospatialIntel: "ಭೂ-ಸ್ಥಳೀಯ ಗುಪ್ತಚರ",
-    pageTitle: "ಅಪರಾಧ ಹಾಟ್‌ಸ್ಪಾಟ್‌ಗಳ ನಕ್ಷೆ",
-    spatialDist: "ಸ್ಥಳೀಯ ವಿತರಣೆ",
-    incidentsBreakdown: "ಪ್ರಕರಣಗಳ ವಿವರ",
-    locatingClusters: "ಅಪರಾಧ ವಲಯಗಳನ್ನು ಪತ್ತೆ ಮಾಡಲಾಗುತ್ತಿದೆ...",
-    allCategories: "ಎಲ್ಲಾ ಅಪರಾಧ ವಿಭಾಗಗಳು"
-  }
-};
-
-const translateDistrict = (district: string, lang: 'EN' | 'KN') => {
-  if (lang === 'EN') return district;
-  const mapping: Record<string, string> = {
-    'all': 'ಎಲ್ಲಾ ಜಿಲ್ಲೆಗಳು',
-    'Bengaluru City': 'ಬೆಂಗಳೂರು ನಗರ',
-    'Mysuru City': 'ಮೈಸೂರು ನಗರ',
-    'Hubballi-Dharwad City': 'ಹುಬ್ಬಳ್ಳಿ-ಧಾರವಾಡ ನಗರ',
-    'Mangaluru City': 'ಮಂಗಳೂರು ನಗರ',
-    'Belagavi': 'ಬೆಳಗಾವಿ',
-    'Kalaburagi': 'ಕಲಬುರಗಿ',
-    'Bengaluru': 'ಬೆಂಗಳೂರು',
-    'Mysuru': 'ಮೈಸೂರು'
-  };
-  return mapping[district] || district;
-};
-
-const translateCategory = (cat: string, lang: 'EN' | 'KN') => {
-  if (lang === 'EN') return cat;
-  const mapping: Record<string, string> = {
-    'all': 'ಎಲ್ಲಾ ಅಪರಾಧ ವಿಭಾಗಗಳು',
-    'Theft / Burglary': 'ಕಳ್ಳತನ / ಕನ್ನಗಳ್ಳತನ',
-    'Assault': 'ಹಲ್ಲೆ',
-    'Cheating / Fraud': 'ವಂಚನೆ / ಅಪರಾಧ',
-    'Robbery': 'ದರೋಡೆ',
-    'Cyber Crimes': 'ಸೈಬರ್ ಅಪರಾಧಗಳು',
-    'Other Crimes': 'ಇತರ ಅಪರಾಧಗಳು'
-  };
-  return mapping[cat] || cat;
-};
+import { useI18n } from '../../i18n/hooks';
+import { translateDistrict, translateCategory } from '../../i18n/utils';
 
 export default function HotspotMap() {
+  const { t, currentLanguage } = useI18n();
   const [hotspots, setHotspots] = useState<MapHotspot[]>([]);
   const [category, setCategory] = useState('all');
   const [loading, setLoading] = useState(true);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
-  const [language, setLanguage] = useState<'EN' | 'KN'>('EN');
 
   const mapRef = useRef<any>(null);
   const markersRef = useRef<any[]>([]);
 
   useEffect(() => {
     fetchHotspots();
-
-    const saved = localStorage.getItem('ksp_language') as 'EN' | 'KN';
-    if (saved === 'EN' || saved === 'KN') {
-      setLanguage(saved);
-    }
-
-    const handleLangChange = (e: Event) => {
-      const customEvent = e as CustomEvent<'EN' | 'KN'>;
-      setLanguage(customEvent.detail);
-    };
-
-    window.addEventListener('ksp-language-change', handleLangChange);
-    return () => {
-      window.removeEventListener('ksp-language-change', handleLangChange);
-    };
   }, [category]);
 
   const fetchHotspots = async () => {
@@ -142,9 +80,9 @@ export default function HotspotMap() {
           marker.bindPopup(`
             <div style="font-family: sans-serif; font-size: 11px; line-height: 1.4;">
               <strong style="color: #0a1317; font-size: 12px;">${point.firNumber}</strong><br/>
-              <strong>${language === 'EN' ? 'Category' : 'ಅಪರಾಧ ವಿಭಾಗ'}:</strong> ${translateCategory(point.category, language)}<br/>
-              <strong>${language === 'EN' ? 'District' : 'ಜಿಲ್ಲೆ'}:</strong> ${translateDistrict(point.district, language)}<br/>
-              <strong>${language === 'EN' ? 'Density Weight' : 'ಸಾಂದ್ರತೆಯ ಪ್ರಮಾಣ'}:</strong> ${point.weight}
+              <strong>${currentLanguage === 'en' ? 'Category' : 'ಅಪರಾಧ ವಿಭಾಗ'}:</strong> ${translateCategory(point.category, currentLanguage)}<br/>
+              <strong>${currentLanguage === 'en' ? 'District' : 'ಜಿಲ್ಲೆ'}:</strong> ${translateDistrict(point.district, currentLanguage)}<br/>
+              <strong>${currentLanguage === 'en' ? 'Density Weight' : 'ಸಾಂದ್ರತೆಯ ಪ್ರಮಾಣ'}:</strong> ${point.weight}
             </div>
           `);
 
@@ -208,15 +146,15 @@ export default function HotspotMap() {
     };
   }, []);
 
-  const t = TRANSLATIONS[language];
-
   return (
     <div className="p-6 md:p-8 space-y-6 max-w-7xl mx-auto w-full animate-in fade-in duration-200">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <span className="text-[10px] uppercase tracking-wider text-steel font-bold">{t.geospatialIntel}</span>
-          <h1 className="text-xl md:text-2xl font-bold text-ink-deep">{t.pageTitle}</h1>
+          <span className="text-[10px] uppercase tracking-wider text-steel font-bold">
+            {currentLanguage === 'en' ? 'Geospatial Intelligence' : 'ಭೂ-ಸ್ಥಳೀಯ ಗುಪ್ತಚರ'}
+          </span>
+          <h1 className="text-xl md:text-2xl font-bold text-ink-deep">{t('map.title')}</h1>
         </div>
         
         {/* Category Filter */}
@@ -231,7 +169,7 @@ export default function HotspotMap() {
               className="px-4 py-1.5 bg-canvas border border-hairline hover:border-steel rounded-full text-xs text-ink text-left flex items-center justify-between gap-1.5 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary min-w-[180px]"
             >
               <span>
-                {translateCategory(category, language)}
+                {translateCategory(category, currentLanguage)}
               </span>
               <ChevronDown className="w-3.5 h-3.5 text-stone shrink-0 transition-transform duration-200" style={{ transform: isCategoryOpen ? 'rotate(180deg)' : 'none' }} />
             </button>
@@ -244,11 +182,11 @@ export default function HotspotMap() {
                   className="absolute right-0 mt-1.5 min-w-[200px] max-h-60 overflow-y-auto bg-canvas border border-hairline-soft rounded-xl shadow-lg py-1 z-50 text-xs font-medium text-ink divide-y divide-hairline-soft animate-in fade-in slide-in-from-top-1 duration-100"
                 >
                   {[
-                    { val: 'all', label: translateCategory('all', language) },
-                    { val: 'Theft / Burglary', label: translateCategory('Theft / Burglary', language) },
-                    { val: 'Robbery', label: translateCategory('Robbery', language) },
-                    { val: 'Cheating / Fraud', label: translateCategory('Cheating / Fraud', language) },
-                    { val: 'Assault', label: translateCategory('Assault', language) }
+                    { val: 'all', label: translateCategory('all', currentLanguage) },
+                    { val: 'Theft / Burglary', label: translateCategory('Theft / Burglary', currentLanguage) },
+                    { val: 'Robbery', label: translateCategory('Robbery', currentLanguage) },
+                    { val: 'Cheating / Fraud', label: translateCategory('Cheating / Fraud', currentLanguage) },
+                    { val: 'Assault', label: translateCategory('Assault', currentLanguage) }
                   ].map(item => (
                     <li
                       key={item.val}
@@ -277,9 +215,11 @@ export default function HotspotMap() {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Sidebar Statistics */}
         <div className="lg:col-span-1 bg-canvas border border-hairline-soft p-5 rounded-xxxl card-product-shadow space-y-4">
-          <span className="text-[10px] uppercase tracking-wider text-steel font-bold">{t.spatialDist}</span>
+          <span className="text-[10px] uppercase tracking-wider text-steel font-bold">
+            {currentLanguage === 'en' ? 'Spatial Distribution' : 'ಸ್ಥಳೀಯ ವಿತರಣೆ'}
+          </span>
           <h3 className="text-sm font-bold text-ink-deep border-b border-hairline-soft pb-2">
-            {t.incidentsBreakdown}
+            {currentLanguage === 'en' ? 'Incidents Breakdown' : 'ಪ್ರಕರಣಗಳ ವಿವರ'}
           </h3>
           <div className="space-y-3">
             {hotspots.map((point, idx) => (
@@ -287,7 +227,7 @@ export default function HotspotMap() {
                 <div className="space-y-0.5">
                   <div className="font-bold text-ink-deep">{point.firNumber}</div>
                   <div className="text-[10px] text-stone font-medium flex items-center gap-0.5">
-                    <MapPin className="w-3 h-3 text-stone/80" aria-hidden="true" /> {translateDistrict(point.district, language)}
+                    <MapPin className="w-3 h-3 text-stone/80" aria-hidden="true" /> {translateDistrict(point.district, currentLanguage)}
                   </div>
                 </div>
                 <span className="px-2 py-0.5 rounded bg-surface-soft text-[9px] font-bold text-ink uppercase tracking-wider">
@@ -303,7 +243,9 @@ export default function HotspotMap() {
           {loading && (
             <div className="absolute inset-0 bg-surface-soft/80 flex flex-col items-center justify-center gap-2 z-10">
               <div className="w-8 h-8 rounded-circle border-4 border-hairline-soft border-t-primary animate-spin" />
-              <span className="text-xs text-steel font-bold">{t.locatingClusters}</span>
+              <span className="text-xs text-steel font-bold">
+                {currentLanguage === 'en' ? 'Locating crime clusters…' : 'ಅಪರಾಧ ವಲಯಗಳನ್ನು ಪತ್ತೆ ಮಾಡಲಾಗುತ್ತಿದೆ...'}
+              </span>
             </div>
           )}
           <div id="leaflet-hotspot-map" className="w-full h-full" style={{ zIndex: 1 }} />

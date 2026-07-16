@@ -4,12 +4,14 @@ import type { CaseDetail } from '../../types';
 import CaseTimeline from './CaseTimeline';
 import NetworkGraph from './NetworkGraph';
 import { Shield, FileText, Calendar, MapPin, Loader2, Download, Check } from 'lucide-react';
+import { useI18n } from '../../i18n/hooks';
 
 interface Props {
   caseId: string;
 }
 
 export default function CaseDetailView({ caseId }: Props) {
+  const { t, currentLanguage, formatDate } = useI18n();
   const [details, setDetails] = useState<CaseDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'details' | 'timeline' | 'network'>('details');
@@ -104,16 +106,44 @@ export default function CaseDetailView({ caseId }: Props) {
     );
   }
 
+  const translateDistrict = (district: string, lang: 'en' | 'kn') => {
+    if (lang === 'en') return district;
+    const mapping: Record<string, string> = {
+      'Bengaluru City': 'ಬೆಂಗಳೂರು ನಗರ',
+      'Mysuru City': 'ಮೈಸೂರು ನಗರ',
+      'Hubballi-Dharwad City': 'ಹುಬ್ಬಳ್ಳಿ-ಧಾರವಾಡ ನಗರ',
+      'Mangaluru City': 'ಮಂಗಳೂರು ನಗರ',
+      'Belagavi City': 'ಬೆಳಗಾವಿ ನಗರ',
+      'Kalaburagi City': 'ಕಲಬುರಗಿ ನಗರ',
+      'Bengaluru': 'ಬೆಂಗಳೂರು',
+      'Mysuru': 'ಮೈಸೂರು'
+    };
+    return mapping[district] || district;
+  };
+
+  const getStatusLabel = (status: string) => {
+    if (status === 'Disposed') return t('caseDetail.disposed');
+    if (status === 'Under Investigation') return t('caseDetail.underInvestigation');
+    if (status === 'Chargesheeted') return t('caseDetail.chargesheetSubmitted');
+    return status;
+  };
+
   if (!details) {
     return (
       <div className="p-12 text-center flex flex-col items-center gap-3">
         <div className="w-12 h-12 rounded-circle bg-critical/10 flex items-center justify-center text-critical">
           <Shield className="w-5 h-5" />
         </div>
-        <h3 className="text-sm font-bold text-ink-deep">Case File Not Resolved</h3>
-        <p className="text-xs text-steel max-w-xs">The requested Case ID does not exist in the police registry or your role lacks permission.</p>
+        <h3 className="text-sm font-bold text-ink-deep">
+          {currentLanguage === 'en' ? 'Case File Not Resolved' : 'ಪ್ರಕರಣದ ವಿವರ ಕಂಡುಬಂದಿಲ್ಲ'}
+        </h3>
+        <p className="text-xs text-steel max-w-xs">
+          {currentLanguage === 'en' 
+            ? 'The requested Case ID does not exist in the police registry or your role lacks permission.' 
+            : 'ಕೋರಿದ ಪ್ರಕರಣದ ಐಡಿ ಪೊಲೀಸ್ ನೋಂದಣಿಯಲ್ಲಿ ಅಸ್ತಿತ್ವದಲ್ಲಿಲ್ಲ ಅಥವಾ ನಿಮ್ಮ ಪಾತ್ರಕ್ಕೆ ಅನುಮತಿಯಿಲ್ಲ.'}
+        </p>
         <a href="/search" className="mt-2 px-6 py-2 bg-primary text-canvas rounded-full text-xs font-bold hover:bg-primary-deep cursor-pointer">
-          Return to Database Search
+          {currentLanguage === 'en' ? 'Return to Database Search' : 'ಡೇಟಾಬೇಸ್ ಹುಡುಕಾಟಕ್ಕೆ ಹಿಂತಿರುಗಿ'}
         </a>
       </div>
     );
@@ -125,18 +155,21 @@ export default function CaseDetailView({ caseId }: Props) {
       <div className="sticky top-16 z-30 bg-canvas border border-hairline-soft p-4 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 card-product-shadow">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5">
-            <span className="text-xs text-steel font-bold uppercase tracking-wider">FIR Record</span>
+            <span className="text-xs text-steel font-bold uppercase tracking-wider">{t('caseDetail.firRecord')}</span>
             <span className="w-1.5 h-1.5 rounded-circle bg-stone" />
             <h1 className="text-base font-bold text-ink-deep">{details.firNumber}</h1>
             <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold ${
               details.status === 'Disposed' ? 'bg-success/15 text-success' : 'bg-attention/15 text-attention'
             }`}>
-              {details.status}
+              {getStatusLabel(details.status)}
             </span>
           </div>
           <div className="text-[10px] text-steel font-medium flex items-center gap-3">
-            <span className="flex items-center gap-0.5"><MapPin className="w-3.5 h-3.5 text-stone" aria-hidden="true" /> {details.station}, {details.district}</span>
-            <span className="flex items-center gap-0.5"><Calendar className="w-3.5 h-3.5 text-stone" aria-hidden="true" /> Registered: {new Date(details.registeredDate).toLocaleDateString()}</span>
+            <span className="flex items-center gap-0.5"><MapPin className="w-3.5 h-3.5 text-stone" aria-hidden="true" /> {details.station}, {translateDistrict(details.district, currentLanguage)}</span>
+            <span className="flex items-center gap-0.5">
+              <Calendar className="w-3.5 h-3.5 text-stone" aria-hidden="true" /> 
+              {t('caseDetail.registeredLabel', { date: formatDate(details.registeredDate) })}
+            </span>
           </div>
         </div>
 
@@ -148,7 +181,7 @@ export default function CaseDetailView({ caseId }: Props) {
               download
               className="flex items-center gap-1.5 px-5 py-2 bg-success text-canvas rounded-full text-xs font-bold shadow-sm"
             >
-              <Check className="w-3.5 h-3.5" /> Download Report PDF
+              <Check className="w-3.5 h-3.5" /> {t('caseDetail.downloadPdf')}
             </a>
           ) : (
             <button
@@ -158,11 +191,11 @@ export default function CaseDetailView({ caseId }: Props) {
             >
               {reportLoading ? (
                 <>
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" aria-hidden="true" /> Generating Intelligence PDF…
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" aria-hidden="true" /> {t('caseDetail.draftingPdf')}
                 </>
               ) : (
                 <>
-                  <FileText className="w-3.5 h-3.5" aria-hidden="true" /> Generate Intelligence PDF
+                  <FileText className="w-3.5 h-3.5" aria-hidden="true" /> {t('caseDetail.generatePdf')}
                 </>
               )}
             </button>
@@ -178,7 +211,7 @@ export default function CaseDetailView({ caseId }: Props) {
             activeTab === 'details' ? 'bg-ink-deep text-canvas' : 'text-ink hover:bg-hairline-soft'
           }`}
         >
-          360° Case File
+          {t('caseDetail.tab360')}
         </button>
         <button
           onClick={() => setActiveTab('timeline')}
@@ -186,7 +219,7 @@ export default function CaseDetailView({ caseId }: Props) {
             activeTab === 'timeline' ? 'bg-ink-deep text-canvas' : 'text-ink hover:bg-hairline-soft'
           }`}
         >
-          Timeline
+          {t('caseDetail.tabTimeline')}
         </button>
         <button
           onClick={() => setActiveTab('network')}
@@ -194,7 +227,7 @@ export default function CaseDetailView({ caseId }: Props) {
             activeTab === 'network' ? 'bg-ink-deep text-canvas' : 'text-ink hover:bg-hairline-soft'
           }`}
         >
-          Network
+          {t('caseDetail.tabNetwork')}
         </button>
       </div>
 
@@ -206,52 +239,55 @@ export default function CaseDetailView({ caseId }: Props) {
             {/* Case Narrative */}
             <div className="bg-canvas border border-hairline-soft p-6 rounded-xxxl card-product-shadow space-y-3">
               <h3 className="text-sm font-bold text-ink-deep uppercase tracking-wider border-b border-hairline-soft pb-2">
-                Incident Narrative Summary
+                {t('caseDetail.narrativeSummary')}
               </h3>
               <p className="text-xs text-steel leading-relaxed font-normal whitespace-pre-wrap">
-                {details.summaryText || 'No custom narrative summary recorded for this case.'}
+                {details.summaryText || (currentLanguage === 'en' ? 'No custom narrative summary recorded for this case.' : 'ಈ ಪ್ರಕರಣಕ್ಕೆ ಯಾವುದೇ ಕಸ್ಟಮ್ ನಿರೂಪಣಾ ಸಾರಾಂಶವನ್ನು ದಾಖಲಿಸಲಾಗಿಲ್ಲ.')}
               </p>
             </div>
 
             {/* People Involved (Accused, Victims, Complainants) */}
             <div className="bg-canvas border border-hairline-soft p-6 rounded-xxxl card-product-shadow space-y-4">
               <h3 className="text-sm font-bold text-ink-deep uppercase tracking-wider border-b border-hairline-soft pb-2">
-                Parties / Persons Log
+                {t('caseDetail.partiesLog')}
               </h3>
               
               <div className="space-y-4">
                 {/* Accused List */}
                 <div className="space-y-2">
-                  <span className="text-[10px] uppercase tracking-wider text-attention font-bold">Accused</span>
+                  <span className="text-[10px] uppercase tracking-wider text-attention font-bold">{t('caseDetail.accused')}</span>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {details.accused.map((person, idx) => (
-                      <div key={idx} className="p-3 bg-surface-soft/60 border border-hairline-soft rounded-lg text-xs font-bold text-ink-deep flex flex-col justify-between">
-                        <span>{person}</span>
-                        {/* Arrest Details */}
-                        {details.arrests.find(a => a.person.includes(person.split(' ')[0])) ? (
-                          <span className="text-[9px] text-success font-medium mt-1">
-                            ✓ Arrested on {details.arrests.find(a => a.person.includes(person.split(' ')[0]))?.date.split('T')[0]}
-                          </span>
-                        ) : (
-                          <span className="text-[9px] text-stone font-medium mt-1">
-                            Pending arrest / Surrendered
-                          </span>
-                        )}
-                      </div>
-                    ))}
+                    {details.accused.map((person, idx) => {
+                      const arrest = details.arrests.find(a => a.person.toLowerCase().includes(person.split(' ')[0].toLowerCase()));
+                      return (
+                        <div key={idx} className="p-3 bg-surface-soft/60 border border-hairline-soft rounded-lg text-xs font-bold text-ink-deep flex flex-col justify-between">
+                          <span>{person}</span>
+                          {/* Arrest Details */}
+                          {arrest ? (
+                            <span className="text-[9px] text-success font-medium mt-1">
+                              ✓ {t('caseDetail.arrestedOn', { date: formatDate(arrest.date) })}
+                            </span>
+                          ) : (
+                            <span className="text-[9px] text-stone font-medium mt-1">
+                              {t('caseDetail.pendingArrest')}
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
 
                 {/* Victims & Complainants */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <span className="text-[10px] uppercase tracking-wider text-success font-bold">Victims</span>
+                    <span className="text-[10px] uppercase tracking-wider text-success font-bold">{t('caseDetail.victims')}</span>
                     <ul className="list-disc pl-4 text-xs text-steel space-y-0.5">
                       {details.victims.map((v, i) => <li key={i}>{v}</li>)}
                     </ul>
                   </div>
                   <div className="space-y-1.5">
-                    <span className="text-[10px] uppercase tracking-wider text-primary font-bold">Complainants</span>
+                    <span className="text-[10px] uppercase tracking-wider text-primary font-bold">{t('caseDetail.complainants')}</span>
                     <ul className="list-disc pl-4 text-xs text-steel space-y-0.5">
                       {details.complainants.map((c, i) => <li key={i}>{c}</li>)}
                     </ul>
@@ -265,9 +301,9 @@ export default function CaseDetailView({ caseId }: Props) {
           <div className="space-y-6">
             {/* Act and Sections */}
             <div className="bg-canvas border border-hairline-soft p-5 rounded-xxxl card-product-shadow space-y-3">
-              <span className="text-[10px] uppercase tracking-wider text-steel font-bold">Legal Classifications</span>
+              <span className="text-[10px] uppercase tracking-wider text-steel font-bold">{t('caseDetail.legalClassifications')}</span>
               <h3 className="text-xs font-bold text-ink-deep border-b border-hairline-soft pb-2">
-                Acts & Sections
+                {t('caseDetail.actsSections')}
               </h3>
               <div className="space-y-2">
                 {details.actsSections.map((item, i) => (
@@ -281,27 +317,27 @@ export default function CaseDetailView({ caseId }: Props) {
 
             {/* Trial & Administrative details */}
             <div className="bg-canvas border border-hairline-soft p-5 rounded-xxxl card-product-shadow space-y-3">
-              <span className="text-[10px] uppercase tracking-wider text-steel font-bold">Administrative Details</span>
+              <span className="text-[10px] uppercase tracking-wider text-steel font-bold">{t('caseDetail.adminDetails')}</span>
               <h3 className="text-xs font-bold text-ink-deep border-b border-hairline-soft pb-2">
-                Trial Jurisdiction
+                {t('caseDetail.trialJurisdiction')}
               </h3>
               <div className="space-y-2.5 text-xs text-steel">
                 <div>
-                  <span className="font-bold text-ink block">Prosecuting Court:</span>
+                  <span className="font-bold text-ink block">{t('caseDetail.prosecutingCourt')}</span>
                   <span className="text-stone">{details.court}</span>
                 </div>
                 <div>
-                  <span className="font-bold text-ink block">Case Gravity:</span>
+                  <span className="font-bold text-ink block">{t('caseDetail.caseGravity')}</span>
                   <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold inline-block mt-0.5 ${
                     details.gravity === 'Grave' ? 'bg-critical/10 text-critical' : 'bg-surface-soft text-steel'
                   }`}>
-                    {details.gravity} Offence
+                    {details.gravity === 'Grave' ? t('caseDetail.grave') : t('caseDetail.nonGrave')}
                   </span>
                 </div>
                 <div>
-                  <span className="font-bold text-ink block">Chargesheet Status:</span>
+                  <span className="font-bold text-ink block">{t('caseDetail.chargesheetStatus')}</span>
                   <span className="text-stone">
-                    {details.chargesheeted ? 'Chargesheet Submitted' : 'Under Investigation'}
+                    {details.chargesheeted ? t('caseDetail.chargesheetSubmitted') : t('caseDetail.underInvestigation')}
                   </span>
                 </div>
               </div>
@@ -312,9 +348,9 @@ export default function CaseDetailView({ caseId }: Props) {
 
       {activeTab === 'timeline' && (
         <div className="bg-canvas border border-hairline-soft p-6 rounded-xxxl card-product-shadow">
-          <span className="text-[10px] uppercase tracking-wider text-steel font-bold">Investigation Milestones</span>
+          <span className="text-[10px] uppercase tracking-wider text-steel font-bold">{t('caseDetail.milestones')}</span>
           <h3 className="text-sm font-bold text-ink-deep border-b border-hairline-soft pb-2.5 mb-4">
-            Chronological Case Timeline
+            {t('caseDetail.timelineTitle')}
           </h3>
           <CaseTimeline caseId={caseId} />
         </div>
@@ -322,9 +358,9 @@ export default function CaseDetailView({ caseId }: Props) {
 
       {activeTab === 'network' && (
         <div className="bg-canvas border border-hairline-soft p-6 rounded-xxxl card-product-shadow">
-          <span className="text-[10px] uppercase tracking-wider text-steel font-bold">Relational Intelligence</span>
+          <span className="text-[10px] uppercase tracking-wider text-steel font-bold">{t('caseDetail.relationalIntel')}</span>
           <h3 className="text-sm font-bold text-ink-deep border-b border-hairline-soft pb-2.5 mb-4">
-            Suspect Association Network
+            {t('caseDetail.networkTitle')}
           </h3>
           <NetworkGraph caseId={caseId} />
         </div>

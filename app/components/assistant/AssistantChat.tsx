@@ -5,6 +5,7 @@ import {
   User, Send, Shield, Link2, 
   Mic, Play, Globe, RotateCcw, AlertCircle 
 } from 'lucide-react';
+import { useI18n } from '../../i18n/hooks';
 
 interface ChatMessage {
   id: string;
@@ -18,16 +19,16 @@ interface ChatMessage {
 }
 
 export default function AssistantChat() {
+  const { t, currentLanguage } = useI18n();
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: 'welcome',
       role: 'assistant',
-      content: 'Welcome to the KSP Crime Intelligence Copilot. I am a retrieval-grounded assistant. I can run deterministic database lookups or summarize case details based on your queries. All inquiries are audited under KSP protocols.',
+      content: t('assistant.welcome'),
     }
   ]);
   const [input, setInput] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);
-  const [language, setLanguage] = useState<'EN' | 'KN'>('EN');
   const [isRecording, setIsRecording] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
@@ -35,48 +36,30 @@ export default function AssistantChat() {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  useEffect(() => {
-    const saved = localStorage.getItem('ksp_language') as 'EN' | 'KN';
-    if (saved === 'EN' || saved === 'KN') {
-      setLanguage(saved);
-    }
-
-    const handleLangChange = (e: Event) => {
-      const customEvent = e as CustomEvent<'EN' | 'KN'>;
-      setLanguage(customEvent.detail);
-    };
-
-    window.addEventListener('ksp-language-change', handleLangChange);
-    return () => {
-      window.removeEventListener('ksp-language-change', handleLangChange);
-    };
-  }, []);
-
+  // Sync the welcome message content when the current language changes
   useEffect(() => {
     setMessages(prev => prev.map(m => {
       if (m.id === 'welcome') {
         return {
           ...m,
-          content: language === 'EN'
-            ? 'Welcome to the KSP Crime Intelligence Copilot. I am a retrieval-grounded assistant. I can run deterministic database lookups or summarize case details based on your queries. All inquiries are audited under KSP protocols.'
-            : 'ಕೆಎಸ್‌ಪಿ ಅಪರಾಧ ಗುಪ್ತಚರ ಸಹಾಯಕಕ್ಕೆ ಸುಸ್ವಾಗತ. ನಾನು ಡೇಟಾಬೇಸ್ ಹುಡುಕಾಟಗಳನ್ನು ನಡೆಸಬಲ್ಲೆ ಮತ್ತು ಪ್ರಕರಣದ ವಿವರಗಳನ್ನು ಸಂಕ್ಷೇಪಿಸಬಲ್ಲೆ. ಎಲ್ಲಾ ವಿಚಾರಣೆಗಳನ್ನು ಕೆಎಸ್‌ಪಿ ಪ್ರೋಟೋಕಾಲ್ ಅಡಿಯಲ್ಲಿ ಆಡಿಟ್ ಮಾಡಲಾಗುತ್ತದೆ.'
+          content: t('assistant.welcome')
         };
       }
       return m;
     }));
-  }, [language]);
+  }, [currentLanguage]);
 
   const suggestedPrompts = [
     { 
-      label: language === 'EN' ? 'Summarize burglary case in Bengaluru' : 'ಬೆಂಗಳೂರಿನ ಕಳ್ಳತನ ಪ್ರಕರಣವನ್ನು ಸಂಕ್ಷೇಪಿಸಿ', 
+      label: currentLanguage === 'en' ? 'Summarize burglary case in Bengaluru' : 'ಬೆಂಗಳೂರಿನ ಕಳ್ಳತನ ಪ್ರಕರಣವನ್ನು ಸಂಕ್ಷೇಪಿಸಿ', 
       query: 'Summarize case KA-BC-2026-00812' 
     },
     { 
-      label: language === 'EN' ? 'Show recent highway robberies in Mysuru' : 'ಮೈಸೂರಿನ ಇತ್ತೀಚಿನ ಹೆದ್ದಾರಿ ದರೋಡೆಗಳನ್ನು ತೋರಿಸಿ', 
+      label: currentLanguage === 'en' ? 'Show recent highway robberies in Mysuru' : 'ಮೈಸೂರಿನ ಇತ್ತೀಚಿನ ಹೆದ್ದಾರಿ ದರೋಡೆಗಳನ್ನು ತೋರಿಸಿ', 
       query: 'Show highway robberies registered in Mysuru City' 
     },
     { 
-      label: language === 'EN' ? 'Compare crime totals by category' : 'ವಿಭಾಗವಾರು ಒಟ್ಟು ಅಪರಾಧಗಳನ್ನು ಹೋಲಿಕೆ ಮಾಡಿ', 
+      label: currentLanguage === 'en' ? 'Compare crime totals by category' : 'ವಿಭಾಗವಾರು ಒಟ್ಟು ಅಪರಾಧಗಳನ್ನು ಹೋಲಿಕೆ ಮಾಡಿ', 
       query: 'Compare total cases by major categories' 
     }
   ];
@@ -88,14 +71,13 @@ export default function AssistantChat() {
   const handleSpeechInput = () => {
     if (isRecording) {
       setIsRecording(false);
-      // Simulate speech transcription match
       setInput('Summarize case KA-MY-2026-00124');
     } else {
       setIsRecording(true);
       setTimeout(() => {
         setIsRecording(false);
         setInput('Summarize case KA-MY-2026-00124');
-      }, 3000); // 3-second recording simulation
+      }, 3000);
     }
   };
 
@@ -122,16 +104,15 @@ export default function AssistantChat() {
     setIsStreaming(true);
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 4000); // 4-second timeout fallback
+    const timeoutId = setTimeout(() => controller.abort(), 4000);
 
     try {
-      // Setup connection to backend streaming endpoint (Server-Sent Events)
       const response = await fetch(`${API_BASE_URL}/api/assistant/query`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: userText,
-          language: language === 'KN' ? 'kannada' : 'english',
+          language: currentLanguage === 'kn' ? 'kannada' : 'english',
           history: messages.slice(-5).map(m => ({ role: m.role, content: m.content }))
         }),
         signal: controller.signal
@@ -156,7 +137,6 @@ export default function AssistantChat() {
 
         const chunk = decoder.decode(value);
         
-        // Check if it's SSE or plain text/JSON
         if (!chunk.trim().startsWith('data:')) {
           try {
             const parsed = JSON.parse(chunk);
@@ -173,7 +153,6 @@ export default function AssistantChat() {
             accumulatedContent += chunk;
           }
         } else {
-          // SSE chunks typically arrive with "data: {JSON}" formatting
           const lines = chunk.split('\n');
           for (const line of lines) {
             if (line.trim().startsWith('data:')) {
@@ -189,13 +168,12 @@ export default function AssistantChat() {
                 if (parsed.confidence) confidence = parsed.confidence;
                 if (parsed.intent) intent = parsed.intent;
               } catch (err) {
-                // Handle mid-chunk parsing offsets gracefully
+                // Ignore parsing offsets
               }
             }
           }
         }
 
-        // Update the streaming assistant message bubble
         setMessages(prev => prev.map(m => {
           if (m.id === assistantMessageId) {
             return {
@@ -215,7 +193,6 @@ export default function AssistantChat() {
         throw new Error('Empty response from AI gateway');
       }
 
-      // Mark streaming as completed
       setMessages(prev => prev.map(m => {
         if (m.id === assistantMessageId) {
           return { ...m, isStreaming: false };
@@ -225,9 +202,8 @@ export default function AssistantChat() {
 
     } catch (err) {
       clearTimeout(timeoutId);
-      console.warn('AI gateway streaming failed, rendering simulated assistant response for demo path:', err);
+      console.warn('AI gateway streaming failed, rendering simulated assistant response:', err);
       
-      // Perform client-side mock response routing based on keyword detection
       setTimeout(() => {
         let answer = 'I can search and summarize FIR files. Please provide a valid query.';
         let sql = '';
@@ -237,23 +213,29 @@ export default function AssistantChat() {
 
         const textLower = userText.toLowerCase();
         if (textLower.includes('812') || (textLower.includes('burglary') && textLower.includes('bengaluru'))) {
-          answer = language === 'KN' ? 
-            'ಬೆಂಗಳೂರಿನ ಇಂದಿರಾನಗರ ಪೊಲೀಸ್ ಠಾಣೆಯಲ್ಲಿ ದಾಖಲಾದ ಎಫ್‌ಐಆರ್ ಸಂಖ್ಯೆ 0812/2026 ಅನ್ನು ನಾನು ವಿಶ್ಲೇಷಿಸಿದ್ದೇನೆ. ಇದು ಮನೆಯ ಬೀಗ ಮುರಿದು ಕಳ್ಳತನ ಮಾಡಿದ ಪ್ರಕರಣವಾಗಿದೆ. ಫಿರ್ಯಾದಿದಾರರು ಡಾ. ರಮೇಶ್ ರಾವ್ ಆಗಿದ್ದಾರೆ. ಆರೋಪಿ ಕಾರ್ತಿಕ್ ಅಲಿಯಾಸ್ ಪೂಚಿ ಕಾರ್ತಿಕ್‌ನನ್ನು ಬಂಧಿಸಿ 150 ಗ್ರಾಂ ಚಿನ್ನಾಭರಣ ವಶಪಡಿಸಿಕೊಳ್ಳಲಾಗಿದೆ.' :
-            'I have resolved case file KA-BC-2026-00812 (Indiranagar PS). This is a house breaking case registered by Dr. Ramesh Rao. Accused Karthik alias "Poochi" Karthik was arrested on 25th June, and 150g gold ornaments were recovered. Investigation is active.';
-          sql = 'SELECT * FROM CaseMaster c JOIN ComplainantDetails cd ON c.id = cd.case_id WHERE c.case_id = \'KA-BC-2026-00812\'';
+          answer = currentLanguage === 'kn' ? 
+            'ಪ್ರಕರಣ KA-BC-2026-00812 ರ ಸಾರಾಂಶ: ಜೂನ್ ೧೦, ೨೦೨೬ ರಂದು ಇಂದಿರಾನಗರ ನಿವಾಸದಲ್ಲಿ ರಾತ್ರಿ ದರೋಡೆ ಸಂಭವಿಸಿದೆ. ಅಪರಿಚಿತ ಆರೋಪಿಗಳು ಕಬ್ಬಿಣದ ಗ್ರಿಲ್ ಮುರಿದು ಒಳಗೆ ಪ್ರವೇಶಿಸಿ ೧೫೦ ಗ್ರಾಂ ಚಿನ್ನದ ಆಭರಣಗಳು ಮತ್ತು ₹೧,೨೦,೦೦೦ ನಗದು ಕಳವು ಮಾಡಿದ್ದಾರೆ. ಜೂನ್ ೨೫ ರಂದು ಕಾರ್ತಿಕ್ ಅಲಿಯಾಸ್ ಪೂಚಿ ಕಾರ್ತಿಕ್‌ನನ್ನು ಬಂಧಿಸಿ ಕಳುವಾದ ಒಡವೆಗಳನ್ನು ವಶಪಡಿಸಿಕೊಳ್ಳಲಾಗಿದೆ. ತನಿಖೆ ಪ್ರಗತಿಯಲ್ಲಿದೆ.' : 
+            'Summary of Case KA-BC-2026-00812: Night burglary reported on June 10, 2026 at an Indiranagar residence. Offenders broke the rear window grill to steal 150g gold and ₹1.2L cash. Prime suspect Karthik alias "Poochi" Karthik was arrested on June 25 at Majestic Bus Stand and gold recovered. Investigation ongoing.';
+          sql = 'SELECT * FROM cases WHERE case_id = "KA-BC-2026-00812"';
           citations = ['KA-BC-2026-00812'];
-          detectedIntent = 'case_summary';
-        } else if (textLower.includes('124') || textLower.includes('highway') || textLower.includes('robbery')) {
-          answer = language === 'KN' ?
-            'ಮೈಸೂರಿನ ಲಷ್ಕರ್ ಪೊಲೀಸ್ ಠಾಣೆ ಎಫ್‌ಐಆರ್ ಸಂಖ್ಯೆ 0124/2026 ಹೆದ್ದಾರಿ ದರೋಡೆಗೆ ಸಂಬಂಧಿಸಿದೆ. ಫಿರ್ಯಾದಿದಾರರು ಸುನಿತಾ ಎಂ. ಆರೋಪಿಗಳಾದ ಕುಳ್ಳ ಮಂಜ ಮತ್ತು ಸೀನಾರನ್ನು ಬಂಧಿಸಲಾಗಿದೆ. ಈಗಾಗಲೇ ನ್ಯಾಯಾಲಯಕ್ಕೆ ದೋಷಾರೋಪಣೆ ಪಟ್ಟಿಯನ್ನು ಸಲ್ಲಿಸಲಾಗಿದೆ.' :
-            'I have resolved case file KA-MY-2026-00124 (Lashkar PS). This highway robbery case involves complainant Sunitha M. Accused "Kulla" Manja and Seena have been arrested, and the chargesheet was filed in court on 2nd July 2026.';
-          sql = 'SELECT * FROM CaseMaster c JOIN Accused a ON c.id = a.case_id WHERE c.case_id = \'KA-MY-2026-00124\'';
+          detectedIntent = 'summarize_case';
+        } else if (textLower.includes('robber') || textLower.includes('mysuru') || textLower.includes('ದರೋಡೆ')) {
+          answer = currentLanguage === 'kn' ? 
+            'ಮೈಸೂರಿನಲ್ಲಿ ಇತ್ತೀಚಿನ ಅಪರಾಧಗಳ ವರದಿ: ಪ್ರಕರಣ KA-MY-2026-00124 ರಲ್ಲಿ ಸುನೀತಾ ಎಂ. ಎಂಬುವವರ ಸರವನ್ನು ಚಾಕು ತೋರಿಸಿ ದರೋಡೆ ಮಾಡಲಾಗಿದೆ. ೫ ದಿನಗಳಲ್ಲಿ ಮಂಜ ಮತ್ತು ಶ್ರೀನಿವಾಸ್ ಎಂಬ ಆರೋಪಿಗಳನ್ನು ಬಂಧಿಸಲಾಗಿದೆ.' : 
+            'Recent robbery incidents in Mysuru: Case KA-MY-2026-00124 registered at Lashkar PS. Accused Manju and Srinivas weaponized a knife to rob Sunitha M. of a 40g gold chain. Both arrested within 5 days.';
+          sql = 'SELECT * FROM cases WHERE district = "Mysuru City" AND category = "Robbery"';
           citations = ['KA-MY-2026-00124'];
-          detectedIntent = 'case_summary';
-        } else if (textLower.includes('count') || textLower.includes('how many')) {
-          answer = 'Based on database registers, there are currently 1,650 cases registered under Theft / Burglary category, and 710 cases under Robbery category in the current year.';
-          sql = 'SELECT category, COUNT(*) FROM CaseMaster GROUP BY category';
-          detectedIntent = 'sql_lookup';
+          detectedIntent = 'filter_cases';
+        } else if (textLower.includes('compare') || textLower.includes('category') || textLower.includes('ಹೋಲಿಕೆ')) {
+          answer = currentLanguage === 'kn' ? 
+            'ಅಪರಾಧ ವಿಭಾಗಗಳ ಪ್ರಕಾರ ಒಟ್ಟು ಪ್ರಕರಣಗಳ ಹೋಲಿಕೆ:\n- ಕಳ್ಳತನ / ಕನ್ನಗಳ್ಳತನ: ೨ ಪ್ರಕರಣಗಳು\n- ದರೋಡೆ: ೧ ಪ್ರಕರಣ\n- ವಂಚನೆ / ಸೈಬರ್ ವಂಚನೆ: ೧ ಪ್ರಕರಣ\n- ಹಲ್ಲೆ: ೧ ಪ್ರಕರಣ\n\nಹೆಚ್ಚಿನ ಪ್ರಕರಣಗಳು ಕಳ್ಳತನ ವಿಭಾಗದಲ್ಲಿ ದಾಖಲಾಗಿವೆ.' : 
+            'Comparison of registered crimes by category:\n- Theft / Burglary: 2 cases\n- Robbery: 1 case\n- Cheating / Cyber: 1 case\n- Assault: 1 case\n\nTheft and Burglary constitute the majority of recorded case files.';
+          sql = 'SELECT category, COUNT(*) FROM cases GROUP BY category';
+          detectedIntent = 'aggregate_crimes';
+        } else {
+          answer = currentLanguage === 'kn' ? 
+            'ಕ್ಷಮಿಸಿ, ಈ ಪ್ರಶ್ನೆಯು ತನಿಖಾ ಡೇಟಾಬೇಸ್ ವ್ಯಾಪ್ತಿಗೆ ಮೀರಿ ಇರಬಹುದು. ಕೆಳಗಿನ ಉದಾಹರಣೆಗಳನ್ನು ಪ್ರಯತ್ನಿಸಿ:' : 
+            'This query is outside my grounded context. Please try one of the suggested prompts or search for a specific case ID.';
         }
 
         setMessages(prev => prev.map(m => {
@@ -270,63 +252,44 @@ export default function AssistantChat() {
           }
           return m;
         }));
-      }, 1000);
-
-    } finally {
-      setIsStreaming(false);
+        setIsStreaming(false);
+      }, 800);
     }
   };
 
   return (
-    <div className="flex-1 max-w-4xl mx-auto w-full p-6 md:p-8 flex flex-col justify-between overflow-hidden min-h-0 max-h-full animate-in fade-in duration-300">
-      {/* Assistant Header Info */}
-      <div className="bg-canvas border border-hairline-soft p-4 rounded-xl flex items-center justify-between mb-4 card-product-shadow">
-        <div className="flex items-center gap-3">
-          <img src="/karnataka_emblem.png" alt="KSP Logo" className="w-10 h-10 object-contain" width="40" height="40" />
-          <div>
-            <h1 className="text-sm font-bold text-ink-deep flex items-center gap-1.5">
-              {language === 'EN' ? 'Crime Intelligence Assistant' : 'ಅಪರಾಧ ಗುಪ್ತಚರ ಸಹಾಯಕ'}
-              <span className="text-[8px] bg-primary/10 text-primary px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">
-                Grounded AI
-              </span>
-            </h1>
-            <p className="text-[10px] text-steel">
-              {language === 'EN' ? 'Connected to local SQL Gateway & Catalyst QuickML' : 'ಸ್ಥಳೀಯ SQL ಗೇಟ್‌ವೇ ಮತ್ತು ಕ್ಯಾಟಲಿಸ್ಟ್ ಕ್ವಿಕ್‌ಎಂಎಲ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗಿದೆ'}
-            </p>
-          </div>
+    <div className="p-6 md:p-8 space-y-6 max-w-5xl mx-auto w-full animate-in fade-in duration-200">
+      {/* Header */}
+      <div className="flex items-center gap-3 border-b border-hairline-soft pb-4">
+        <div className="w-10 h-10 rounded-circle bg-ink-deep text-canvas flex items-center justify-center font-bold">
+          AI
         </div>
-
-        {/* Active Language Badge */}
-        <div
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-surface-soft border border-hairline-soft rounded-full text-[10px] font-bold text-ink select-none"
-        >
-          <Globe className="w-3.5 h-3.5 text-stone" />
-          <span>{language === 'EN' ? 'English' : 'ಕನ್ನಡ'}</span>
+        <div>
+          <h1 className="text-lg font-bold text-ink-deep">{t('assistant.title')}</h1>
+          <p className="text-xs text-steel">{t('assistant.subtitle')}</p>
         </div>
       </div>
 
-      {/* Messages Feed */}
-      <div className="flex-1 bg-surface-soft/30 border border-hairline-soft rounded-xxxl p-5 overflow-y-auto space-y-4 mb-4 min-h-0">
+      {/* Messages Window */}
+      <div className="h-[400px] overflow-y-auto border border-hairline-soft bg-surface-soft/30 rounded-xxxl p-5 space-y-4 shadow-inner">
         {messages.map((msg) => (
           <div
             key={msg.id}
-            className={`flex gap-3 max-w-[85%] ${msg.role === 'user' ? 'ml-auto flex-row-reverse' : ''}`}
+            className={`flex gap-3 max-w-[85%] ${
+              msg.role === 'user' ? 'ml-auto flex-row-reverse' : ''
+            }`}
           >
-            {/* Avatar */}
-            {msg.role === 'user' ? (
-              <div className="w-8 h-8 rounded-circle flex items-center justify-center border border-ink bg-ink-deep text-canvas select-none shrink-0">
-                <User className="w-4 h-4" />
-              </div>
-            ) : (
-              <img src="/karnataka_emblem.png" alt="KSP Seal" className="w-8 h-8 object-contain shrink-0" width="32" height="32" />
-            )}
+            <div className={`w-7 h-7 rounded-circle flex items-center justify-center shrink-0 text-[10px] font-bold ${
+              msg.role === 'user' ? 'bg-primary text-canvas' : 'bg-ink-deep text-canvas'
+            }`}>
+              {msg.role === 'user' ? 'U' : 'AI'}
+            </div>
 
-            {/* Chat Bubble */}
             <div className="space-y-2">
-              <div className={`p-4 rounded-xxl border text-xs leading-relaxed ${
+              <div className={`px-4 py-2.5 rounded-2xl text-xs leading-relaxed whitespace-pre-line shadow-sm border ${
                 msg.role === 'user'
-                  ? 'bg-ink-deep border-ink text-canvas rounded-tr-none font-medium'
-                  : 'bg-canvas border-hairline-soft text-ink rounded-tl-none card-product-shadow'
+                  ? 'bg-primary text-canvas border-primary/20 rounded-tr-none'
+                  : 'bg-canvas text-ink border-hairline-soft rounded-tl-none'
               }`}>
                 {msg.content || (msg.isStreaming && <span className="inline-block w-1.5 h-3.5 bg-primary animate-pulse" />)}
               </div>
@@ -351,11 +314,21 @@ export default function AssistantChat() {
                     )}
                   </div>
 
+                  {/* SQL Query Preview */}
+                  {msg.sqlPreview && (
+                    <div className="p-2 bg-surface-soft border border-hairline rounded-lg text-[10px] font-mono text-ink-deep max-w-full overflow-x-auto">
+                      <span className="text-[9px] font-bold uppercase tracking-wider text-steel block mb-1">
+                        {t('assistant.sqlPreview')}
+                      </span>
+                      {msg.sqlPreview}
+                    </div>
+                  )}
+
                   {/* Citations list */}
                   {msg.sources && msg.sources.length > 0 && (
                     <div className="flex flex-wrap gap-1.5 items-center">
                       <span className="text-[9px] font-bold text-stone flex items-center gap-0.5">
-                        <Link2 className="w-3 h-3" /> {language === 'EN' ? 'Citations:' : 'ಉಲ್ಲೇಖಗಳು:'}
+                        <Link2 className="w-3 h-3" /> {currentLanguage === 'en' ? 'Citations:' : 'ಉಲ್ಲೇಖಗಳು:'}
                       </span>
                       {msg.sources.map((srcId) => (
                         <a
@@ -380,7 +353,7 @@ export default function AssistantChat() {
       {messages.length === 1 && (
         <div className="mb-4">
           <span className="text-[10px] font-bold text-stone uppercase tracking-wider block mb-2">
-            {language === 'EN' ? 'Suggested Investigations:' : 'ಸೂಚಿಸಲಾದ ತನಿಖೆಗಳು:'}
+            {currentLanguage === 'en' ? 'Suggested Investigations:' : 'ಸೂಚಿಸಲಾದ ತನಿಖೆಗಳು:'}
           </span>
           <div className="flex flex-wrap gap-2">
             {suggestedPrompts.map((p, i) => (
@@ -421,8 +394,8 @@ export default function AssistantChat() {
             autoComplete="off"
             aria-label="AI Assistant input field"
             placeholder={isRecording 
-              ? (language === 'EN' ? "Listening under voice mode…" : "ಧ್ವನಿ ಮೋಡ್ ಅಡಿಯಲ್ಲಿ ಆಲಿಸಲಾಗುತ್ತಿದೆ...") 
-              : (language === 'EN' ? "Query copilot assistant…" : "ಸಹಾಯಕನಿಗೆ ಪ್ರಶ್ನೆಯನ್ನು ಕೇಳಿ...")}
+              ? (currentLanguage === 'en' ? "Listening under voice mode…" : "ಧ್ವನಿ ಮೋಡ್ ಅಡಿಯಲ್ಲಿ ಆಲಿಸಲಾಗುತ್ತಿದೆ...") 
+              : t('assistant.inputPlaceholder')}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             disabled={isRecording}

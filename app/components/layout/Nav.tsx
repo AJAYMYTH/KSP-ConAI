@@ -2,37 +2,32 @@ import React, { useState, useEffect } from 'react';
 import { getCurrentSession } from '../../lib/auth';
 import type { UserSession } from '../../lib/auth';
 import { Menu, X, Search, User, LogOut, Globe } from 'lucide-react';
+import { useI18n } from '../../i18n/hooks';
 
 interface NavProps {
   currentPath?: string;
 }
 
 export default function Nav({ currentPath = '/' }: NavProps) {
+  const { t, currentLanguage, changeLanguage } = useI18n();
   const [session, setSessionState] = useState<UserSession | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [lang, setLang] = useState<'EN' | 'KN'>('EN');
 
   useEffect(() => {
     setSessionState(getCurrentSession());
-    const saved = localStorage.getItem('ksp_language') as 'EN' | 'KN';
-    if (saved === 'EN' || saved === 'KN') {
-      setLang(saved);
-    }
   }, []);
 
   const toggleLanguage = () => {
-    const newLang = lang === 'EN' ? 'KN' : 'EN';
-    setLang(newLang);
-    localStorage.setItem('ksp_language', newLang);
-    window.dispatchEvent(new CustomEvent('ksp-language-change', { detail: newLang }));
+    const nextLang = currentLanguage === 'en' ? 'kn' : 'en';
+    changeLanguage(nextLang);
   };
 
   const navItems = [
-    { name: lang === 'EN' ? 'Dashboard' : 'ಡ್ಯಾಶ್‌ಬೋರ್ಡ್', path: '/dashboard' },
-    { name: lang === 'EN' ? 'FIR Search' : 'ಎಫ್‌ಐಆರ್ ಹುಡುಕಾಟ', path: '/search' },
-    { name: lang === 'EN' ? 'Hotspot Map' : 'ಹಾಟ್‌ಸ್ಪಾಟ್ ನಕ್ಷೆ', path: '/map' },
-    { name: lang === 'EN' ? 'AI Assistant' : 'ಎಐ ಸಹಾಯಕ', path: '/assistant' },
-    { name: lang === 'EN' ? 'Reports' : 'ವರದಿಗಳು', path: '/reports' },
+    { name: t('nav.dashboard'), path: '/dashboard' },
+    { name: t('nav.search'), path: '/search' },
+    { name: t('nav.map'), path: '/map' },
+    { name: t('nav.assistant'), path: '/assistant' },
+    { name: t('nav.reports'), path: '/reports' },
   ];
 
   return (
@@ -45,7 +40,7 @@ export default function Nav({ currentPath = '/' }: NavProps) {
             KSP-ConAI
           </span>
           <span className="text-[10px] uppercase font-bold tracking-wider text-steel">
-            Crime Intelligence
+            {currentLanguage === 'en' ? 'Crime Intelligence' : 'ಅಪರಾಧ ಗುಪ್ತಚರ'}
           </span>
         </div>
       </a>
@@ -79,7 +74,7 @@ export default function Nav({ currentPath = '/' }: NavProps) {
           aria-label="Toggle language between English and Kannada"
         >
           <Globe className="w-3.5 h-3.5 text-stone" />
-          <span>{lang === 'EN' ? 'English' : 'ಕನ್ನಡ'}</span>
+          <span>{currentLanguage === 'en' ? 'English' : 'ಕನ್ನಡ'}</span>
         </button>
 
         {session && (

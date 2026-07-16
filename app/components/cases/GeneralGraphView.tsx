@@ -2,18 +2,35 @@ import React, { useState } from 'react';
 import NetworkGraph from './NetworkGraph';
 import { MOCK_CASES } from '../../lib/mockData';
 import { Network, Search, ChevronDown } from 'lucide-react';
+import { useI18n } from '../../i18n/hooks';
 
 export default function GeneralGraphView() {
+  const { t, currentLanguage } = useI18n();
   const [selectedCaseId, setSelectedCaseId] = useState(MOCK_CASES[0].caseId);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const translateDistrict = (district: string, lang: 'en' | 'kn') => {
+    if (lang === 'en') return district;
+    const mapping: Record<string, string> = {
+      'Bengaluru City': 'ಬೆಂಗಳೂರು ನಗರ',
+      'Mysuru City': 'ಮೈಸೂರು ನಗರ',
+      'Hubballi-Dharwad City': 'ಹುಬ್ಬಳ್ಳಿ-ಧಾರವಾಡ ನಗರ',
+      'Mangaluru City': 'ಮಂಗಳೂರು ನಗರ',
+      'Belagavi City': 'ಬೆಳಗಾವಿ ನಗರ',
+      'Kalaburagi City': 'ಕಲಬುರಗಿ ನಗರ',
+      'Bengaluru': 'ಬೆಂಗಳೂರು',
+      'Mysuru': 'ಮೈಸೂರು'
+    };
+    return mapping[district] || district;
+  };
 
   return (
     <div className="p-6 md:p-8 space-y-6 max-w-5xl mx-auto w-full animate-in fade-in duration-200">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <span className="text-[10px] uppercase tracking-wider text-steel font-bold">Relational Analytics</span>
-          <h1 className="text-xl md:text-2xl font-bold text-ink-deep">Accused Association Network</h1>
+          <span className="text-[10px] uppercase tracking-wider text-steel font-bold">{t('caseDetail.relationalIntel')}</span>
+          <h1 className="text-xl md:text-2xl font-bold text-ink-deep">{t('caseDetail.networkTitle')}</h1>
         </div>
 
         {/* Case selector custom dropdown */}
@@ -30,7 +47,7 @@ export default function GeneralGraphView() {
               <span>
                 {(() => {
                   const selectedCase = MOCK_CASES.find(c => c.caseId === selectedCaseId);
-                  return selectedCase ? `${selectedCase.firNumber} (${selectedCase.district})` : "Select a case";
+                  return selectedCase ? `${selectedCase.firNumber} (${translateDistrict(selectedCase.district, currentLanguage)})` : t('reports.selectTarget');
                 })()}
               </span>
               <ChevronDown className="w-3.5 h-3.5 text-stone shrink-0 transition-transform duration-200" style={{ transform: isDropdownOpen ? 'rotate(180deg)' : 'none' }} />
@@ -56,7 +73,7 @@ export default function GeneralGraphView() {
                         c.caseId === selectedCaseId ? 'bg-primary/5 text-primary font-bold' : ''
                       }`}
                     >
-                      <span>{c.firNumber} ({c.district})</span>
+                      <span>{c.firNumber} ({translateDistrict(c.district, currentLanguage)})</span>
                       {c.caseId === selectedCaseId && <div className="w-1.5 h-1.5 rounded-circle bg-primary shrink-0" />}
                     </li>
                   ))}
