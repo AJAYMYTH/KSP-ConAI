@@ -1,3 +1,4 @@
+// Trigger compile update 3
 const express = require('express');
 const cors = require('cors');
 const { authMiddleware } = require('../shared/auth');

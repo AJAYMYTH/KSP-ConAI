@@ -16,36 +16,36 @@ async function searchCases(req, res) {
 
     // Whitelist and safely sanitize/escape inputs to prevent SQL Injection in ZCQL
     if (query.district_id) {
-      const distId = parseInt(query.district_id);
-      if (!isNaN(distId)) {
+      const distId = String(query.district_id);
+      if (/^\d+$/.test(distId)) {
         conditions.push(`district_id = ${distId}`);
       }
     }
 
     if (query.case_category_id) {
-      const catId = parseInt(query.case_category_id);
-      if (!isNaN(catId)) {
+      const catId = String(query.case_category_id);
+      if (/^\d+$/.test(catId)) {
         conditions.push(`case_category_id = ${catId}`);
       }
     }
 
     if (query.case_status_id) {
-      const statusId = parseInt(query.case_status_id);
-      if (!isNaN(statusId)) {
+      const statusId = String(query.case_status_id);
+      if (/^\d+$/.test(statusId)) {
         conditions.push(`case_status_id = ${statusId}`);
       }
     }
 
     if (query.gravity_offence_id) {
-      const gravityId = parseInt(query.gravity_offence_id);
-      if (!isNaN(gravityId)) {
+      const gravityId = String(query.gravity_offence_id);
+      if (/^\d+$/.test(gravityId)) {
         conditions.push(`gravity_offence_id = ${gravityId}`);
       }
     }
 
     if (query.unit_id) {
-      const unitId = parseInt(query.unit_id);
-      if (!isNaN(unitId)) {
+      const unitId = String(query.unit_id);
+      if (/^\d+$/.test(unitId)) {
         conditions.push(`unit_id = ${unitId}`);
       }
     }
@@ -123,10 +123,10 @@ async function searchCases(req, res) {
       page,
       limit,
       filters: {
-        district_id: query.district_id ? parseInt(query.district_id) : null,
-        case_category_id: query.case_category_id ? parseInt(query.case_category_id) : null,
-        case_status_id: query.case_status_id ? parseInt(query.case_status_id) : null,
-        gravity_offence_id: query.gravity_offence_id ? parseInt(query.gravity_offence_id) : null,
+        district_id: query.district_id || null,
+        case_category_id: query.case_category_id || null,
+        case_status_id: query.case_status_id || null,
+        gravity_offence_id: query.gravity_offence_id || null,
         date_from: query.date_from || null,
         date_to: query.date_to || null,
         search: query.search || query.q || null

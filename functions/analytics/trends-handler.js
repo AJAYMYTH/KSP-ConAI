@@ -9,14 +9,14 @@ async function getTrends(req, res) {
     // 1. Build Filter Conditions based on parameters
     const conditions = [];
     if (query.district_id) {
-      const distId = parseInt(query.district_id);
-      if (!isNaN(distId)) {
+      const distId = String(query.district_id);
+      if (/^\d+$/.test(distId)) {
         conditions.push(`CaseMaster.district_id = ${distId}`);
       }
     }
     if (query.case_category_id) {
-      const catId = parseInt(query.case_category_id);
-      if (!isNaN(catId)) {
+      const catId = String(query.case_category_id);
+      if (/^\d+$/.test(catId)) {
         conditions.push(`CaseMaster.case_category_id = ${catId}`);
       }
     }

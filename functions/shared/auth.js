@@ -104,8 +104,11 @@ function checkRole(allowedRoles) {
   };
 }
 
+const { authMiddleware } = require('./auth-middleware');
+
 module.exports = {
   resolveUserRole,
   hasCapability,
-  checkRole
+  checkRole,
+  authMiddleware
 };
