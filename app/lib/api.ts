@@ -192,8 +192,14 @@ export async function searchCases(params: Record<string, string>): Promise<{ ite
   try {
     // Translate frontend keys to backend keys
     const backendParams = new URLSearchParams();
-    if (params.limit) backendParams.append('limit', params.limit);
-    if (params.offset) backendParams.append('offset', params.offset);
+    
+    // Support page-to-offset calculation
+    const limitNum = parseInt(params.limit || '10', 10);
+    const pageNum = parseInt(params.page || '1', 10);
+    const offsetNum = params.offset ? parseInt(params.offset, 10) : (pageNum - 1) * limitNum;
+    
+    backendParams.append('limit', limitNum.toString());
+    backendParams.append('offset', offsetNum.toString());
     if (params.query) backendParams.append('search', params.query);
     if (params.district && params.district !== 'all') backendParams.append('district', params.district);
     if (params.category && params.category !== 'all') backendParams.append('category', params.category);

@@ -3,26 +3,12 @@ import NetworkGraph from './NetworkGraph';
 import { MOCK_CASES } from '../../lib/mockData';
 import { Network, Search, ChevronDown } from 'lucide-react';
 import { useI18n } from '../../i18n/hooks';
+import { translateDistrict } from '../../i18n/utils';
 
 export default function GeneralGraphView() {
   const { t, currentLanguage } = useI18n();
   const [selectedCaseId, setSelectedCaseId] = useState(MOCK_CASES[0].caseId);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
-  const translateDistrict = (district: string, lang: 'en' | 'kn') => {
-    if (lang === 'en') return district;
-    const mapping: Record<string, string> = {
-      'Bengaluru City': 'ಬೆಂಗಳೂರು ನಗರ',
-      'Mysuru City': 'ಮೈಸೂರು ನಗರ',
-      'Hubballi-Dharwad City': 'ಹುಬ್ಬಳ್ಳಿ-ಧಾರವಾಡ ನಗರ',
-      'Mangaluru City': 'ಮಂಗಳೂರು ನಗರ',
-      'Belagavi City': 'ಬೆಳಗಾವಿ ನಗರ',
-      'Kalaburagi City': 'ಕಲಬುರಗಿ ನಗರ',
-      'Bengaluru': 'ಬೆಂಗಳೂರು',
-      'Mysuru': 'ಮೈಸೂರು'
-    };
-    return mapping[district] || district;
-  };
 
   return (
     <div className="p-6 md:p-8 space-y-6 max-w-5xl mx-auto w-full animate-in fade-in duration-200">

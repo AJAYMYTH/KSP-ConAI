@@ -128,10 +128,13 @@ export default function NetworkGraph({ caseId }: Props) {
                     x={(from.x + to.x) / 2}
                     y={(from.y + to.y) / 2 - 4}
                     fill="var(--color-steel)"
+                    stroke="var(--color-canvas)"
+                    strokeWidth={4}
+                    paintOrder="stroke"
                     fontSize={8}
                     fontWeight="bold"
                     textAnchor="middle"
-                    className="select-none bg-canvas"
+                    className="select-none"
                   >
                     {edge.relationship.replace('_', ' ')}
                   </text>
