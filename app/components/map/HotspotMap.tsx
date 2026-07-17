@@ -326,7 +326,7 @@ export default function HotspotMap() {
         {/* Leaflet Map Frame */}
         <div className="lg:col-span-3 h-[500px] bg-surface-soft border border-hairline-soft rounded-xxxl shadow-xs overflow-hidden relative">
           {loading && (
-            <div className="absolute inset-0 bg-surface-soft/80 flex flex-col items-center justify-center gap-2 z-10">
+            <div className="absolute inset-0 bg-surface-soft/80 flex flex-col items-center justify-center gap-2 z-10 animate-in fade-in duration-300">
               <div className="w-8 h-8 rounded-circle border-4 border-hairline-soft border-t-primary animate-spin" />
               <span className="text-xs text-steel font-bold">
                 {currentLanguage === 'en' ? 'Locating crime clusters…' : 'ಅಪರಾಧ ವಲಯಗಳನ್ನು ಪತ್ತೆ ಮಾಡಲಾಗುತ್ತಿದೆ...'}

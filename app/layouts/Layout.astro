@@ -2,6 +2,7 @@
 import Nav from '../components/layout/Nav.tsx';
 import Footer from '../components/layout/Footer.tsx';
 import { I18nProvider } from '../i18n/provider.tsx';
+import { ViewTransitions } from 'astro:transitions';
 import '../styles/globals.css';
 
 interface Props {
@@ -23,6 +24,7 @@ const { title, description = 'KSP-ConAI', hideNav = false, hideFooter = false } 
     <meta name="description" content={description} />
     <link class="fav-icon" rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
+    <ViewTransitions />
     
     <script is:inline>
       // Sync document-level language class with localStorage

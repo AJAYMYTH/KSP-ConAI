@@ -72,7 +72,7 @@ export default function GeneralGraphView() {
 
       {/* Graph Area */}
       <div className="bg-canvas border border-hairline-soft p-5 rounded-[32px] card-product-shadow">
-        <NetworkGraph caseId={selectedCaseId} />
+        <NetworkGraph caseId={selectedCaseId} key={selectedCaseId} />
       </div>
     </div>
   );
