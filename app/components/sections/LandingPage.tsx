@@ -95,11 +95,11 @@ export const LandingPage: React.FC = () => {
         
         {/* ================= 2. HERO SECTION ================= */}
         {/* hero-band-marketing style: stark white canvas background, center text layout, dual CTA, full bleed photography */}
-        <section className="relative w-full pt-8 pb-10 md:pt-12 md:pb-12 flex flex-col items-center justify-center text-center px-6 overflow-hidden border-b border-[#dee3e9] bg-[#ffffff] min-h-[380px] sm:min-h-[400px] md:min-h-[440px]">
+        <section className="relative w-full pt-8 pb-10 md:pt-12 md:pb-12 flex flex-col items-center justify-center text-center px-6 overflow-hidden border-b border-[#dee3e9] bg-[#ffffff]">
           {/* Subtle dotted background pattern */}
           <div className="absolute inset-0 opacity-[0.22] pointer-events-none" style={{ backgroundImage: 'radial-gradient(var(--color-primary) 1.5px, transparent 1.5px)', backgroundSize: '32px 32px' }}></div>
           
-          <div className="max-w-4xl mx-auto space-y-5 relative z-10 flex flex-col items-center">
+          <div className="max-w-4xl mx-auto space-y-5 relative z-10 flex flex-col items-center min-h-[280px] sm:min-h-[300px] md:min-h-[320px] justify-center">
             <span 
               className={`font-display font-bold text-[10px] tracking-[0.25em] text-[#991b1b] uppercase block transition-all duration-700 delay-100 ${
                 mounted ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
