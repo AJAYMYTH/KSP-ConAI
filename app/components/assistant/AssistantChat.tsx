@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { useI18n } from '../../i18n/hooks';
 import { getCurrentSession } from '../../lib/auth';
+import AITextLoading from './AITextLoading';
 
 interface ChatMessage {
   id: string;
@@ -317,19 +318,24 @@ export default function AssistantChat() {
                         <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                       </svg>
                     </summary>
-                    <div className="px-3 pb-2.5 pt-2 border-t border-hairline-soft/40 text-[9px] text-stone font-mono space-y-2 bg-canvas/30">
-                      <div className="flex items-center gap-2 animate-[pulse_1.5s_infinite_0ms]">
-                        <span className="w-1.5 h-1.5 rounded-full bg-success/60 shrink-0"></span>
-                        <span className="truncate">{currentLanguage === 'en' ? 'Resolving localized query...' : 'ಸ್ಥಳೀಯ ಪ್ರಶ್ನೆ ಪರಿಹರಿಸಲಾಗುತ್ತಿದೆ...'}</span>
-                      </div>
-                      <div className="flex items-center gap-2 animate-[pulse_1.5s_infinite_300ms] text-slate-500">
-                        <span className="w-1.5 h-1.5 rounded-full bg-fb-blue/60 shrink-0 animate-ping"></span>
-                        <span className="truncate">{currentLanguage === 'en' ? 'Scanning SQL databases...' : 'SQL ಡೇಟಾಬೇಸ್‌ಗಳನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಲಾಗುತ್ತಿದೆ...'}</span>
-                      </div>
-                      <div className="flex items-center gap-2 animate-[pulse_1.5s_infinite_600ms] text-slate-400">
-                        <span className="w-1.5 h-1.5 rounded-full bg-attention/60 shrink-0"></span>
-                        <span className="truncate">{currentLanguage === 'en' ? 'Drafting summary statement...' : 'ಸಾರಾಂಶ ಹೇಳಿಕೆ ರಚಿಸಲಾಗುತ್ತಿದೆ...'}</span>
-                      </div>
+                    <div className="px-3 pb-1 pt-1 border-t border-hairline-soft/40 bg-canvas/30">
+                      <AITextLoading 
+                        className="text-xs font-semibold py-1" 
+                        interval={1200}
+                        texts={currentLanguage === 'en' ? [
+                          "Resolving localized query...",
+                          "Scanning SQL databases...",
+                          "Mapping case relationships...",
+                          "Grounding database citations...",
+                          "Drafting summary report..."
+                        ] : [
+                          "ಸ್ಥಳೀಯ ಪ್ರಶ್ನೆ ಪರಿಹರಿಸಲಾಗುತ್ತಿದೆ...",
+                          "SQL ಡೇಟಾಬೇಸ್‌ಗಳನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಲಾಗುತ್ತಿದೆ...",
+                          "ಪ್ರಕರಣದ ಸಂಬಂಧಗಳನ್ನು ಮ್ಯಾಪ್ ಮಾಡಲಾಗುತ್ತಿದೆ...",
+                          "ಡೇಟಾಬೇಸ್ ಉಲ್ಲೇಖಗಳನ್ನು ಜೋಡಿಸಲಾಗುತ್ತಿದೆ...",
+                          "ಸಾರಾಂಶ ವರದಿಯನ್ನು ರಚಿಸಲಾಗುತ್ತಿದೆ..."
+                        ]}
+                      />
                     </div>
                   </details>
                 </div>
