@@ -1,4 +1,4 @@
-import type { CaseDetail, CaseSummary, DashboardSummary, GraphData, MapHotspot, TimelineEvent } from '../types';
+import type { CaseDetail, CaseSummary, DashboardSummary, GraphData, MapHotspot, TimelineEvent, PredictiveInsights, DemographicInsights, OffenderProfile, SimilarCase } from '../types';
 
 export const MOCK_CASES: CaseDetail[] = [
   {
@@ -226,5 +226,169 @@ export const MOCK_TIMELINES: Record<string, TimelineEvent[]> = {
     { date: '2026-05-18T10:30:00Z', title: 'First Accused Arrested', description: 'Kulla Manja arrested from hospital circle area. Part of stolen chain recovered.', type: 'arrest', delayDays: 4 },
     { date: '2026-05-19T18:00:00Z', title: 'Second Accused Arrested', description: 'Seena arrested near Nanjangud Road outskirts with weapon of offense.', type: 'arrest', delayDays: 5 },
     { date: '2026-07-02T11:00:00Z', title: 'Chargesheet Filed', description: 'Chargesheet submitted to JMFC 2nd Court, Mysuru.', type: 'chargesheet', delayDays: 49 }
+  ]
+};
+
+export const MOCK_PREDICTIVE: PredictiveInsights = {
+  anomalies: [
+    {
+      id: 'ANOM-01',
+      title: 'Commercial Burglary Spike',
+      description: 'A 42% spike in house breaking thefts detected within Indiranagar and Lashkar PS sectors during late night hours.',
+      gravity: 'high',
+      district: 'Bengaluru City',
+      deviationPercentage: 42
+    },
+    {
+      id: 'ANOM-02',
+      title: 'Chain Snatching Outbreak',
+      description: 'Elevated street robbery and chain snatching activity along major outer ring road junctions in Mysuru City.',
+      gravity: 'medium',
+      district: 'Mysuru City',
+      deviationPercentage: 28
+    }
+  ],
+  forecast: [
+    { date: '2026-07-10', actualCount: 45, predictedCount: 46, confidenceLower: 40, confidenceUpper: 52 },
+    { date: '2026-07-11', actualCount: 48, predictedCount: 47, confidenceLower: 41, confidenceUpper: 53 },
+    { date: '2026-07-12', actualCount: 42, predictedCount: 45, confidenceLower: 39, confidenceUpper: 51 },
+    { date: '2026-07-13', actualCount: 50, predictedCount: 48, confidenceLower: 42, confidenceUpper: 54 },
+    { date: '2026-07-14', actualCount: 39, predictedCount: 44, confidenceLower: 38, confidenceUpper: 50 },
+    { date: '2026-07-15', predictedCount: 47, confidenceLower: 40, confidenceUpper: 54 },
+    { date: '2026-07-16', predictedCount: 49, confidenceLower: 42, confidenceUpper: 56 },
+    { date: '2026-07-17', predictedCount: 52, confidenceLower: 44, confidenceUpper: 60 }
+  ],
+  earlyWarnings: [
+    {
+      id: 'EW-01',
+      metric: 'Recidivism Risk Indicator',
+      value: 'High Repeat Offender Activity',
+      alertLevel: 'critical',
+      relevance: 'Three registered history-sheeters released on bail in the last 7 days within Lashkar PS limits.'
+    },
+    {
+      id: 'EW-02',
+      metric: 'Temporal Crime Shift',
+      value: 'Late Night Shift (2 AM - 4 AM)',
+      alertLevel: 'warning',
+      relevance: 'Incidents shifting to early morning hours. Recommend adjusting patrol vehicle timings.'
+    }
+  ]
+};
+
+export const MOCK_DEMOGRAPHICS: Record<string, DemographicInsights> = {
+  accused: {
+    ageGroups: [
+      { group: '18-25', count: 145 },
+      { group: '26-35', count: 210 },
+      { group: '36-45', count: 98 },
+      { group: '46-55', count: 42 },
+      { group: '56+', count: 15 }
+    ],
+    gender: [
+      { label: 'Male', value: 432 },
+      { label: 'Female', value: 68 },
+      { label: 'Other', value: 10 }
+    ],
+    occupation: [
+      { label: 'Unemployed', count: 185 },
+      { label: 'Daily Wage Labor', count: 142 },
+      { label: 'Private Sector Employees', count: 88 },
+      { label: 'Students', count: 54 },
+      { label: 'Drivers/Transport Workers', count: 41 }
+    ],
+    locationTypes: [
+      { type: 'Commercial Complexes', count: 112 },
+      { type: 'Residential Zones', count: 165 },
+      { type: 'Highway/Outer Roads', count: 94 },
+      { type: 'Public Transport Hubs', count: 88 },
+      { type: 'Parks & Recreation Areas', count: 51 }
+    ]
+  },
+  victims: {
+    ageGroups: [
+      { group: '18-25', count: 88 },
+      { group: '26-35', count: 132 },
+      { group: '36-45', count: 165 },
+      { group: '46-55', count: 92 },
+      { group: '56+', count: 68 }
+    ],
+    gender: [
+      { label: 'Male', value: 245 },
+      { label: 'Female', value: 288 },
+      { label: 'Other', value: 12 }
+    ],
+    occupation: [
+      { label: 'Private Sector Employees', count: 162 },
+      { label: 'Homemakers', count: 112 },
+      { label: 'Students', count: 98 },
+      { label: 'Business Owners', count: 88 },
+      { label: 'Retired Personnel', count: 45 }
+    ],
+    locationTypes: [
+      { type: 'Residential Zones', count: 220 },
+      { type: 'Public Transport Hubs', count: 125 },
+      { type: 'Commercial Complexes', count: 110 },
+      { type: 'Parks & Recreation Areas', count: 48 },
+      { type: 'Highway/Outer Roads', count: 42 }
+    ]
+  }
+};
+
+export const MOCK_OFFENDERS: OffenderProfile[] = [
+  {
+    id: 'OFF-00821',
+    name: 'Karthik alias "Poochi" Karthik',
+    aliases: ['Poochi', 'Karthik Indiranagar', 'Poochi Rao'],
+    age: 32,
+    gender: 'Male',
+    recidivismScore: 88,
+    moSummary: 'Typically target unoccupied, high-end residential quarters in East Bengaluru during holiday weekends. Prefer breaking rear grill windows and escaping via pre-booked rental scooters.',
+    knownAssociates: ['Manju alias "Kulla" Manja', 'Seena', 'unknown associate'],
+    casesAssociated: [
+      { caseId: 'KA-BC-2026-00812', role: 'Primary Accused (House Breaking)', date: '2026-06-10' },
+      { caseId: 'KA-BC-2025-00412', role: 'Accused (Theft - Gold Snatched)', date: '2025-09-14' },
+      { caseId: 'KA-BC-2024-00109', role: 'Suspect (Burglary)', date: '2024-03-02' }
+    ],
+    status: 'in_custody'
+  },
+  {
+    id: 'OFF-00543',
+    name: 'Manju alias "Kulla" Manja',
+    aliases: ['Kulla Manja', 'Shorty Manja'],
+    age: 29,
+    gender: 'Male',
+    recidivismScore: 92,
+    moSummary: 'Motorcycle-riding highway robbery and chain snatching. Uses stolen Black Bajaj Pulsar motorcycles to trace and target lone pedestrians on poorly lit outer ring roads.',
+    knownAssociates: ['Srinivas alias "Seena"', 'Karthik alias "Poochi" Karthik'],
+    casesAssociated: [
+      { caseId: 'KA-MY-2026-00124', role: 'Primary Rider (Highway Robbery)', date: '2026-05-14' },
+      { caseId: 'KA-MY-2025-00714', role: 'Accused (Snatching)', date: '2025-11-22' }
+    ],
+    status: 'in_custody'
+  },
+  {
+    id: 'OFF-00662',
+    name: 'Srinivas alias "Seena"',
+    aliases: ['Seena', 'Nanjangud Seena', 'Sharp knife Seena'],
+    age: 35,
+    gender: 'Male',
+    recidivismScore: 78,
+    moSummary: 'Armed highway robbery, weapon threat, and chain snatching. Acts as pillion rider who brandishes weapons and snatches jewelry while associates navigate the vehicle.',
+    knownAssociates: ['Manju alias "Kulla" Manja'],
+    casesAssociated: [
+      { caseId: 'KA-MY-2026-00124', role: 'Pillion Accused (Highway Robbery)', date: '2026-05-14' }
+    ],
+    status: 'in_custody'
+  }
+];
+
+export const MOCK_SIMILAR_CASES: Record<string, SimilarCase[]> = {
+  'KA-BC-2026-00812': [
+    { caseId: 'KA-BC-2025-00412', firNumber: 'FIR-0412/2025', district: 'Bengaluru City', category: 'Theft / Burglary', status: 'Disposed', similarityScore: 92, matchReason: 'Identical MO: rear window grill forced open while family away in Mysuru.' },
+    { caseId: 'KA-BC-2024-00109', firNumber: 'FIR-0109/2024', district: 'Bengaluru City', category: 'Theft / Burglary', status: 'Disposed', similarityScore: 85, matchReason: 'Targeted property match: same history-sheeter Karthik "Poochi" named in details.' }
+  ],
+  'KA-MY-2026-00124': [
+    { caseId: 'KA-MY-2025-00714', firNumber: 'FIR-0714/2025', district: 'Mysuru City', category: 'Robbery', status: 'Disposed', similarityScore: 95, matchReason: 'Identical MO: Two riders on black pulsar motorcycle snatching gold chains on outer ring roads.' }
   ]
 };

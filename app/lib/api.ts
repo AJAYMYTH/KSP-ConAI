@@ -7,7 +7,11 @@ import type {
   GraphData, 
   MapHotspot, 
   TimelineEvent, 
-  ApiResponse 
+  ApiResponse,
+  PredictiveInsights,
+  DemographicInsights,
+  OffenderProfile,
+  SimilarCase
 } from '../types';
 import { getCurrentSession } from './auth';
 
@@ -15,7 +19,7 @@ export const API_BASE_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:
 export const IS_MOCK_MODE = import.meta.env.PUBLIC_MOCK_MODE === 'true';
 
 // Re-export type definitions for usage elsewhere
-export type { CaseSummary, CaseDetail, DashboardSummary, GraphData, MapHotspot, TimelineEvent, ApiResponse };
+export type { CaseSummary, CaseDetail, DashboardSummary, GraphData, MapHotspot, TimelineEvent, ApiResponse, PredictiveInsights, DemographicInsights, OffenderProfile, SimilarCase };
 
 // Inject user role header for local access emulation on Catalyst serverless backend
 function getHeaders(extraHeaders: Record<string, string> = {}): Record<string, string> {
@@ -367,5 +371,91 @@ export async function generateReport(caseId: string): Promise<{ pdfUrl: string }
     return {
       pdfUrl: `/reports/pdf_mock_${caseId}.pdf`
     };
+  }
+}
+
+// Fetch Predictive Analytics & Early Warnings
+export async function getPredictiveInsights(): Promise<PredictiveInsights> {
+  if (IS_MOCK_MODE) {
+    return mock.MOCK_PREDICTIVE;
+  }
+  try {
+    const response = await fetch(`${API_BASE_URL}/analytics/predictive`, {
+      headers: getHeaders()
+    });
+    if (!response.ok) throw new Error('API Error');
+    const result: ApiResponse<PredictiveInsights> = await response.json();
+    return result.data;
+  } catch (error) {
+    console.warn('Predictive insights API failed, falling back to mock data:', error);
+    return mock.MOCK_PREDICTIVE;
+  }
+}
+
+// Fetch Socio-Demographic Insights
+export async function getDemographicInsights(entity: 'accused' | 'victims', months: string = '12'): Promise<DemographicInsights> {
+  if (IS_MOCK_MODE) {
+    return mock.MOCK_DEMOGRAPHICS[entity] || mock.MOCK_DEMOGRAPHICS.accused;
+  }
+  try {
+    const response = await fetch(`${API_BASE_URL}/analytics/demographics?entity=${entity}&months=${months}`, {
+      headers: getHeaders()
+    });
+    if (!response.ok) throw new Error('API Error');
+    const result: ApiResponse<DemographicInsights> = await response.json();
+    return result.data;
+  } catch (error) {
+    console.warn(`Demographics API failed for entity ${entity}, using mock data:`, error);
+    return mock.MOCK_DEMOGRAPHICS[entity] || mock.MOCK_DEMOGRAPHICS.accused;
+  }
+}
+
+// Fetch Offender Profiles for Behavioral Profiling
+export async function getOffenderProfiles(searchQuery: string = ''): Promise<OffenderProfile[]> {
+  const getMockOffenders = () => {
+    if (!searchQuery) return mock.MOCK_OFFENDERS;
+    const q = searchQuery.toLowerCase();
+    return mock.MOCK_OFFENDERS.filter(o => 
+      o.name.toLowerCase().includes(q) || 
+      o.aliases.some(a => a.toLowerCase().includes(q)) ||
+      o.id.toLowerCase().includes(q)
+    );
+  };
+
+  if (IS_MOCK_MODE) {
+    return getMockOffenders();
+  }
+  try {
+    const response = await fetch(`${API_BASE_URL}/analytics/offender?search=${encodeURIComponent(searchQuery)}`, {
+      headers: getHeaders()
+    });
+    if (!response.ok) throw new Error('API Error');
+    const result: ApiResponse<OffenderProfile[]> = await response.json();
+    return result.data;
+  } catch (error) {
+    console.warn(`Offender profile API failed for query ${searchQuery}, using mock database:`, error);
+    return getMockOffenders();
+  }
+}
+
+// Fetch Similar-Case Recommendations
+export async function getSimilarCases(caseId: string, limit: number = 10): Promise<SimilarCase[]> {
+  const getMockSimilar = () => {
+    return mock.MOCK_SIMILAR_CASES[caseId] || [];
+  };
+
+  if (IS_MOCK_MODE) {
+    return getMockSimilar();
+  }
+  try {
+    const response = await fetch(`${API_BASE_URL}/cases/${caseId}/similar?limit=${limit}`, {
+      headers: getHeaders()
+    });
+    if (!response.ok) throw new Error('API Error');
+    const result: ApiResponse<SimilarCase[]> = await response.json();
+    return result.data;
+  } catch (error) {
+    console.warn(`Similar cases API failed for case ${caseId}, returning mock recommendations:`, error);
+    return getMockSimilar();
   }
 }

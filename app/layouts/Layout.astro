@@ -10,9 +10,10 @@ interface Props {
   description?: string;
   hideNav?: boolean;
   hideFooter?: boolean;
+  transitionAnimate?: 'slide' | 'fade' | 'none' | 'initial';
 }
 
-const { title, description = 'KSP-ConAI', hideNav = false, hideFooter = false } = Astro.props;
+const { title, description = 'KSP-ConAI', hideNav = false, hideFooter = false, transitionAnimate = 'slide' } = Astro.props;
 ---
 
 <!DOCTYPE html>
@@ -48,9 +49,9 @@ const { title, description = 'KSP-ConAI', hideNav = false, hideFooter = false } 
   </head>
   <body class="min-h-screen bg-canvas flex flex-col">
     <I18nProvider client:load>
-      {!hideNav && <Nav currentPath={Astro.url.pathname} client:load />}
+      {!hideNav && <Nav currentPath={Astro.url.pathname} client:load transition:persist />}
       
-      <main class="flex-1 flex flex-col">
+      <main class="flex-1 flex flex-col" transition:animate={transitionAnimate}>
         <slot />
       </main>
 

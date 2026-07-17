@@ -38,8 +38,53 @@ export interface DashboardSummary {
 }
 
 export interface GraphData {
-  nodes: { id: string; label: string; type: 'case' | 'accused' | 'victim' | 'station' | 'officer' }[];
+  nodes: { id: string; label: string; type: 'case' | 'accused' | 'victim' | 'witness' | 'station' | 'location' | 'phone' | 'vehicle' | 'bank' | 'organization' }[];
   edges: { source: string; target: string; relationship: string }[];
+}
+
+export interface PredictiveInsights {
+  anomalies: {
+    id: string;
+    title: string;
+    description: string;
+    gravity: 'high' | 'medium' | 'low';
+    district: string;
+    deviationPercentage: number;
+  }[];
+  forecast: {
+    date: string;
+    actualCount?: number;
+    predictedCount: number;
+    confidenceLower: number;
+    confidenceUpper: number;
+  }[];
+  earlyWarnings: {
+    id: string;
+    metric: string;
+    value: string;
+    alertLevel: 'critical' | 'warning' | 'info';
+    relevance: string;
+  }[];
+}
+
+export interface DemographicInsights {
+  ageGroups: { group: string; count: number }[];
+  gender: { label: string; value: number }[];
+  occupation: { label: string; count: number }[];
+  locationTypes: { type: string; count: number }[];
+}
+
+export interface OffenderProfile {
+  id: string;
+  name: string;
+  aliases: string[];
+  age: number;
+  gender: string;
+  recidivismScore: number;
+  moSummary: string;
+  knownAssociates: string[];
+  casesAssociated: { caseId: string; role: string; date: string }[];
+  status: 'active' | 'in_custody' | 'absconding';
 }
 
 export interface MapHotspot {
@@ -66,4 +111,14 @@ export interface ApiResponse<T> {
     code: string;
     message: string;
   };
+}
+
+export interface SimilarCase {
+  caseId: string;
+  firNumber: string;
+  district: string;
+  category: string;
+  status: string;
+  similarityScore: number;
+  matchReason: string;
 }

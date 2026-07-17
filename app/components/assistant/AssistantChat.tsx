@@ -1,9 +1,13 @@
+"use client";
+
 import React, { useState, useRef, useEffect } from 'react';
 import { API_BASE_URL } from '../../lib/api';
 import type { CaseSummary } from '../../types';
 import { 
   User, Send, Shield, Link2, 
-  Mic, Play, Globe, RotateCcw, AlertCircle 
+  Mic, Play, Globe, RotateCcw, AlertCircle,
+  Plus, Trash2, Archive, Edit2, MessageSquare, 
+  Printer, Volume2, VolumeX, FolderArchive, Check, HelpCircle
 } from 'lucide-react';
 import { useI18n } from '../../i18n/hooks';
 import { getCurrentSession } from '../../lib/auth';
@@ -20,58 +24,207 @@ interface ChatMessage {
   isStreaming?: boolean;
 }
 
+interface Conversation {
+  id: string;
+  title: string;
+  archived: boolean;
+  timestamp: number;
+}
+
 export default function AssistantChat() {
   const { t, currentLanguage } = useI18n();
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: 'welcome',
-      role: 'assistant',
-      content: t('assistant.welcome'),
-    }
-  ]);
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [activeConvId, setActiveConvId] = useState<string>('default');
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [editingConvId, setEditingConvId] = useState<string | null>(null);
+  const [editTitleInput, setEditTitleInput] = useState('');
+  
   const [input, setInput] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
+  const [ttsEnabled, setTtsEnabled] = useState(false);
+  const [showArchived, setShowArchived] = useState(false);
+  
   const chatEndRef = useRef<HTMLDivElement>(null);
-
-  // References for MediaRecorder audio recording
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
+
+  // Load conversations list on mount
+  useEffect(() => {
+    const savedConvs = localStorage.getItem('ksp_conversations');
+    if (savedConvs) {
+      try {
+        const parsed = JSON.parse(savedConvs) as Conversation[];
+        setConversations(parsed);
+        if (parsed.length > 0) {
+          // Find first non-archived conversation or fallback to first
+          const active = parsed.find(c => !c.archived) || parsed[0];
+          setActiveConvId(active.id);
+        } else {
+          initializeDefaultConversation();
+        }
+      } catch {
+        initializeDefaultConversation();
+      }
+    } else {
+      initializeDefaultConversation();
+    }
+  }, []);
+
+  // Save conversations registry to localStorage
+  const saveConversationsToStorage = (list: Conversation[]) => {
+    localStorage.setItem('ksp_conversations', JSON.stringify(list));
+    setConversations(list);
+  };
+
+  const initializeDefaultConversation = () => {
+    const defaultConv: Conversation = {
+      id: 'default',
+      title: currentLanguage === 'kn' ? 'ಸಕ್ರಿಯ ಸೆಷನ್' : 'Active Investigation',
+      archived: false,
+      timestamp: Date.now()
+    };
+    saveConversationsToStorage([defaultConv]);
+    setActiveConvId('default');
+    
+    const initialWelcome: ChatMessage[] = [
+      {
+        id: 'welcome',
+        role: 'assistant',
+        content: t('assistant.welcome')
+      }
+    ];
+    localStorage.setItem('ksp_messages_default', JSON.stringify(initialWelcome));
+    setMessages(initialWelcome);
+  };
+
+  // Load messages whenever active conversation changes
+  useEffect(() => {
+    if (!activeConvId) return;
+    const savedMsgs = localStorage.getItem(`ksp_messages_${activeConvId}`);
+    if (savedMsgs) {
+      try {
+        setMessages(JSON.parse(savedMsgs));
+      } catch {
+        setMessages([]);
+      }
+    } else {
+      // Default initial welcome
+      const initialMsgs = [
+        {
+          id: 'welcome',
+          role: 'assistant',
+          content: t('assistant.welcome')
+        }
+      ];
+      setMessages(initialMsgs);
+      localStorage.setItem(`ksp_messages_${activeConvId}`, JSON.stringify(initialMsgs));
+    }
+  }, [activeConvId]);
+
+  // Save current messages to active conversation
+  const saveMessages = (updatedMsgs: ChatMessage[]) => {
+    setMessages(updatedMsgs);
+    if (activeConvId) {
+      localStorage.setItem(`ksp_messages_${activeConvId}`, JSON.stringify(updatedMsgs));
+    }
+  };
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Sync the welcome message content when the current language changes
-  useEffect(() => {
-    setMessages(prev => prev.map(m => {
-      if (m.id === 'welcome') {
-        return {
-          ...m,
-          content: t('assistant.welcome')
-        };
-      }
-      return m;
-    }));
-  }, [currentLanguage]);
-
-  const suggestedPrompts = [
-    { 
-      label: currentLanguage === 'en' ? 'Summarize burglary case in Bengaluru' : 'ಬೆಂಗಳೂರಿನ ಕಳ್ಳತನ ಪ್ರಕರಣವನ್ನು ಸಂಕ್ಷೇಪಿಸಿ', 
-      query: 'Summarize case KA-BC-2026-00812' 
-    },
-    { 
-      label: currentLanguage === 'en' ? 'Show recent highway robberies in Mysuru' : 'ಮೈಸೂರಿನ ಇತ್ತೀಚಿನ ಹೆದ್ದಾರಿ ದರೋಡೆಗಳನ್ನು ತೋರಿಸಿ', 
-      query: 'Show highway robberies registered in Mysuru City' 
-    },
-    { 
-      label: currentLanguage === 'en' ? 'Compare crime totals by category' : 'ವಿಭಾಗವಾರು ಒಟ್ಟು ಅಪರಾಧಗಳನ್ನು ಹೋಲಿಕೆ ಮಾಡಿ', 
-      query: 'Compare total cases by major categories' 
+  // Voice TTS handler
+  const speakMessage = (text: string) => {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      const isKannada = text.match(/[\u0C80-\u0CFF]/); // Kannada regex match
+      utterance.lang = isKannada ? 'kn-IN' : 'en-IN';
+      window.speechSynthesis.speak(utterance);
     }
-  ];
+  };
 
-  const handleSuggestionClick = (queryText: string) => {
-    setInput(queryText);
+  // Create new conversation
+  const handleNewConversation = () => {
+    const newId = `conv-${Date.now()}`;
+    const newConv: Conversation = {
+      id: newId,
+      title: `${currentLanguage === 'kn' ? 'ಹೊಸ ಚಾಟ್' : 'New Investigation'} ${conversations.length + 1}`,
+      archived: false,
+      timestamp: Date.now()
+    };
+    const updated = [newConv, ...conversations];
+    saveConversationsToStorage(updated);
+    setActiveConvId(newId);
+    
+    const initialMsgs = [
+      {
+        id: 'welcome',
+        role: 'assistant',
+        content: t('assistant.welcome')
+      }
+    ];
+    localStorage.setItem(`ksp_messages_${newId}`, JSON.stringify(initialMsgs));
+    setMessages(initialMsgs);
+  };
+
+  // Delete conversation
+  const handleDeleteConversation = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const updated = conversations.filter(c => c.id !== id);
+    localStorage.removeItem(`ksp_messages_${id}`);
+    saveConversationsToStorage(updated);
+    
+    if (activeConvId === id) {
+      if (updated.length > 0) {
+        setActiveConvId(updated[0].id);
+      } else {
+        initializeDefaultConversation();
+      }
+    }
+  };
+
+  // Archive conversation
+  const handleArchiveConversation = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const updated = conversations.map(c => {
+      if (c.id === id) {
+        return { ...c, archived: !c.archived };
+      }
+      return c;
+    });
+    saveConversationsToStorage(updated);
+    
+    if (activeConvId === id) {
+      const active = updated.find(c => !c.archived);
+      if (active) {
+        setActiveConvId(active.id);
+      } else if (updated.length > 0) {
+        setActiveConvId(updated[0].id);
+      } else {
+        initializeDefaultConversation();
+      }
+    }
+  };
+
+  // Rename conversation
+  const startRename = (conv: Conversation, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setEditingConvId(conv.id);
+    setEditTitleInput(conv.title);
+  };
+
+  const saveRename = (id: string) => {
+    if (!editTitleInput.trim()) return;
+    const updated = conversations.map(c => {
+      if (c.id === id) {
+        return { ...c, title: editTitleInput.trim() };
+      }
+      return c;
+    });
+    saveConversationsToStorage(updated);
+    setEditingConvId(null);
   };
 
   const handleSpeechInput = async () => {
@@ -130,7 +283,6 @@ export default function AssistantChat() {
         setIsRecording(true);
       } catch (err) {
         console.warn('Microphone access denied or unsupported:', err);
-        // Fallback to mock timer behavior
         setIsRecording(true);
         setTimeout(() => {
           setIsRecording(false);
@@ -149,11 +301,18 @@ export default function AssistantChat() {
     const userText = input;
     setInput('');
 
+    // Capture context history (last 10 messages)
+    const contextHistory = messages.slice(-10).map(m => ({
+      role: m.role,
+      content: m.content
+    }));
+
     // Add user message
-    setMessages(prev => [...prev, { id: userMessageId, role: 'user', content: userText }]);
+    const updatedWithUser = [...messages, { id: userMessageId, role: 'user', content: userText } as ChatMessage];
+    saveMessages(updatedWithUser);
     
-    // Add pending assistant message
-    setMessages(prev => [...prev, { 
+    // Add streaming placeholder
+    saveMessages([...updatedWithUser, { 
       id: assistantMessageId, 
       role: 'assistant', 
       content: '', 
@@ -199,21 +358,22 @@ export default function AssistantChat() {
           'This query is outside my grounded context. Please try one of the suggested prompts or search for a specific case ID.';
       }
 
-      setMessages(prev => prev.map(m => {
-        if (m.id === assistantMessageId) {
-          return {
-            ...m,
-            content: answer,
-            sqlPreview: sql || undefined,
-            sources: citations.length > 0 ? citations : undefined,
-            confidence: confValue,
-            intent: detectedIntent,
-            isStreaming: false
-          };
-        }
-        return m;
-      }));
+      const finalMsgs = [...updatedWithUser, {
+        id: assistantMessageId,
+        role: 'assistant',
+        content: answer,
+        sqlPreview: sql || undefined,
+        sources: citations.length > 0 ? citations : undefined,
+        confidence: confValue,
+        intent: detectedIntent,
+        isStreaming: false
+      } as ChatMessage];
+
+      saveMessages(finalMsgs);
       setIsStreaming(false);
+      if (ttsEnabled) {
+        speakMessage(answer);
+      }
     };
 
     if (import.meta.env.PUBLIC_MOCK_MODE === 'true') {
@@ -233,7 +393,8 @@ export default function AssistantChat() {
           'x-user-role': role
         },
         body: JSON.stringify({
-          query: userText
+          query: userText,
+          history: contextHistory
         }),
         signal: controller.signal
       });
@@ -243,20 +404,22 @@ export default function AssistantChat() {
       const result = await response.json();
       
       if (result.success && result.data) {
-        setMessages(prev => prev.map(m => {
-          if (m.id === assistantMessageId) {
-            return {
-              ...m,
-              content: result.data.answer || 'No response returned.',
-              sources: result.data.citations || [],
-              confidence: 'high',
-              intent: 'grounded_query',
-              isStreaming: false
-            };
-          }
-          return m;
-        }));
+        const answer = result.data.answer || 'No response returned.';
+        const finalMsgs = [...updatedWithUser, {
+          id: assistantMessageId,
+          role: 'assistant',
+          content: answer,
+          sources: result.data.citations || [],
+          confidence: 'high',
+          intent: 'grounded_query',
+          isStreaming: false
+        } as ChatMessage];
+
+        saveMessages(finalMsgs);
         setIsStreaming(false);
+        if (ttsEnabled) {
+          speakMessage(answer);
+        }
       } else {
         throw new Error(result.error?.message || 'Query failed');
       }
@@ -268,196 +431,401 @@ export default function AssistantChat() {
     }
   };
 
-  return (
-    <div className="p-6 md:p-8 space-y-6 max-w-5xl mx-auto w-full animate-in fade-in duration-200">
-      {/* Header */}
-      <div className="flex items-center gap-3 border-b border-hairline-soft pb-4">
-        <div className="w-10 h-10 rounded-full bg-slate-50 border border-slate-200/80 flex items-center justify-center p-1.5 shrink-0 shadow-xs">
-          <img src="/karnataka_emblem.png" alt="Karnataka Coat of Arms" className="w-full h-full object-contain" width="40" height="40" />
-        </div>
-        <div>
-          <h1 className="text-lg font-bold text-ink-deep">{t('assistant.title')}</h1>
-          <p className="text-xs text-steel">{t('assistant.subtitle')}</p>
-        </div>
+  const handleSuggestionClick = (queryText: string) => {
+    setInput(queryText);
+  };
+
+  // Print & PDF Export trigger
+  const handleExportPDF = () => {
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+    
+    const messagesHtml = messages.map(msg => `
+      <div style="margin-bottom: 20px; padding: 15px; border-radius: 8px; border: 1px solid #dee3e9; background: ${msg.role === 'user' ? '#f1f4f7' : '#ffffff'}">
+        <strong style="color: ${msg.role === 'user' ? '#0064e0' : '#0a1317'}; font-size: 13px;">
+          ${msg.role === 'user' ? 'INVESTIGATOR' : 'KSP-ConAI ASSISTANT'}
+        </strong>
+        <p style="font-size: 12px; line-height: 1.5; color: #1c1e21; white-space: pre-wrap; margin: 8px 0 0 0;">
+          ${msg.content}
+        </p>
+        ${msg.sqlPreview ? `
+          <div style="margin-top: 10px; padding: 8px; background: #fafafa; border: 1px solid #dee3e9; border-radius: 4px; font-family: monospace; font-size: 10px; color: #444950;">
+            <strong>SQL Query Executed:</strong><br/>
+            ${msg.sqlPreview}
+          </div>
+        ` : ''}
       </div>
+    `).join('');
 
-      {/* Messages Window */}
-      <div className="h-[400px] overflow-y-auto border border-hairline-soft bg-surface-soft/30 rounded-xxxl p-5 space-y-4 shadow-inner">
-        {messages.map((msg) => (
-          <div
-            key={msg.id}
-            className={`flex gap-3 max-w-[85%] ${
-              msg.role === 'user' ? 'ml-auto flex-row-reverse' : ''
-            }`}
-          >
-            {msg.role === 'user' ? (
-              <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center shrink-0 shadow-sm">
-                <User className="w-3.5 h-3.5 text-canvas" />
-              </div>
-            ) : (
-              <div className="w-7 h-7 rounded-full bg-slate-50 border border-slate-200/60 flex items-center justify-center p-0.5 shrink-0 shadow-xs">
-                <img src="/karnataka_emblem.png" alt="KSP AI" className="w-full h-full object-contain" width="28" height="28" />
-              </div>
-            )}
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>KSP Crime Intelligence Copilot - Session Transcript</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 30px; background: #ffffff; color: #1c1e21; }
+            h1 { font-size: 18px; color: #0a1317; border-bottom: 2px solid #0064e0; padding-bottom: 10px; margin-bottom: 20px; }
+            .meta { font-size: 10px; color: #8595a4; margin-bottom: 20px; font-weight: bold; }
+          </style>
+        </head>
+        <body>
+          <h1>KSP Crime Intelligence Copilot - Session Transcript</h1>
+          <div class="meta">
+            Date Generated: ${new Date().toLocaleString()} | Authority: Karnataka State Police Command Centre // Classified
+          </div>
+          <div style="margin-top: 20px;">
+            ${messagesHtml}
+          </div>
+          <script>
+            window.onload = function() {
+              window.print();
+              setTimeout(function() { window.close(); }, 500);
+            };
+          </script>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+  };
 
-            <div className="space-y-2 max-w-full">
-              {msg.role === 'assistant' && msg.isStreaming && (
-                <div className="animate-in fade-in duration-200">
-                  <details className="group border border-hairline-soft bg-surface-soft/40 rounded-xl overflow-hidden min-w-[260px] max-w-md" open>
-                    <summary className="flex items-center justify-between px-3 py-2 cursor-pointer list-none select-none text-[10px] font-bold text-steel hover:bg-surface-soft/80 transition">
-                      <div className="flex items-center gap-2">
-                        {/* Bouncing dots */}
-                        <div className="flex items-center gap-0.5">
-                          <div className="w-1 h-1 rounded-full bg-primary animate-[bounce_1.4s_infinite_0ms]"></div>
-                          <div className="w-1 h-1 rounded-full bg-primary animate-[bounce_1.4s_infinite_200ms]"></div>
-                          <div className="w-1 h-1 rounded-full bg-primary animate-[bounce_1.4s_infinite_400ms]"></div>
-                        </div>
-                        <span>{currentLanguage === 'en' ? 'AI Reasoning Chain' : 'ಚಿಂತನೆ ಪ್ರಕ್ರಿಯೆ'}</span>
-                      </div>
-                      <svg className="w-3 h-3 text-steel group-open:rotate-180 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                      </svg>
-                    </summary>
-                    <div className="px-3 pb-1 pt-1 border-t border-hairline-soft/40 bg-canvas/30">
-                      <AITextLoading 
-                        className="text-xs font-semibold py-1" 
-                        interval={1200}
-                        texts={currentLanguage === 'en' ? [
-                          "Resolving localized query...",
-                          "Scanning SQL databases...",
-                          "Mapping case relationships...",
-                          "Grounding database citations...",
-                          "Drafting summary report..."
-                        ] : [
-                          "ಸ್ಥಳೀಯ ಪ್ರಶ್ನೆ ಪರಿಹರಿಸಲಾಗುತ್ತಿದೆ...",
-                          "SQL ಡೇಟಾಬೇಸ್‌ಗಳನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಲಾಗುತ್ತಿದೆ...",
-                          "ಪ್ರಕರಣದ ಸಂಬಂಧಗಳನ್ನು ಮ್ಯಾಪ್ ಮಾಡಲಾಗುತ್ತಿದೆ...",
-                          "ಡೇಟಾಬೇಸ್ ಉಲ್ಲೇಖಗಳನ್ನು ಜೋಡಿಸಲಾಗುತ್ತಿದೆ...",
-                          "ಸಾರಾಂಶ ವರದಿಯನ್ನು ರಚಿಸಲಾಗುತ್ತಿದೆ..."
-                        ]}
+  const filteredConversations = conversations.filter(c => c.archived === showArchived);
+  const activeConv = conversations.find(c => c.id === activeConvId);
+
+  const suggestedPrompts = [
+    { 
+      label: currentLanguage === 'en' ? 'Summarize burglary case in Bengaluru' : 'ಬೆಂಗಳೂರಿನ ಕಳ್ಳತನ ಪ್ರಕರಣವನ್ನು ಸಂಕ್ಷೇಪಿಸಿ', 
+      query: 'Summarize case KA-BC-2026-00812' 
+    },
+    { 
+      label: currentLanguage === 'en' ? 'Show recent highway robberies in Mysuru' : 'ಮೈಸೂರಿನ ಇತ್ತೀಚಿನ ಹೆದ್ದಾರಿ ದರೋಡೆಗಳನ್ನು ತೋರಿಸಿ', 
+      query: 'Show highway robberies registered in Mysuru City' 
+    },
+    { 
+      label: currentLanguage === 'en' ? 'Compare crime totals by category' : 'ವಿಭಾಗವಾರು ಒಟ್ಟು ಅಪರಾಧಗಳನ್ನು ಹೋಲಿಕೆ ಮಾಡಿ', 
+      query: 'Compare total cases by major categories' 
+    }
+  ];
+
+  return (
+    <div className="p-6 md:p-8 space-y-6 max-w-7xl mx-auto w-full animate-in fade-in duration-200">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
+        {/* Left Side: Session Manager / Sidebar */}
+        <div className="lg:col-span-1 bg-canvas border border-hairline-soft p-5 rounded-xxxl shadow-xs space-y-4">
+          <div className="flex items-center justify-between border-b border-hairline-soft pb-3">
+            <span className="text-[10px] uppercase tracking-wider text-steel font-bold">
+              {currentLanguage === 'en' ? 'Chat Sessions' : 'ಚಾಟ್ ಸೆಷನ್ಗಳು'}
+            </span>
+            <button
+              onClick={handleNewConversation}
+              className="p-1 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary transition cursor-pointer"
+              title="Start New Session"
+            >
+              <Plus className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* Toggle show archives */}
+          <div className="flex items-center justify-between">
+            <span className="text-xs text-stone font-medium">
+              {currentLanguage === 'en' ? 'Show Archived' : 'ಆರ್ಕೈವ್ ಮಾಡಿದವುಗಳು'}
+            </span>
+            <button
+              onClick={() => setShowArchived(prev => !prev)}
+              className={`w-9 h-5 rounded-full p-0.5 transition-colors duration-200 focus:outline-none cursor-pointer ${
+                showArchived ? 'bg-primary' : 'bg-hairline'
+              }`}
+            >
+              <div className={`w-4 h-4 rounded-full bg-canvas transition-transform duration-200 ${
+                showArchived ? 'translate-x-4' : 'translate-x-0'
+              }`} />
+            </button>
+          </div>
+
+          <div className="space-y-1.5 max-h-[300px] overflow-y-auto pr-1">
+            {filteredConversations.map((conv) => {
+              const isActive = conv.id === activeConvId;
+              const isEditing = conv.id === editingConvId;
+
+              return (
+                <div
+                  key={conv.id}
+                  onClick={() => !isEditing && setActiveConvId(conv.id)}
+                  className={`group p-2.5 rounded-xl border flex items-center justify-between transition cursor-pointer select-none ${
+                    isActive
+                      ? 'border-primary bg-primary/5 text-primary'
+                      : 'border-hairline-soft bg-canvas hover:bg-surface-soft/40 text-ink-deep'
+                  }`}
+                >
+                  <div className="flex items-center gap-2 min-w-0 flex-1">
+                    <MessageSquare className="w-3.5 h-3.5 shrink-0 text-stone" />
+                    {isEditing ? (
+                      <input
+                        type="text"
+                        value={editTitleInput}
+                        onChange={(e) => setEditTitleInput(e.target.value)}
+                        onBlur={() => saveRename(conv.id)}
+                        onKeyDown={(e) => e.key === 'Enter' && saveRename(conv.id)}
+                        autoFocus
+                        className="bg-canvas border border-primary px-1.5 py-0.5 rounded text-xs w-full font-medium focus:outline-none text-ink-deep"
                       />
-                    </div>
-                  </details>
-                </div>
-              )}
-
-              {(msg.content || (!msg.isStreaming && !msg.content)) && (
-                <div className={`px-4 py-2.5 rounded-2xl text-xs leading-relaxed whitespace-pre-line shadow-sm border ${
-                  msg.role === 'user'
-                    ? 'bg-primary text-canvas border-primary/20 rounded-tr-none'
-                    : 'bg-canvas text-ink border-hairline-soft rounded-tl-none'
-                }`}>
-                  {msg.content || (currentLanguage === 'en' ? 'No response details available.' : 'ಯಾವುದೇ ಪ್ರತಿಕ್ರಿಯೆ ವಿವರಗಳು ಲಭ್ಯವಿಲ್ಲ.')}
-                </div>
-              )}
-
-              {/* Auxiliary AI Outputs (Citations only - SQL Preview removed) */}
-              {msg.role === 'assistant' && (msg.sources || msg.confidence) && (
-                <div className="space-y-1.5 ml-1 animate-in fade-in duration-200">
-                  <div className="flex items-center gap-2">
-                    {msg.confidence && (
-                      <span className={`text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full border ${
-                        msg.confidence === 'high' ? 'bg-success/10 text-success border-success/20' : 
-                        msg.confidence === 'medium' ? 'bg-attention/10 text-attention border-attention/20' : 
-                        'bg-critical/10 text-critical border-critical/20'
-                      }`}>
-                        Conf: {msg.confidence}
-                      </span>
-                    )}
-                    {msg.intent && (
-                      <span className="text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-surface-soft border border-hairline text-stone">
-                        Intent: {msg.intent.replace('_', ' ')}
-                      </span>
+                    ) : (
+                      <span className="text-xs font-bold truncate">{conv.title}</span>
                     )}
                   </div>
 
-                  {/* Citations list */}
-                  {msg.sources && msg.sources.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5 items-center">
-                      <span className="text-[9px] font-bold text-stone flex items-center gap-0.5">
-                        <Link2 className="w-3 h-3" /> {currentLanguage === 'en' ? 'Citations:' : 'ಉಲ್ಲೇಖಗಳು:'}
-                      </span>
-                      {msg.sources.map((srcId) => (
-                        <a
-                          key={srcId}
-                          href={`/cases/${srcId}`}
-                          className="text-[9px] font-bold text-primary hover:underline bg-primary/10 px-2 py-0.5 rounded"
-                        >
-                          {srcId}
-                        </a>
-                      ))}
+                  {!isEditing && (
+                    <div className="opacity-0 group-hover:opacity-100 flex items-center gap-1.5 transition ml-2">
+                      <button
+                        onClick={(e) => startRename(conv, e)}
+                        className="p-1 text-stone hover:text-ink transition cursor-pointer"
+                        title="Rename"
+                      >
+                        <Edit2 className="w-3 h-3" />
+                      </button>
+                      <button
+                        onClick={(e) => handleArchiveConversation(conv.id, e)}
+                        className="p-1 text-stone hover:text-ink transition cursor-pointer"
+                        title={conv.archived ? "Restore" : "Archive"}
+                      >
+                        {conv.archived ? <RotateCcw className="w-3 h-3" /> : <Archive className="w-3 h-3" />}
+                      </button>
+                      <button
+                        onClick={(e) => handleDeleteConversation(conv.id, e)}
+                        className="p-1 text-stone hover:text-critical transition cursor-pointer"
+                        title="Delete"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </button>
                     </div>
                   )}
                 </div>
-              )}
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Right Side: Active Chat Window */}
+        <div className="lg:col-span-3 bg-canvas border border-hairline-soft rounded-xxxl card-product-shadow p-5 md:p-6 space-y-6 flex flex-col justify-between min-h-[500px]">
+          {/* Active Chat Header Controls */}
+          <div className="flex items-center justify-between border-b border-hairline-soft pb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-slate-50 border border-slate-200/80 flex items-center justify-center p-1.5 shrink-0 shadow-xs">
+                <img src="/karnataka_emblem.png" alt="Karnataka Coat of Arms" className="w-full h-full object-contain" width="40" height="40" />
+              </div>
+              <div>
+                <h1 className="text-sm font-bold text-ink-deep">
+                  {activeConv ? activeConv.title : t('assistant.title')}
+                </h1>
+                <p className="text-[10px] text-steel">{t('assistant.subtitle')}</p>
+              </div>
+            </div>
+
+            {/* Audio Voice & PDF Printing Options */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setTtsEnabled(!ttsEnabled)}
+                className={`p-2 border rounded-xl flex items-center justify-center transition cursor-pointer select-none ${
+                  ttsEnabled 
+                    ? 'bg-success/10 border-success/20 text-success' 
+                    : 'bg-canvas hover:bg-surface-soft border-hairline-soft text-stone'
+                }`}
+                title={ttsEnabled ? "TTS Auto-read Enabled" : "TTS Auto-read Disabled"}
+              >
+                {ttsEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+              </button>
+              
+              <button
+                onClick={handleExportPDF}
+                className="p-2 border bg-canvas hover:bg-surface-soft border-hairline-soft text-stone rounded-xl flex items-center justify-center transition cursor-pointer"
+                title="Export Transcript PDF"
+              >
+                <Printer className="w-4 h-4" />
+              </button>
             </div>
           </div>
-        ))}
-        <div ref={chatEndRef} />
-      </div>
 
-      {/* Suggested prompts list */}
-      {messages.length === 1 && (
-        <div className="mb-4">
-          <span className="text-[10px] font-bold text-stone uppercase tracking-wider block mb-2">
-            {currentLanguage === 'en' ? 'Suggested Investigations:' : 'ಸೂಚಿಸಲಾದ ತನಿಖೆಗಳು:'}
-          </span>
-          <div className="flex flex-wrap gap-2">
-            {suggestedPrompts.map((p, i) => (
-              <button
-                key={i}
-                onClick={() => handleSuggestionClick(p.query)}
-                className="px-4 py-2 bg-canvas border border-hairline-soft rounded-full text-xs font-bold text-ink hover:bg-surface-soft focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none cursor-pointer transition"
+          {/* Chat Messages Body */}
+          <div className="h-[360px] overflow-y-auto border border-hairline-soft bg-surface-soft/30 rounded-xxxl p-5 space-y-4 shadow-inner">
+            {messages.map((msg) => (
+              <div
+                key={msg.id}
+                className={`flex gap-3 max-w-[85%] ${
+                  msg.role === 'user' ? 'ml-auto flex-row-reverse' : ''
+                }`}
               >
-                {p.label}
-              </button>
+                {msg.role === 'user' ? (
+                  <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center shrink-0 shadow-sm">
+                    <User className="w-3.5 h-3.5 text-canvas" />
+                  </div>
+                ) : (
+                  <div className="w-7 h-7 rounded-full bg-slate-50 border border-slate-200/60 flex items-center justify-center p-0.5 shrink-0 shadow-xs">
+                    <img src="/karnataka_emblem.png" alt="KSP AI" className="w-full h-full object-contain" width="28" height="28" />
+                  </div>
+                )}
+
+                <div className="space-y-2 max-w-full">
+                  {msg.role === 'assistant' && msg.isStreaming && (
+                    <div className="animate-in fade-in duration-200">
+                      <details className="group border border-hairline-soft bg-surface-soft/40 rounded-xl overflow-hidden min-w-[260px] max-w-md" open>
+                        <summary className="flex items-center justify-between px-3 py-2 cursor-pointer list-none select-none text-[10px] font-bold text-steel hover:bg-surface-soft/80 transition">
+                          <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-0.5">
+                              <div className="w-1 h-1 rounded-full bg-primary animate-[bounce_1.4s_infinite_0ms]"></div>
+                              <div className="w-1 h-1 rounded-full bg-primary animate-[bounce_1.4s_infinite_200ms]"></div>
+                              <div className="w-1 h-1 rounded-full bg-primary animate-[bounce_1.4s_infinite_400ms]"></div>
+                            </div>
+                            <span>{currentLanguage === 'en' ? 'AI Reasoning Chain' : 'ಚಿಂತನೆ ಪ್ರಕ್ರಿಯೆ'}</span>
+                          </div>
+                          <svg className="w-3 h-3 text-steel group-open:rotate-180 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                          </svg>
+                        </summary>
+                        <div className="px-3 pb-1 pt-1 border-t border-hairline-soft/40 bg-canvas/30">
+                          <AITextLoading 
+                            className="text-xs font-semibold py-1" 
+                            interval={1200}
+                            texts={currentLanguage === 'en' ? [
+                              "Resolving localized query...",
+                              "Scanning SQL databases...",
+                              "Mapping case relationships...",
+                              "Grounding database citations...",
+                              "Drafting summary report..."
+                            ] : [
+                              "ಸ್ಥಳೀಯ ಪ್ರಶ್ನೆ ಪರಿಹರಿಸಲಾಗುತ್ತಿದೆ...",
+                              "SQL ಡೇಟಾಬೇಸ್‌ಗಳನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಲಾಗುತ್ತಿದೆ...",
+                              "ಪ್ರಕರಣದ ಸಂಬಂಧಗಳನ್ನು ಮ್ಯಾಪ್ ಮಾಡಲಾಗುತ್ತಿದೆ...",
+                              "ಡೇಟಾಬೇಸ್ ಉಲ್ಲೇಖಗಳನ್ನು ಜೋಡಿಸಲಾಗುತ್ತಿದೆ...",
+                              "ಸಾರಾಂಶ ವರದಿಯನ್ನು ರಚಿಸಲಾಗುತ್ತಿದೆ..."
+                            ]}
+                          />
+                        </div>
+                      </details>
+                    </div>
+                  )}
+
+                  {(msg.content || (!msg.isStreaming && !msg.content)) && (
+                    <div className={`relative px-4 py-2.5 rounded-2xl text-xs leading-relaxed whitespace-pre-line shadow-sm border group ${
+                      msg.role === 'user'
+                        ? 'bg-primary text-canvas border-primary/20 rounded-tr-none'
+                        : 'bg-canvas text-ink border-hairline-soft rounded-tl-none'
+                    }`}>
+                      {msg.content || (currentLanguage === 'en' ? 'No response details available.' : 'ಯಾವುದೇ ಪ್ರತಿಕ್ರಿಯೆ ವಿವರಗಳು ಲಭ್ಯವಿಲ್ಲ.')}
+                      
+                      {/* Audio speak triggers for assistant replies */}
+                      {msg.role === 'assistant' && msg.content && (
+                        <button
+                          onClick={() => speakMessage(msg.content)}
+                          className="opacity-0 group-hover:opacity-100 absolute -right-8 top-1 py-1 px-1.5 bg-surface-soft hover:bg-hairline text-stone hover:text-ink rounded-lg transition border border-hairline-soft/50 shadow-xs cursor-pointer select-none"
+                          title="Speak Text"
+                        >
+                          <Volume2 className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Auxiliary AI Outputs (Citations) */}
+                  {msg.role === 'assistant' && (msg.sources || msg.confidence) && (
+                    <div className="space-y-1.5 ml-1 animate-in fade-in duration-200">
+                      <div className="flex items-center gap-2">
+                        {msg.confidence && (
+                          <span className={`text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full border ${
+                            msg.confidence === 'high' ? 'bg-success/10 text-success border-success/20' : 
+                            msg.confidence === 'medium' ? 'bg-attention/10 text-attention border-attention/20' : 
+                            'bg-critical/10 text-critical border-critical/20'
+                          }`}>
+                            Conf: {msg.confidence}
+                          </span>
+                        )}
+                        {msg.intent && (
+                          <span className="text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-surface-soft border border-hairline text-stone">
+                            Intent: {msg.intent.replace('_', ' ')}
+                          </span>
+                        )}
+                      </div>
+
+                      {msg.sources && msg.sources.length > 0 && (
+                        <div className="flex flex-wrap gap-1.5 items-center">
+                          <span className="text-[9px] font-bold text-stone flex items-center gap-0.5">
+                            <Link2 className="w-3 h-3" /> {currentLanguage === 'en' ? 'Citations:' : 'ಉಲ್ಲೇಖಗಳು:'}
+                          </span>
+                          {msg.sources.map((srcId) => (
+                            <a
+                              key={srcId}
+                              href={`/cases/${srcId}`}
+                              className="text-[9px] font-bold text-primary hover:underline bg-primary/10 px-2 py-0.5 rounded"
+                            >
+                              {srcId}
+                            </a>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
             ))}
+            <div ref={chatEndRef} />
           </div>
-        </div>
-      )}
 
-      {/* Chat Form bar */}
-      <form onSubmit={handleSubmit} className="flex gap-2.5">
-        {/* Mic Speech Button */}
-        <button
-          type="button"
-          onClick={handleSpeechInput}
-          className={`p-3 rounded-circle border flex items-center justify-center focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none transition cursor-pointer select-none ${
-            isRecording 
-              ? 'bg-critical text-canvas border-critical animate-pulse' 
-              : 'bg-canvas hover:bg-surface-soft border-hairline-soft text-ink-deep'
-          }`}
-          title="Voice Command Mode"
-          aria-label="Voice Command Mode"
-        >
-          <Mic className="w-5 h-5" aria-hidden="true" />
-        </button>
+          {/* Suggested Prompts List */}
+          {messages.length === 1 && (
+            <div className="mb-2">
+              <span className="text-[10px] font-bold text-stone uppercase tracking-wider block mb-2">
+                {currentLanguage === 'en' ? 'Suggested Investigations:' : 'ಸೂಚಿಸಲಾದ ತನಿಖೆಗಳು:'}
+              </span>
+              <div className="flex flex-wrap gap-2">
+                {suggestedPrompts.map((p, i) => (
+                  <button
+                    key={i}
+                    onClick={() => handleSuggestionClick(p.query)}
+                    className="px-4 py-2 bg-canvas border border-hairline-soft rounded-full text-xs font-bold text-ink hover:bg-surface-soft focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none cursor-pointer transition"
+                  >
+                    {p.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
-        {/* Text Input */}
-        <div className="relative flex-1">
-          <input
-            type="text"
-            name="chat-query"
-            autoComplete="off"
-            aria-label="AI Assistant input field"
-            placeholder={isRecording 
-              ? (currentLanguage === 'en' ? "Listening under voice mode…" : "ಧ್ವನಿ ಮೋಡ್ ಅಡಿಯಲ್ಲಿ ಆಲಿಸಲಾಗುತ್ತಿದೆ...") 
-              : t('assistant.inputPlaceholder')}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            disabled={isRecording}
-            className="w-full pl-5 pr-12 py-3 bg-canvas border border-hairline-soft rounded-full text-sm text-ink placeholder-stone focus:outline-none focus:border-fb-blue focus:ring-1 focus:ring-fb-blue focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none transition h-12 shadow-sm"
-          />
-          <button
-            type="submit"
-            disabled={!input.trim() || isStreaming}
-            className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-primary text-canvas rounded-circle hover:bg-primary-deep disabled:bg-primary/40 disabled:cursor-not-allowed focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none transition cursor-pointer"
-            aria-label="Send message"
-          >
-            <Send className="w-4 h-4" aria-hidden="true" />
-          </button>
+          {/* Form Bar */}
+          <form onSubmit={handleSubmit} className="flex gap-2.5">
+            <button
+              type="button"
+              onClick={handleSpeechInput}
+              className={`p-3 rounded-circle border flex items-center justify-center focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none transition cursor-pointer select-none ${
+                isRecording 
+                  ? 'bg-critical text-canvas border-critical animate-pulse' 
+                  : 'bg-canvas hover:bg-surface-soft border-hairline-soft text-ink-deep'
+              }`}
+              title="Voice Command Mode"
+            >
+              <Mic className="w-5 h-5" aria-hidden="true" />
+            </button>
+
+            <div className="relative flex-1">
+              <input
+                type="text"
+                name="chat-query"
+                autoComplete="off"
+                placeholder={isRecording 
+                  ? (currentLanguage === 'en' ? "Listening under voice mode…" : "ಧ್ವನಿ ಮೋಡ್ ಅಡಿಯಲ್ಲಿ ಆಲಿಸಲಾಗುತ್ತಿದೆ...") 
+                  : t('assistant.inputPlaceholder')}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                disabled={isRecording}
+                className="w-full pl-5 pr-12 py-3 bg-canvas border border-hairline-soft rounded-full text-sm text-ink placeholder-stone focus:outline-none focus:border-fb-blue focus:ring-1 focus:ring-fb-blue focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none transition h-12 shadow-sm"
+              />
+              <button
+                type="submit"
+                disabled={!input.trim() || isStreaming}
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-primary text-canvas rounded-circle hover:bg-primary-deep disabled:bg-primary/40 disabled:cursor-not-allowed focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none transition cursor-pointer"
+              >
+                <Send className="w-4 h-4" aria-hidden="true" />
+              </button>
+            </div>
+          </form>
         </div>
-      </form>
+      </div>
     </div>
   );
 }

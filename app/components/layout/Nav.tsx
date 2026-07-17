@@ -28,6 +28,7 @@ export default function Nav({ currentPath = '/' }: NavProps) {
     { name: t('nav.map'), path: '/map' },
     { name: t('nav.assistant'), path: '/assistant' },
     { name: t('nav.reports'), path: '/reports' },
+    { name: t('nav.profiling'), path: '/profiling' },
   ];
 
   return (
