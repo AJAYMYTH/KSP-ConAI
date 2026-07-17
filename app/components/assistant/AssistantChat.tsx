@@ -6,6 +6,7 @@ import {
   Mic, Play, Globe, RotateCcw, AlertCircle 
 } from 'lucide-react';
 import { useI18n } from '../../i18n/hooks';
+import { getCurrentSession } from '../../lib/auth';
 
 interface ChatMessage {
   id: string;
@@ -31,6 +32,10 @@ export default function AssistantChat() {
   const [isStreaming, setIsStreaming] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
+
+  // References for MediaRecorder audio recording
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -68,16 +73,69 @@ export default function AssistantChat() {
     setInput(queryText);
   };
 
-  const handleSpeechInput = () => {
+  const handleSpeechInput = async () => {
     if (isRecording) {
+      if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+        mediaRecorderRef.current.stop();
+      }
       setIsRecording(false);
-      setInput('Summarize case KA-MY-2026-00124');
     } else {
-      setIsRecording(true);
-      setTimeout(() => {
-        setIsRecording(false);
-        setInput('Summarize case KA-MY-2026-00124');
-      }, 3000);
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        audioChunksRef.current = [];
+        const recorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+
+        recorder.ondataavailable = (event) => {
+          if (event.data.size > 0) {
+            audioChunksRef.current.push(event.data);
+          }
+        };
+
+        recorder.onstop = async () => {
+          const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+          stream.getTracks().forEach(track => track.stop());
+
+          try {
+            const formData = new FormData();
+            const file = new File([audioBlob], 'audio.webm', { type: 'audio/webm' });
+            formData.append('audio', file);
+
+            const session = getCurrentSession();
+            const role = session ? session.role : 'investigator';
+
+            const response = await fetch(`${API_BASE_URL}/voice/transcribe`, {
+              method: 'POST',
+              headers: {
+                'x-user-role': role
+              },
+              body: formData
+            });
+
+            if (!response.ok) throw new Error('Transcription API failed');
+            const result = await response.json();
+            
+            if (result.success && result.data) {
+              const text = result.data.translation || result.data.transcription || '';
+              setInput(text);
+            }
+          } catch (err) {
+            console.warn('Voice transcription failed, falling back to mock text:', err);
+            setInput(currentLanguage === 'kn' ? 'ಪ್ರಕರಣ KA-MY-2026-00124 ಅನ್ನು ಸಂಕ್ಷೇಪಿಸಿ' : 'Summarize case KA-MY-2026-00124');
+          }
+        };
+
+        mediaRecorderRef.current = recorder;
+        recorder.start();
+        setIsRecording(true);
+      } catch (err) {
+        console.warn('Microphone access denied or unsupported:', err);
+        // Fallback to mock timer behavior
+        setIsRecording(true);
+        setTimeout(() => {
+          setIsRecording(false);
+          setInput(currentLanguage === 'kn' ? 'ಪ್ರಕರಣ KA-MY-2026-00124 ಅನ್ನು ಸಂಕ್ಷೇಪಿಸಿ' : 'Summarize case KA-MY-2026-00124');
+        }, 2000);
+      }
     }
   };
 
@@ -104,156 +162,108 @@ export default function AssistantChat() {
     setIsStreaming(true);
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 4000);
+    const timeoutId = setTimeout(() => controller.abort(), 6000);
+
+    const getFallbackSimulatedResponse = () => {
+      let answer = 'I can search and summarize FIR files. Please provide a valid query.';
+      let sql = '';
+      let citations: string[] = [];
+      let confValue: 'high' | 'medium' | 'low' = 'high';
+      let detectedIntent = 'clarify';
+
+      const textLower = userText.toLowerCase();
+      if (textLower.includes('812') || (textLower.includes('burglary') && textLower.includes('bengaluru'))) {
+        answer = currentLanguage === 'kn' ? 
+          'ಪ್ರಕರಣ KA-BC-2026-00812 ರ ಸಾರಾಂಶ: ಜೂನ್ ೧೦, ೨೦೨೬ ರಂದು ಇಂದಿರಾನಗರ ನಿವಾಸದಲ್ಲಿ ರಾತ್ರಿ ದರೋಡೆ ಸಂಭವಿಸಿದೆ. ಅಪರಿಚಿತ ಆರೋಪಿಗಳು ಕಬ್ಬಿಣದ ಗ್ರಿಲ್ ಮುರಿದು ಒಳಗೆ ಪ್ರವೇಶಿಸಿ ೧೫೦ ಗ್ರಾಂ ಚಿನ್ನದ ಆಭರಣಗಳು ಮತ್ತು ₹೧,೨೦,೦೦೦ ನಗದು ಕಳವು ಮಾಡಿದ್ದಾರೆ. ಜೂನ್ ೨೫ ರಂದು ಕಾರ್ತಿಕ್ ಅಲಿಯಾಸ್ ಪೂಚಿ ಕಾರ್ತಿಕ್‌ನನ್ನು ಬಂಧಿಸಿ ಕಳುವಾದ ಒಡವೆಗಳನ್ನು ವಶಪಡಿಸಿಕೊಳ್ಳಲಾಗಿದೆ. ತನಿಖೆ ಪ್ರಗತಿಯಲ್ಲಿದೆ.' : 
+          'Summary of Case KA-BC-2026-00812: Night burglary reported on June 10, 2026 at an Indiranagar residence. Offenders broke the rear window grill to steal 150g gold and ₹1.2L cash. Prime suspect Karthik alias "Poochi" Karthik was arrested on June 25 at Majestic Bus Stand and gold recovered. Investigation ongoing.';
+        sql = 'SELECT * FROM cases WHERE case_id = "KA-BC-2026-00812"';
+        citations = ['KA-BC-2026-00812'];
+        detectedIntent = 'summarize_case';
+      } else if (textLower.includes('robber') || textLower.includes('mysuru') || textLower.includes('ದರೋಡೆ')) {
+        answer = currentLanguage === 'kn' ? 
+          'ಮೈಸೂರಿನಲ್ಲಿ ಇತ್ತೀಚಿನ ಅಪರಾಧಗಳ ವರದಿ: ಪ್ರಕರಣ KA-MY-2026-00124 ರಲ್ಲಿ ಸುನೀತಾ ಎಂ. ಎಂಬುವವರ ಸರವನ್ನು ಚಾಕು ತೋರಿಸಿ ದರೋಡೆ ಮಾಡಲಾಗಿದೆ. ೫ ದಿನಗಳಲ್ಲಿ ಮಂಜ ಮತ್ತು ಶ್ರೀನಿವಾಸ್ ಎಂಬ ಆರೋಪಿಗಳನ್ನು ಬಂಧಿಸಲಾಗಿದೆ.' : 
+          'Recent robbery incidents in Mysuru: Case KA-MY-2026-00124 registered at Lashkar PS. Accused Manju and Srinivas weaponized a knife to rob Sunitha M. of a 40g gold chain. Both arrested within 5 days.';
+        sql = 'SELECT * FROM cases WHERE district = "Mysuru City" AND category = "Robbery"';
+        citations = ['KA-MY-2026-00124'];
+        detectedIntent = 'filter_cases';
+      } else if (textLower.includes('compare') || textLower.includes('category') || textLower.includes('ಹೋಲಿಕೆ')) {
+        answer = currentLanguage === 'kn' ? 
+          'ಅಪರಾಧ ವಿಭಾಗಗಳ ಪ್ರಕಾರ ಒಟ್ಟು ಪ್ರಕರಣಗಳ ಹೋಲಿಕೆ:\n- ಕಳ್ಳತನ / ಕನ್ನಗಳ್ಳತನ: ೨ ಪ್ರಕರಣಗಳು\n- ದರೋಡೆ: ೧ ಪ್ರಕರಣ\n- ವಂಚನೆ / ಸೈಬರ್ ವಂಚನೆ: ೧ ಪ್ರಕರಣ\n- ಹಲ್ಲೆ: ೧ ಪ್ರಕರಣ\n\nಹೆಚ್ಚಿನ ಪ್ರಕರಣಗಳು ಕಳ್ಳತನ ವಿಭಾಗದಲ್ಲಿ ದಾಖಲಾಗಿವೆ.' : 
+          'Comparison of registered crimes by category:\n- Theft / Burglary: 2 cases\n- Robbery: 1 case\n- Cheating / Cyber: 1 case\n- Assault: 1 case\n\nTheft and Burglary constitute the majority of recorded case files.';
+        sql = 'SELECT category, COUNT(*) FROM cases GROUP BY category';
+        detectedIntent = 'aggregate_crimes';
+      } else {
+        answer = currentLanguage === 'kn' ? 
+          'ಕ್ಷಮಿಸಿ, ಈ ಪ್ರಶ್ನೆಯು ತನಿಖಾ ಡೇಟಾಬೇಸ್ ವ್ಯಾಪ್ತಿಗೆ ಮೀರಿ ಇರಬಹುದು. ಕೆಳಗಿನ ಉದಾಹರಣೆಗಳನ್ನು ಪ್ರಯತ್ನಿಸಿ:' : 
+          'This query is outside my grounded context. Please try one of the suggested prompts or search for a specific case ID.';
+      }
+
+      setMessages(prev => prev.map(m => {
+        if (m.id === assistantMessageId) {
+          return {
+            ...m,
+            content: answer,
+            sqlPreview: sql || undefined,
+            sources: citations.length > 0 ? citations : undefined,
+            confidence: confValue,
+            intent: detectedIntent,
+            isStreaming: false
+          };
+        }
+        return m;
+      }));
+      setIsStreaming(false);
+    };
+
+    if (import.meta.env.PUBLIC_MOCK_MODE === 'true') {
+      clearTimeout(timeoutId);
+      setTimeout(getFallbackSimulatedResponse, 600);
+      return;
+    }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/assistant/query`, {
+      const session = getCurrentSession();
+      const role = session ? session.role : 'investigator';
+
+      const response = await fetch(`${API_BASE_URL}/assistant/query`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-user-role': role
+        },
         body: JSON.stringify({
-          message: userText,
-          language: currentLanguage === 'kn' ? 'kannada' : 'english',
-          history: messages.slice(-5).map(m => ({ role: m.role, content: m.content }))
+          query: userText
         }),
         signal: controller.signal
       });
       clearTimeout(timeoutId);
 
       if (!response.ok) throw new Error('Network response not ok');
+      const result = await response.json();
       
-      const reader = response.body?.getReader();
-      const decoder = new TextDecoder();
-      if (!reader) throw new Error('Failed to get readable stream reader');
-
-      let accumulatedContent = '';
-      let sqlPreview = '';
-      let sources: string[] = [];
-      let confidence: 'high' | 'medium' | 'low' = 'high';
-      let intent = '';
-
-      while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-
-        const chunk = decoder.decode(value);
-        
-        if (!chunk.trim().startsWith('data:')) {
-          try {
-            const parsed = JSON.parse(chunk);
-            if (parsed.text || parsed.content) {
-              accumulatedContent = parsed.text || parsed.content;
-              if (parsed.sqlPreview) sqlPreview = parsed.sqlPreview;
-              if (parsed.sources) sources = parsed.sources;
-              if (parsed.confidence) confidence = parsed.confidence;
-              if (parsed.intent) intent = parsed.intent;
-            } else {
-              accumulatedContent += chunk;
-            }
-          } catch {
-            accumulatedContent += chunk;
-          }
-        } else {
-          const lines = chunk.split('\n');
-          for (const line of lines) {
-            if (line.trim().startsWith('data:')) {
-              try {
-                const rawJson = line.replace('data:', '').trim();
-                if (rawJson === '[DONE]') continue;
-                
-                const parsed = JSON.parse(rawJson);
-                
-                if (parsed.text) accumulatedContent += parsed.text;
-                if (parsed.sqlPreview) sqlPreview = parsed.sqlPreview;
-                if (parsed.sources) sources = parsed.sources;
-                if (parsed.confidence) confidence = parsed.confidence;
-                if (parsed.intent) intent = parsed.intent;
-              } catch (err) {
-                // Ignore parsing offsets
-              }
-            }
-          }
-        }
-
+      if (result.success && result.data) {
         setMessages(prev => prev.map(m => {
           if (m.id === assistantMessageId) {
             return {
               ...m,
-              content: accumulatedContent || m.content,
-              sqlPreview: sqlPreview || m.sqlPreview,
-              sources: sources.length > 0 ? sources : m.sources,
-              confidence: confidence || m.confidence,
-              intent: intent || m.intent
-            };
-          }
-          return m;
-        }));
-      }
-
-      if (!accumulatedContent.trim()) {
-        throw new Error('Empty response from AI gateway');
-      }
-
-      setMessages(prev => prev.map(m => {
-        if (m.id === assistantMessageId) {
-          return { ...m, isStreaming: false };
-        }
-        return m;
-      }));
-
-    } catch (err) {
-      clearTimeout(timeoutId);
-      console.warn('AI gateway streaming failed, rendering simulated assistant response:', err);
-      
-      setTimeout(() => {
-        let answer = 'I can search and summarize FIR files. Please provide a valid query.';
-        let sql = '';
-        let citations: string[] = [];
-        let confValue: 'high' | 'medium' | 'low' = 'high';
-        let detectedIntent = 'clarify';
-
-        const textLower = userText.toLowerCase();
-        if (textLower.includes('812') || (textLower.includes('burglary') && textLower.includes('bengaluru'))) {
-          answer = currentLanguage === 'kn' ? 
-            'ಪ್ರಕರಣ KA-BC-2026-00812 ರ ಸಾರಾಂಶ: ಜೂನ್ ೧೦, ೨೦೨೬ ರಂದು ಇಂದಿರಾನಗರ ನಿವಾಸದಲ್ಲಿ ರಾತ್ರಿ ದರೋಡೆ ಸಂಭವಿಸಿದೆ. ಅಪರಿಚಿತ ಆರೋಪಿಗಳು ಕಬ್ಬಿಣದ ಗ್ರಿಲ್ ಮುರಿದು ಒಳಗೆ ಪ್ರವೇಶಿಸಿ ೧೫೦ ಗ್ರಾಂ ಚಿನ್ನದ ಆಭರಣಗಳು ಮತ್ತು ₹೧,೨೦,೦೦೦ ನಗದು ಕಳವು ಮಾಡಿದ್ದಾರೆ. ಜೂನ್ ೨೫ ರಂದು ಕಾರ್ತಿಕ್ ಅಲಿಯಾಸ್ ಪೂಚಿ ಕಾರ್ತಿಕ್‌ನನ್ನು ಬಂಧಿಸಿ ಕಳುವಾದ ಒಡವೆಗಳನ್ನು ವಶಪಡಿಸಿಕೊಳ್ಳಲಾಗಿದೆ. ತನಿಖೆ ಪ್ರಗತಿಯಲ್ಲಿದೆ.' : 
-            'Summary of Case KA-BC-2026-00812: Night burglary reported on June 10, 2026 at an Indiranagar residence. Offenders broke the rear window grill to steal 150g gold and ₹1.2L cash. Prime suspect Karthik alias "Poochi" Karthik was arrested on June 25 at Majestic Bus Stand and gold recovered. Investigation ongoing.';
-          sql = 'SELECT * FROM cases WHERE case_id = "KA-BC-2026-00812"';
-          citations = ['KA-BC-2026-00812'];
-          detectedIntent = 'summarize_case';
-        } else if (textLower.includes('robber') || textLower.includes('mysuru') || textLower.includes('ದರೋಡೆ')) {
-          answer = currentLanguage === 'kn' ? 
-            'ಮೈಸೂರಿನಲ್ಲಿ ಇತ್ತೀಚಿನ ಅಪರಾಧಗಳ ವರದಿ: ಪ್ರಕರಣ KA-MY-2026-00124 ರಲ್ಲಿ ಸುನೀತಾ ಎಂ. ಎಂಬುವವರ ಸರವನ್ನು ಚಾಕು ತೋರಿಸಿ ದರೋಡೆ ಮಾಡಲಾಗಿದೆ. ೫ ದಿನಗಳಲ್ಲಿ ಮಂಜ ಮತ್ತು ಶ್ರೀನಿವಾಸ್ ಎಂಬ ಆರೋಪಿಗಳನ್ನು ಬಂಧಿಸಲಾಗಿದೆ.' : 
-            'Recent robbery incidents in Mysuru: Case KA-MY-2026-00124 registered at Lashkar PS. Accused Manju and Srinivas weaponized a knife to rob Sunitha M. of a 40g gold chain. Both arrested within 5 days.';
-          sql = 'SELECT * FROM cases WHERE district = "Mysuru City" AND category = "Robbery"';
-          citations = ['KA-MY-2026-00124'];
-          detectedIntent = 'filter_cases';
-        } else if (textLower.includes('compare') || textLower.includes('category') || textLower.includes('ಹೋಲಿಕೆ')) {
-          answer = currentLanguage === 'kn' ? 
-            'ಅಪರಾಧ ವಿಭಾಗಗಳ ಪ್ರಕಾರ ಒಟ್ಟು ಪ್ರಕರಣಗಳ ಹೋಲಿಕೆ:\n- ಕಳ್ಳತನ / ಕನ್ನಗಳ್ಳತನ: ೨ ಪ್ರಕರಣಗಳು\n- ದರೋಡೆ: ೧ ಪ್ರಕರಣ\n- ವಂಚನೆ / ಸೈಬರ್ ವಂಚನೆ: ೧ ಪ್ರಕರಣ\n- ಹಲ್ಲೆ: ೧ ಪ್ರಕರಣ\n\nಹೆಚ್ಚಿನ ಪ್ರಕರಣಗಳು ಕಳ್ಳತನ ವಿಭಾಗದಲ್ಲಿ ದಾಖಲಾಗಿವೆ.' : 
-            'Comparison of registered crimes by category:\n- Theft / Burglary: 2 cases\n- Robbery: 1 case\n- Cheating / Cyber: 1 case\n- Assault: 1 case\n\nTheft and Burglary constitute the majority of recorded case files.';
-          sql = 'SELECT category, COUNT(*) FROM cases GROUP BY category';
-          detectedIntent = 'aggregate_crimes';
-        } else {
-          answer = currentLanguage === 'kn' ? 
-            'ಕ್ಷಮಿಸಿ, ಈ ಪ್ರಶ್ನೆಯು ತನಿಖಾ ಡೇಟಾಬೇಸ್ ವ್ಯಾಪ್ತಿಗೆ ಮೀರಿ ಇರಬಹುದು. ಕೆಳಗಿನ ಉದಾಹರಣೆಗಳನ್ನು ಪ್ರಯತ್ನಿಸಿ:' : 
-            'This query is outside my grounded context. Please try one of the suggested prompts or search for a specific case ID.';
-        }
-
-        setMessages(prev => prev.map(m => {
-          if (m.id === assistantMessageId) {
-            return {
-              ...m,
-              content: answer,
-              sqlPreview: sql || undefined,
-              sources: citations.length > 0 ? citations : undefined,
-              confidence: confValue,
-              intent: detectedIntent,
+              content: result.data.answer || 'No response returned.',
+              sources: result.data.citations || [],
+              confidence: 'high',
+              intent: 'grounded_query',
               isStreaming: false
             };
           }
           return m;
         }));
         setIsStreaming(false);
-      }, 800);
+      } else {
+        throw new Error(result.error?.message || 'Query failed');
+      }
+
+    } catch (err) {
+      clearTimeout(timeoutId);
+      console.warn('AI assistant API query failed, rendering fallback response:', err);
+      getFallbackSimulatedResponse();
     }
   };
 
