@@ -95,11 +95,11 @@ export const LandingPage: React.FC = () => {
         
         {/* ================= 2. HERO SECTION ================= */}
         {/* hero-band-marketing style: stark white canvas background, center text layout, dual CTA, full bleed photography */}
-        <section className="relative w-full pt-24 pb-20 md:pt-32 md:pb-28 flex flex-col items-center justify-center text-center px-6 overflow-hidden border-b border-[#dee3e9] bg-[#ffffff]">
+        <section className="relative w-full pt-8 pb-10 md:pt-12 md:pb-12 flex flex-col items-center justify-center text-center px-6 overflow-hidden border-b border-[#dee3e9] bg-[#ffffff] min-h-[380px] sm:min-h-[400px] md:min-h-[440px]">
           {/* Subtle dotted background pattern */}
           <div className="absolute inset-0 opacity-[0.22] pointer-events-none" style={{ backgroundImage: 'radial-gradient(var(--color-primary) 1.5px, transparent 1.5px)', backgroundSize: '32px 32px' }}></div>
           
-          <div className="max-w-4xl mx-auto space-y-8 relative z-10 flex flex-col items-center">
+          <div className="max-w-4xl mx-auto space-y-5 relative z-10 flex flex-col items-center">
             <span 
               className={`font-display font-bold text-[10px] tracking-[0.25em] text-[#991b1b] uppercase block transition-all duration-700 delay-100 ${
                 mounted ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
@@ -130,7 +130,7 @@ export const LandingPage: React.FC = () => {
             </p>
             
             {/* Dual CTA buttons: button-primary (black) + button-secondary (ghost outline) */}
-            <div className={`flex flex-wrap justify-center gap-4 pt-4 transition-all duration-700 delay-400 ${
+            <div className={`flex flex-wrap justify-center gap-4 pt-2 transition-all duration-700 delay-400 ${
               mounted ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
             }`}>
               <a 
@@ -145,21 +145,6 @@ export const LandingPage: React.FC = () => {
               >
                 {t('hero.explore')}
               </a>
-            </div>
-
-            {/* Full-bleed high-fidelity product showcase mockup container (no card chrome, rounded xxxl) */}
-            <div 
-              className={`w-full max-w-5xl mt-16 rounded-xxxl overflow-hidden border border-[#dee3e9]/60 shadow-xl transition-all duration-1000 delay-500 ${
-                mounted ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-12 opacity-0 scale-95'
-              }`}
-            >
-              <img 
-                src="/hero_mockup.png" 
-                alt="KSP-ConAI Dashboard Interface Mockup" 
-                className="w-full h-auto object-cover select-none"
-                width="1024"
-                height="576"
-              />
             </div>
           </div>
         </section>
