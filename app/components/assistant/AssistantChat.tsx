@@ -299,17 +299,54 @@ export default function AssistantChat() {
               </div>
             )}
 
-            <div className="space-y-2">
-              <div className={`px-4 py-2.5 rounded-2xl text-xs leading-relaxed whitespace-pre-line shadow-sm border ${
-                msg.role === 'user'
-                  ? 'bg-primary text-canvas border-primary/20 rounded-tr-none'
-                  : 'bg-canvas text-ink border-hairline-soft rounded-tl-none'
-              }`}>
-                {msg.content || (msg.isStreaming && <span className="inline-block w-1.5 h-3.5 bg-primary animate-pulse" />)}
-              </div>
+            <div className="space-y-2 max-w-full">
+              {msg.role === 'assistant' && msg.isStreaming && (
+                <div className="animate-in fade-in duration-200">
+                  <details className="group border border-hairline-soft bg-surface-soft/40 rounded-xl overflow-hidden min-w-[260px] max-w-md" open>
+                    <summary className="flex items-center justify-between px-3 py-2 cursor-pointer list-none select-none text-[10px] font-bold text-steel hover:bg-surface-soft/80 transition">
+                      <div className="flex items-center gap-2">
+                        {/* Bouncing dots */}
+                        <div className="flex items-center gap-0.5">
+                          <div className="w-1 h-1 rounded-full bg-primary animate-[bounce_1.4s_infinite_0ms]"></div>
+                          <div className="w-1 h-1 rounded-full bg-primary animate-[bounce_1.4s_infinite_200ms]"></div>
+                          <div className="w-1 h-1 rounded-full bg-primary animate-[bounce_1.4s_infinite_400ms]"></div>
+                        </div>
+                        <span>{currentLanguage === 'en' ? 'AI Reasoning Chain' : 'ಚಿಂತನೆ ಪ್ರಕ್ರಿಯೆ'}</span>
+                      </div>
+                      <svg className="w-3 h-3 text-steel group-open:rotate-180 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                      </svg>
+                    </summary>
+                    <div className="px-3 pb-2.5 pt-2 border-t border-hairline-soft/40 text-[9px] text-stone font-mono space-y-2 bg-canvas/30">
+                      <div className="flex items-center gap-2 animate-[pulse_1.5s_infinite_0ms]">
+                        <span className="w-1.5 h-1.5 rounded-full bg-success/60 shrink-0"></span>
+                        <span className="truncate">{currentLanguage === 'en' ? 'Resolving localized query...' : 'ಸ್ಥಳೀಯ ಪ್ರಶ್ನೆ ಪರಿಹರಿಸಲಾಗುತ್ತಿದೆ...'}</span>
+                      </div>
+                      <div className="flex items-center gap-2 animate-[pulse_1.5s_infinite_300ms] text-slate-500">
+                        <span className="w-1.5 h-1.5 rounded-full bg-fb-blue/60 shrink-0 animate-ping"></span>
+                        <span className="truncate">{currentLanguage === 'en' ? 'Scanning SQL databases...' : 'SQL ಡೇಟಾಬೇಸ್‌ಗಳನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಲಾಗುತ್ತಿದೆ...'}</span>
+                      </div>
+                      <div className="flex items-center gap-2 animate-[pulse_1.5s_infinite_600ms] text-slate-400">
+                        <span className="w-1.5 h-1.5 rounded-full bg-attention/60 shrink-0"></span>
+                        <span className="truncate">{currentLanguage === 'en' ? 'Drafting summary statement...' : 'ಸಾರಾಂಶ ಹೇಳಿಕೆ ರಚಿಸಲಾಗುತ್ತಿದೆ...'}</span>
+                      </div>
+                    </div>
+                  </details>
+                </div>
+              )}
 
-              {/* Auxiliary AI Outputs (SQL preview, Citations) */}
-              {msg.role === 'assistant' && (msg.sqlPreview || msg.sources || msg.confidence) && (
+              {(msg.content || (!msg.isStreaming && !msg.content)) && (
+                <div className={`px-4 py-2.5 rounded-2xl text-xs leading-relaxed whitespace-pre-line shadow-sm border ${
+                  msg.role === 'user'
+                    ? 'bg-primary text-canvas border-primary/20 rounded-tr-none'
+                    : 'bg-canvas text-ink border-hairline-soft rounded-tl-none'
+                }`}>
+                  {msg.content || (currentLanguage === 'en' ? 'No response details available.' : 'ಯಾವುದೇ ಪ್ರತಿಕ್ರಿಯೆ ವಿವರಗಳು ಲಭ್ಯವಿಲ್ಲ.')}
+                </div>
+              )}
+
+              {/* Auxiliary AI Outputs (Citations only - SQL Preview removed) */}
+              {msg.role === 'assistant' && (msg.sources || msg.confidence) && (
                 <div className="space-y-1.5 ml-1 animate-in fade-in duration-200">
                   <div className="flex items-center gap-2">
                     {msg.confidence && (
@@ -327,16 +364,6 @@ export default function AssistantChat() {
                       </span>
                     )}
                   </div>
-
-                  {/* SQL Query Preview */}
-                  {msg.sqlPreview && (
-                    <div className="p-2 bg-surface-soft border border-hairline rounded-lg text-[10px] font-mono text-ink-deep max-w-full overflow-x-auto">
-                      <span className="text-[9px] font-bold uppercase tracking-wider text-steel block mb-1">
-                        {t('assistant.sqlPreview')}
-                      </span>
-                      {msg.sqlPreview}
-                    </div>
-                  )}
 
                   {/* Citations list */}
                   {msg.sources && msg.sources.length > 0 && (
