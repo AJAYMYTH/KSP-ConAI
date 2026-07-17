@@ -13,6 +13,7 @@
     "@ai-sdk/react": "^0.0.55",
     "@astrojs/react": "^4.2.0",
     "@tailwindcss/vite": "^4.0.0-beta.1",
+    "@xyflow/react": "^12.11.2",
     "ai": "^3.4.9",
     "astro": "^4.15.4",
     "clsx": "^2.1.1",

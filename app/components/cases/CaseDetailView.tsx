@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { getCaseDetails, generateReport } from '../../lib/api';
 import type { CaseDetail } from '../../types';
 import CaseTimeline from './CaseTimeline';
-import NetworkGraph from './NetworkGraph';
-import { Shield, FileText, Calendar, MapPin, Loader2, Download, Check } from 'lucide-react';
+import CriminalNetworkGraph from './CriminalNetworkGraph';
+import SimilarCasePanel from './SimilarCasePanel';
+import { Shield, FileText, Calendar, MapPin, Loader2, Download, Check, Sparkles } from 'lucide-react';
 import { useI18n } from '../../i18n/hooks';
 
 interface Props {
@@ -14,7 +15,7 @@ export default function CaseDetailView({ caseId }: Props) {
   const { t, currentLanguage, formatDate } = useI18n();
   const [details, setDetails] = useState<CaseDetail | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'details' | 'timeline' | 'network'>('details');
+  const [activeTab, setActiveTab] = useState<'details' | 'timeline' | 'network' | 'similar'>('details');
   const [reportLoading, setReportLoading] = useState(false);
   const [reportSuccess, setReportSuccess] = useState(false);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
@@ -204,7 +205,7 @@ export default function CaseDetailView({ caseId }: Props) {
       </div>
 
       {/* Tabs Selector */}
-      <div className="flex gap-1.5 bg-surface-soft p-1 rounded-full border border-hairline-soft max-w-sm">
+      <div className="flex gap-1.5 bg-surface-soft p-1 rounded-full border border-hairline-soft max-w-md">
         <button
           onClick={() => setActiveTab('details')}
           className={`flex-1 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-full transition focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none ${
@@ -228,6 +229,14 @@ export default function CaseDetailView({ caseId }: Props) {
           }`}
         >
           {t('caseDetail.tabNetwork')}
+        </button>
+        <button
+          onClick={() => setActiveTab('similar')}
+          className={`flex-1 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-full transition focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none ${
+            activeTab === 'similar' ? 'bg-ink-deep text-canvas' : 'text-ink hover:bg-hairline-soft'
+          }`}
+        >
+          {currentLanguage === 'en' ? 'Similar Cases' : 'ಸಮಾನ ಪ್ರಕರಣಗಳು'}
         </button>
       </div>
 
@@ -362,7 +371,19 @@ export default function CaseDetailView({ caseId }: Props) {
           <h3 className="text-sm font-bold text-ink-deep border-b border-hairline-soft pb-2.5 mb-4">
             {t('caseDetail.networkTitle')}
           </h3>
-          <NetworkGraph caseId={caseId} />
+          <CriminalNetworkGraph caseId={caseId} />
+        </div>
+      )}
+
+      {activeTab === 'similar' && (
+        <div className="bg-canvas border border-hairline-soft p-6 rounded-xxxl card-product-shadow">
+          <span className="text-[10px] uppercase tracking-wider text-steel font-bold">
+            {currentLanguage === 'en' ? 'Similar Incidents' : 'ಸಮಾನ ಘಟನೆಗಳು'}
+          </span>
+          <h3 className="text-sm font-bold text-ink-deep border-b border-hairline-soft pb-2.5 mb-4">
+            {currentLanguage === 'en' ? 'Modus Operandi Recommendations' : 'ಅಪರಾಧ ನಡವಳಿಕೆ ಹೊಂದಾಣಿಕೆ'}
+          </h3>
+          <SimilarCasePanel caseId={caseId} />
         </div>
       )}
     </div>
