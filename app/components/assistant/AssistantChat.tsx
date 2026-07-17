@@ -271,8 +271,8 @@ export default function AssistantChat() {
     <div className="p-6 md:p-8 space-y-6 max-w-5xl mx-auto w-full animate-in fade-in duration-200">
       {/* Header */}
       <div className="flex items-center gap-3 border-b border-hairline-soft pb-4">
-        <div className="w-10 h-10 rounded-circle bg-ink-deep text-canvas flex items-center justify-center font-bold">
-          AI
+        <div className="w-10 h-10 rounded-full bg-slate-50 border border-slate-200/80 flex items-center justify-center p-1.5 shrink-0 shadow-xs">
+          <img src="/karnataka_emblem.png" alt="Karnataka Coat of Arms" className="w-full h-full object-contain" width="40" height="40" />
         </div>
         <div>
           <h1 className="text-lg font-bold text-ink-deep">{t('assistant.title')}</h1>
@@ -289,11 +289,15 @@ export default function AssistantChat() {
               msg.role === 'user' ? 'ml-auto flex-row-reverse' : ''
             }`}
           >
-            <div className={`w-7 h-7 rounded-circle flex items-center justify-center shrink-0 text-[10px] font-bold ${
-              msg.role === 'user' ? 'bg-primary text-canvas' : 'bg-ink-deep text-canvas'
-            }`}>
-              {msg.role === 'user' ? 'U' : 'AI'}
-            </div>
+            {msg.role === 'user' ? (
+              <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center shrink-0 shadow-sm">
+                <User className="w-3.5 h-3.5 text-canvas" />
+              </div>
+            ) : (
+              <div className="w-7 h-7 rounded-full bg-slate-50 border border-slate-200/60 flex items-center justify-center p-0.5 shrink-0 shadow-xs">
+                <img src="/karnataka_emblem.png" alt="KSP AI" className="w-full h-full object-contain" width="28" height="28" />
+              </div>
+            )}
 
             <div className="space-y-2">
               <div className={`px-4 py-2.5 rounded-2xl text-xs leading-relaxed whitespace-pre-line shadow-sm border ${
