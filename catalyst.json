@@ -18,12 +18,6 @@
   "client": {
     "source": "client"
   },
-  "appsail": [
-    {
-      "source": ".",
-      "name": "KSP-ConAI-appsail"
-    }
-  ],
   "slate": [
     {
       "name": "astro",
