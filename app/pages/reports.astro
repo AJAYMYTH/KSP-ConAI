@@ -1,8 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import ReportsManager from '../components/reports/ReportsManager.tsx';
+import { PermissionGuard } from '../components/auth/PermissionGuard.tsx';
+import { PERMISSIONS } from '../lib/auth';
 ---
 
 <Layout title="Intelligence Reports History">
-  <ReportsManager client:load />
+  <PermissionGuard permission={PERMISSIONS.GENERATE_REPORTS} client:load>
+    <ReportsManager client:load />
+  </PermissionGuard>
 </Layout>

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Lock, User, ArrowRight, Shield, Database, MapPin, Mail, Globe, Eye, EyeOff } from 'lucide-react';
+import { Lock, User, ArrowRight, Shield, Database, MapPin, Mail, Globe, Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import { useI18n } from '../../i18n/hooks';
 import { DEMO_USERS, setSession, type UserRole } from '../../lib/auth';
+import { RoleSelector } from './RoleSelector';
 
 interface LoginPageProps {
   defaultView?: 'login' | 'register';
@@ -22,6 +23,10 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
   const [regPass, setRegPass] = useState('');
   const [showRegPass, setShowRegPass] = useState(false);
 
+  // Role Selection staging states
+  const [showRoleSelector, setShowRoleSelector] = useState(false);
+  const [stagedUser, setStagedUser] = useState<any>(null);
+
   const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const userVal = loginUser.trim().toLowerCase();
@@ -36,27 +41,27 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
     }
 
     const defaultSession = DEMO_USERS[roleMatch];
-    setSession({
+    setStagedUser({
       ...defaultSession,
       username: userVal || defaultSession.username
     });
-    window.location.href = '/dashboard';
+    setShowRoleSelector(true);
   };
 
   const handleRegisterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setSession({
+    setStagedUser({
       role: 'investigator',
       name: regName || 'New Officer',
       username: regEmail || 'new.officer@ksp.gov.in',
       badgeNumber: `KSP-${Math.floor(1000 + Math.random() * 9000)}`
     });
-    window.location.href = '/dashboard';
+    setShowRoleSelector(true);
   };
 
   const handleGoogleSSO = () => {
-    setSession(DEMO_USERS.investigator);
-    window.location.href = '/dashboard';
+    setStagedUser(DEMO_USERS.investigator);
+    setShowRoleSelector(true);
   };
 
   const toggleLanguage = () => {
@@ -101,6 +106,131 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
       </div>
     </div>
   );
+
+  const onRoleSelect = (role: UserRole) => {
+    if (!stagedUser) return;
+    
+    let badgeNum = stagedUser.badgeNumber || 'KSP-9999';
+    let name = stagedUser.name;
+    if (role === 'admin') {
+      badgeNum = 'KSP-001';
+      name = 'Shri B. Dayananda, IPS';
+    } else if (role === 'investigator') {
+      badgeNum = 'KSP-4589';
+      name = 'Mahesh Kumar (IO)';
+    } else if (role === 'analyst') {
+      badgeNum = 'KSP-2114';
+      name = 'Praveen Gowda (Analyst)';
+    } else if (role === 'viewer') {
+      badgeNum = 'KSP-009';
+      name = 'Inspector General (Supervisor)';
+    }
+
+    setSession({
+      ...stagedUser,
+      role,
+      name,
+      badgeNumber: badgeNum
+    });
+    window.location.href = '/dashboard';
+  };
+
+  const availableRoles: {
+    role: UserRole;
+    badge: string;
+    icon: React.ReactNode;
+    color: string;
+    textColor: string;
+    borderColor: string;
+    permissions: { name: string; allowed: boolean }[];
+  }[] = [
+    {
+      role: 'admin',
+      badge: 'KSP-001',
+      icon: <Shield className="w-5 h-5" />,
+      color: 'bg-indigo-50',
+      textColor: 'text-indigo-600',
+      borderColor: 'border-indigo-100',
+      permissions: [
+        { name: currentLanguage === 'en' ? 'Dashboard access' : 'ಡ್ಯಾಶ್‌ಬೋರ್ಡ್', allowed: true },
+        { name: currentLanguage === 'en' ? 'FIR Search' : 'ಎಫ್‌ಐಆರ್ ಹುಡುಕಾಟ', allowed: true },
+        { name: currentLanguage === 'en' ? 'Hotspot Map' : 'ಹಾಟ್‌ಸ್ಪಾಟ್ ನಕ್ಷೆ', allowed: true },
+        { name: currentLanguage === 'en' ? 'AI Assistant' : 'AI ಸಹಾಯಕ', allowed: true },
+        { name: currentLanguage === 'en' ? 'Reports Vault' : 'ವರದಿಗಳ ಕನ್ಸೋಲ್', allowed: true },
+        { name: currentLanguage === 'en' ? 'Admin Tools' : 'ನಿರ್ವಾಹಕ ಉಪಕರಣಗಳು', allowed: true },
+      ]
+    },
+    {
+      role: 'investigator',
+      badge: 'KSP-4589',
+      icon: <Eye className="w-5 h-5" />,
+      color: 'bg-emerald-50',
+      textColor: 'text-emerald-600',
+      borderColor: 'border-emerald-100',
+      permissions: [
+        { name: currentLanguage === 'en' ? 'Dashboard access' : 'ಡ್ಯಾಶ್‌ಬೋರ್ಡ್', allowed: true },
+        { name: currentLanguage === 'en' ? 'FIR Search' : 'ಎಫ್‌ಐಆರ್ ಹುಡುಕಾಟ', allowed: true },
+        { name: currentLanguage === 'en' ? 'Hotspot Map' : 'ಹಾಟ್‌ಸ್ಪಾಟ್ ನಕ್ಷೆ', allowed: true },
+        { name: currentLanguage === 'en' ? 'AI Assistant' : 'AI ಸಹಾಯಕ', allowed: true },
+        { name: currentLanguage === 'en' ? 'Reports Vault' : 'ವರದಿಗಳ ಕನ್ಸೋಲ್', allowed: true },
+        { name: currentLanguage === 'en' ? 'Admin Tools' : 'ನಿರ್ವಾಹಕ ಉಪಕರಣಗಳು', allowed: false },
+      ]
+    },
+    {
+      role: 'analyst',
+      badge: 'KSP-2114',
+      icon: <Database className="w-5 h-5" />,
+      color: 'bg-amber-50',
+      textColor: 'text-amber-600',
+      borderColor: 'border-amber-100',
+      permissions: [
+        { name: currentLanguage === 'en' ? 'Dashboard access' : 'ಡ್ಯಾಶ್‌ಬೋರ್ಡ್', allowed: true },
+        { name: currentLanguage === 'en' ? 'FIR Search' : 'ಎಫ್‌ಐಆರ್ ಹುಡುಕಾಟ', allowed: true },
+        { name: currentLanguage === 'en' ? 'Hotspot Map' : 'ಹಾಟ್‌ಸ್ಪಾಟ್ ನಕ್ಷೆ', allowed: true },
+        { name: currentLanguage === 'en' ? 'AI Assistant' : 'AI ಸಹಾಯಕ', allowed: true },
+        { name: currentLanguage === 'en' ? 'Reports Vault' : 'ವರದಿಗಳ ಕನ್ಸೋಲ್', allowed: true },
+        { name: currentLanguage === 'en' ? 'Admin Tools' : 'ನಿರ್ವಾಹಕ ಉಪಕರಣಗಳು', allowed: false },
+      ]
+    },
+    {
+      role: 'viewer',
+      badge: 'KSP-009',
+      icon: <Lock className="w-5 h-5" />,
+      color: 'bg-slate-100',
+      textColor: 'text-slate-600',
+      borderColor: 'border-slate-200',
+      permissions: [
+        { name: currentLanguage === 'en' ? 'Dashboard access' : 'ಡ್ಯಾಶ್‌ಬೋರ್ಡ್', allowed: true },
+        { name: currentLanguage === 'en' ? 'FIR Search' : 'ಎಫ್‌ಐಆರ್ ಹುಡುಕಾಟ', allowed: true },
+        { name: currentLanguage === 'en' ? 'Hotspot Map' : 'ಹಾಟ್‌ಸ್ಪಾಟ್ ನಕ್ಷೆ', allowed: false },
+        { name: currentLanguage === 'en' ? 'AI Assistant' : 'AI ಸಹಾಯಕ', allowed: false },
+        { name: currentLanguage === 'en' ? 'Reports Vault' : 'ವರದಿಗಳ ಕನ್ಸೋಲ್', allowed: false },
+        { name: currentLanguage === 'en' ? 'Admin Tools' : 'ನಿರ್ವಾಹಕ ಉಪಕರಣಗಳು', allowed: false },
+      ]
+    }
+  ];
+
+  if (showRoleSelector) {
+    return (
+      <div className="flex-grow flex min-h-[100dvh] w-full items-center justify-center bg-[#fbfbfd] p-6 selection:bg-primary-soft selection:text-primary-deep">
+        <div className="w-full max-w-4xl p-8 md:p-10 bg-white border border-[#dee3e9] rounded-xxxl shadow-xl shadow-slate-100/50 relative">
+          <button 
+            type="button"
+            onClick={() => setShowRoleSelector(false)}
+            className="absolute top-6 left-6 flex items-center gap-1.5 px-3 py-1.5 border border-slate-200 hover:border-slate-350 bg-transparent rounded-full text-[10px] font-bold text-slate-600 hover:bg-slate-50 transition cursor-pointer select-none shadow-xs"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>{currentLanguage === 'en' ? 'Back' : 'ಹಿಂದಕ್ಕೆ'}</span>
+          </button>
+          
+          <RoleSelector 
+            onRoleSelect={onRoleSelect} 
+            availableRoles={availableRoles} 
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex-grow flex min-h-[100dvh] w-full font-sans bg-[#fbfbfd] selection:bg-primary-soft selection:text-primary-deep">

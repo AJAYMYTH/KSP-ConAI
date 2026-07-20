@@ -14,7 +14,6 @@
     "assistant": "AI Assistant",
     "graph": "Network Graph",
     "reports": "Reports Vault",
-    "profiling": "Behavioral Profiler",
     "admin": "Admin Console",
     "requestAccess": "Request Access",
     "statePolice": "Karnataka State Police",
@@ -282,5 +281,30 @@
     "elapsedTime": "Elapsed Time: {{days}} days since previous milestone",
     "highDelay": "High Delay",
     "noTimeline": "No chronological timeline events registered for this case."
+  },
+  "roles": {
+    "title": "Select Your Role",
+    "subtitle": "Choose your access level for this session",
+    "admin": {
+      "title": "System Administrator",
+      "desc": "Full access to all modules, user management, system configuration, and audit logs.",
+      "badge": "KSP-001"
+    },
+    "investigator": {
+      "title": "Investigating Officer",
+      "desc": "Access to cases, AI assistant, network graphs, reports, and voice queries.",
+      "badge": "KSP-4589"
+    },
+    "analyst": {
+      "title": "Crime Analyst",
+      "desc": "Access to analytics dashboards, hotspots, trends, demographics, and predictive models.",
+      "badge": "KSP-2114"
+    },
+    "viewer": {
+      "title": "Supervisor / Viewer",
+      "desc": "Read-only access to dashboards and search. No case details, assistant, or reports.",
+      "badge": "KSP-009"
+    },
+    "selectBtn": "Continue as {{role}}"
   }
 }

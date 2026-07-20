@@ -78,6 +78,8 @@ export const PERMISSIONS = {
   ACCESS_ADMIN_TOOLS: 'access_admin_tools',
   MANAGE_USERS: 'manage_users',
   VIEW_AUDIT_LOGS: 'view_audit_logs',
+  VIEW_MAP: 'view_map',
+  VIEW_GRAPH: 'view_graph',
 } as const;
 
 export type Permission = typeof PERMISSIONS[keyof typeof PERMISSIONS];
@@ -93,6 +95,8 @@ const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     PERMISSIONS.ACCESS_ADMIN_TOOLS,
     PERMISSIONS.MANAGE_USERS,
     PERMISSIONS.VIEW_AUDIT_LOGS,
+    PERMISSIONS.VIEW_MAP,
+    PERMISSIONS.VIEW_GRAPH,
   ],
   investigator: [
     PERMISSIONS.VIEW_DASHBOARD,
@@ -101,6 +105,8 @@ const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     PERMISSIONS.USE_ASSISTANT,
     PERMISSIONS.GENERATE_REPORTS,
     PERMISSIONS.USE_VOICE,
+    PERMISSIONS.VIEW_MAP,
+    PERMISSIONS.VIEW_GRAPH,
   ],
   analyst: [
     PERMISSIONS.VIEW_DASHBOARD,
@@ -109,6 +115,8 @@ const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     PERMISSIONS.USE_ASSISTANT,
     PERMISSIONS.GENERATE_REPORTS,
     PERMISSIONS.USE_VOICE,
+    PERMISSIONS.VIEW_MAP,
+    PERMISSIONS.VIEW_GRAPH,
   ],
   viewer: [
     PERMISSIONS.VIEW_DASHBOARD,

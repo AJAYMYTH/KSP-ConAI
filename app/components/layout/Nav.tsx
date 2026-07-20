@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getCurrentSession } from '../../lib/auth';
+import { getCurrentSession, PERMISSIONS, hasPermission } from '../../lib/auth';
 import type { UserSession } from '../../lib/auth';
 import { Menu, X, Search, User, LogOut, Globe } from 'lucide-react';
 import { useI18n } from '../../i18n/hooks';
@@ -23,13 +23,14 @@ export default function Nav({ currentPath = '/' }: NavProps) {
   };
 
   const navItems = [
-    { name: t('nav.dashboard'), path: '/dashboard' },
-    { name: t('nav.search'), path: '/search' },
-    { name: t('nav.map'), path: '/map' },
-    { name: t('nav.assistant'), path: '/assistant' },
-    { name: t('nav.reports'), path: '/reports' },
-    { name: t('nav.profiling'), path: '/profiling' },
-  ];
+    { name: t('nav.dashboard'), path: '/dashboard', perm: PERMISSIONS.VIEW_DASHBOARD },
+    { name: t('nav.search'), path: '/search', perm: PERMISSIONS.SEARCH_FIRS },
+    { name: t('nav.map'), path: '/map', perm: PERMISSIONS.VIEW_MAP },
+    { name: t('nav.assistant'), path: '/assistant', perm: PERMISSIONS.USE_ASSISTANT },
+    { name: t('nav.graph'), path: '/graph', perm: PERMISSIONS.VIEW_GRAPH },
+    { name: t('nav.reports'), path: '/reports', perm: PERMISSIONS.GENERATE_REPORTS },
+    { name: currentLanguage === 'en' ? 'Profiling' : 'ಪ್ರೊಫೈಲಿಂಗ್', path: '/profiling', perm: PERMISSIONS.VIEW_CASE_DETAIL_FULL }
+  ].filter(item => hasPermission(item.perm));
 
   return (
     <nav className="sticky top-0 z-50 w-full h-16 bg-canvas border-b border-hairline-soft px-4 md:px-8 flex items-center justify-between">
@@ -64,6 +65,18 @@ export default function Nav({ currentPath = '/' }: NavProps) {
             </a>
           );
         })}
+        {hasPermission(PERMISSIONS.ACCESS_ADMIN_TOOLS) && (
+          <a
+            href="/admin"
+            className={`px-4 py-1.5 text-xs font-bold transition-all duration-150 rounded-full focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none ${
+              currentPath.startsWith('/admin')
+                ? 'bg-ink-deep text-canvas shadow-sm'
+                : 'text-ink hover:bg-hairline-soft'
+            }`}
+          >
+            {currentLanguage === 'en' ? 'Admin' : 'ನಿರ್ವಾಹಕರು'}
+          </a>
+        )}
       </div>
 
       {/* Right Actions & Role Swapper */}
@@ -123,6 +136,17 @@ export default function Nav({ currentPath = '/' }: NavProps) {
               </a>
             );
           })}
+          {hasPermission(PERMISSIONS.ACCESS_ADMIN_TOOLS) && (
+            <a
+              href="/admin"
+              className={`py-2 px-3 rounded-lg text-sm font-bold flex items-center ${
+                currentPath.startsWith('/admin') ? 'bg-surface-soft text-primary' : 'text-ink hover:bg-surface-soft'
+              }`}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              {currentLanguage === 'en' ? 'Admin Tools' : 'ನಿರ್ವಾಹಕ ಉಪಕರಣಗಳು'}
+            </a>
+          )}
         </div>
       )}
     </nav>
