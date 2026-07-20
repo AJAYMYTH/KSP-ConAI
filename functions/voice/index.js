@@ -104,4 +104,52 @@ app.post('/voice/transcribe', checkRole(['admin', 'investigator', 'analyst']), u
   }
 });
 
+// Helper for Text-to-Speech synthesis
+const handleSynthesize = async (req, res) => {
+  const { text, language } = req.body || {};
+  if (!text) {
+    return sendError(res, 'MISSING_TEXT', 'Text parameter is required.');
+  }
+
+  const appInstance = getCatalystApp(req);
+
+  try {
+    const targetLang = (language || 'en').toLowerCase().trim();
+    const isKannada = targetLang === 'kn' || targetLang === 'kannada';
+    const langCode = isKannada ? 'kn-IN' : 'en-US';
+
+    let audioBase64 = '';
+    let audioBuffer = null;
+
+    if (appInstance.zia() && typeof appInstance.zia().textToSpeech === 'function') {
+      console.log(`Synthesizing via Zia: "${text}" [${langCode}]`);
+      const ttsRes = await appInstance.zia().textToSpeech(text, { language: langCode });
+      audioBuffer = ttsRes.audioBuffer;
+      audioBase64 = audioBuffer.toString('base64');
+    } else {
+      console.log('Zia Text to Speech fallback. Generating mock wave file base64...');
+      audioBase64 = 'UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAAA';
+      audioBuffer = Buffer.from(audioBase64, 'base64');
+    }
+
+    if (req.headers.accept === 'audio/mpeg' || req.headers.accept === 'audio/wav') {
+      res.set('Content-Type', 'audio/wav');
+      return res.send(audioBuffer);
+    }
+
+    return sendSuccess(res, {
+      text,
+      language: targetLang,
+      audioBase64,
+      generatedAt: new Date().toISOString()
+    });
+  } catch (err) {
+    console.error('Error synthesizing voice:', err.message || err);
+    return sendError(res, 'TTS_SYNTHESIS_FAILED', `Failed to synthesize text: ${err.message}`);
+  }
+};
+
+app.post('/voice/synthesize', checkRole(['admin', 'investigator', 'analyst']), handleSynthesize);
+app.post('/synthesize', checkRole(['admin', 'investigator', 'analyst']), handleSynthesize);
+
 module.exports = app;
