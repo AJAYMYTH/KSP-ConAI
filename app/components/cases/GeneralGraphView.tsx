@@ -23,9 +23,17 @@ export default function GeneralGraphView() {
   const filteredCases = MOCK_CASES.filter(c => {
     const q = searchQuery.toLowerCase().trim();
     if (!q) return true;
+    const currentCase = MOCK_CASES.find(sc => sc.caseId === selectedCaseId);
+    if (currentCase && (searchQuery.includes(currentCase.firNumber) || searchQuery === `${currentCase.firNumber} (${translateDistrict(currentCase.district, currentLanguage)})`)) {
+      return true;
+    }
+    const cleanQ = q.replace(/[^a-z0-9]/g, '');
+    const cleanFir = c.firNumber.toLowerCase().replace(/[^a-z0-9]/g, '');
+    const cleanId = c.caseId.toLowerCase().replace(/[^a-z0-9]/g, '');
+
     return (
-      c.firNumber.toLowerCase().includes(q) ||
-      c.caseId.toLowerCase().includes(q) ||
+      cleanFir.includes(cleanQ) ||
+      cleanId.includes(cleanQ) ||
       c.district.toLowerCase().includes(q) ||
       c.station.toLowerCase().includes(q) ||
       c.crimeHead.toLowerCase().includes(q) ||
