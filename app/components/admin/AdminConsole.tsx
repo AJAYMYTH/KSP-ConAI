@@ -151,18 +151,18 @@ function AdminConsoleInner() {
   }
 
   return (
-    <div className="p-6 md:p-8 space-y-6 max-w-5xl mx-auto w-full animate-in fade-in duration-300">
+    <div className="p-3.5 sm:p-6 md:p-8 space-y-4 sm:space-y-6 w-full max-w-none animate-in fade-in duration-300">
       {/* Sticky Banner Header */}
-      <div className="bg-canvas border border-hairline-soft p-5 rounded-xxxl flex flex-col md:flex-row md:items-center justify-between gap-4 card-product-shadow">
+      <div className="bg-canvas border border-hairline-soft p-3.5 sm:p-5 rounded-2xl sm:rounded-xxxl flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4 card-product-shadow">
         <div className="flex items-center gap-3">
-          <img src="/karnataka_emblem.png" alt="Government Seal" className="w-10 h-10 object-contain animate-pulse-subtle" width="40" height="40" />
+          <img src="/karnataka_emblem.png" alt="Government Seal" className="w-9 h-9 sm:w-10 sm:h-10 object-contain animate-pulse-subtle" width="40" height="40" />
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-[10px] uppercase tracking-wider text-primary font-bold">Workspace Panel</span>
+              <span className="text-[9px] sm:text-[10px] uppercase tracking-wider text-primary font-bold">Workspace Panel</span>
               <span className="w-1.5 h-1.5 rounded-circle bg-stone" />
-              <span className="text-xs text-purple-700 bg-purple-50 dark:bg-purple-950/20 px-2 py-0.5 rounded font-bold uppercase tracking-wider">Root Admin</span>
+              <span className="text-[10px] sm:text-xs text-purple-700 bg-purple-50 dark:bg-purple-950/20 px-2 py-0.5 rounded font-bold uppercase tracking-wider">Root Admin</span>
             </div>
-            <h1 className="text-base font-bold text-ink-deep">System Administration Console</h1>
+            <h1 className="text-sm sm:text-base font-bold text-ink-deep">System Administration Console</h1>
           </div>
         </div>
 

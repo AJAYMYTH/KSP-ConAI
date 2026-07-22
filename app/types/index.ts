@@ -122,3 +122,34 @@ export interface SimilarCase {
   similarityScore: number;
   matchReason: string;
 }
+
+// Production API Interfaces for KSP Backend
+export interface AssistantQueryRequest {
+  text: string;
+  conversationHistory?: Array<{
+    role: 'user' | 'assistant';
+    content: string;
+  }>;
+}
+
+export interface AssistantDataPayload {
+  answer: string;
+  intent: 'case_summary' | 'sql_lookup' | 'anomaly_detection' | 'fraud_detection' | 'trend_analysis' | 'translation' | 'out_of_domain';
+  confidence: 'high' | 'medium' | 'low';
+  supportingData?: Record<string, any>;
+  linkedCases?: string[];
+  sqlPreview?: string;
+  sources?: string[];
+  generatedAt: string;
+}
+
+export interface CaseMasterRecord {
+  ROWID: string;
+  fir_number: string;
+  crime_registered_date: string;
+  place_of_occurrence: string;
+  summary_of_facts: string;
+  fir_status: string;
+  district_name?: string;
+  category_name?: string;
+}

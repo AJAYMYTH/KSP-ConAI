@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getMapHotspots } from '../../lib/api';
 import type { MapHotspot } from '../../types';
-import { Shield, Filter, MapPin, ChevronDown, Search, AlertCircle } from 'lucide-react';
+import { Shield, Filter, MapPin, ChevronDown, Search, AlertCircle, Activity } from 'lucide-react';
 import { useI18n } from '../../i18n/hooks';
 import { translateDistrict, translateCategory } from '../../i18n/utils';
 
@@ -12,6 +12,7 @@ export default function HotspotMap() {
   const [loading, setLoading] = useState(true);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+  const [isHeatmapMode, setIsHeatmapMode] = useState(false);
 
   // Search states
   const [searchQuery, setSearchQuery] = useState('');
@@ -19,6 +20,7 @@ export default function HotspotMap() {
 
   const mapRef = useRef<any>(null);
   const markersRef = useRef<any[]>([]);
+  const heatLayerRef = useRef<any>(null);
 
   useEffect(() => {
     fetchHotspots();
@@ -65,38 +67,65 @@ export default function HotspotMap() {
       markersRef.current.forEach((marker) => marker.remove());
       markersRef.current = [];
 
-      // Custom marker icon creation
-      const customIcon = L.icon({
-        iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-        shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34]
-      });
+      // Clear previous heatmap
+      if (heatLayerRef.current) {
+        heatLayerRef.current.remove();
+        heatLayerRef.current = null;
+      }
 
-      // Add new markers
-      const newMarkers = hotspots
-        .filter((point) => point.latitude && point.longitude)
-        .map((point) => {
-          const marker = L.marker([point.latitude, point.longitude], { icon: customIcon })
-            .addTo(map);
-
-          marker.bindPopup(`
-            <div style="font-family: sans-serif; font-size: 11px; line-height: 1.4;">
-              <strong style="color: #0a1317; font-size: 12px;">${point.firNumber}</strong><br/>
-              <strong>${currentLanguage === 'en' ? 'Category' : 'ಅಪರಾಧ ವಿಭಾಗ'}:</strong> ${translateCategory(point.category, currentLanguage)}<br/>
-              <strong>${currentLanguage === 'en' ? 'District' : 'ಜಿಲ್ಲೆ'}:</strong> ${translateDistrict(point.district, currentLanguage)}<br/>
-              <strong>${currentLanguage === 'en' ? 'Density Weight' : 'ಸಾಂದ್ರತೆಯ ಪ್ರಮಾಣ'}:</strong> ${point.weight}
-            </div>
-          `);
-
-          // Attach metadata to marker for search referencing
-          (marker as any).firNumber = point.firNumber;
-
-          return marker;
+      if (isHeatmapMode) {
+        if (L.heatLayer) {
+          const heatPoints = hotspots
+            .filter((point) => point.latitude && point.longitude)
+            .map((point) => [point.latitude, point.longitude, point.weight || 1.0]);
+          const heat = L.heatLayer(heatPoints, { radius: 25, blur: 15, maxZoom: 10 }).addTo(map);
+          heatLayerRef.current = heat;
+        } else {
+          // Load leaflet-heat.js dynamically
+          const script = document.createElement('script');
+          script.src = 'https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js';
+          script.async = true;
+          script.onload = () => {
+            if ((window as any).L && (window as any).L.heatLayer) {
+              setupMap((window as any).L);
+            }
+          };
+          document.body.appendChild(script);
+        }
+      } else {
+        // Custom marker icon creation
+        const customIcon = L.icon({
+          iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+          shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+          iconSize: [25, 41],
+          iconAnchor: [12, 41],
+          popupAnchor: [1, -34]
         });
 
-      markersRef.current = newMarkers;
+        // Add new markers
+        const newMarkers = hotspots
+          .filter((point) => point.latitude && point.longitude)
+          .map((point) => {
+            const marker = L.marker([point.latitude, point.longitude], { icon: customIcon })
+              .addTo(map);
+
+            marker.bindPopup(`
+              <div style="font-family: sans-serif; font-size: 11px; line-height: 1.4;">
+                <strong style="color: #0a1317; font-size: 12px;">${point.firNumber}</strong><br/>
+                <strong>${currentLanguage === 'en' ? 'Category' : 'ಅಪರಾಧ ವಿಭಾಗ'}:</strong> ${translateCategory(point.category, currentLanguage)}<br/>
+                <strong>${currentLanguage === 'en' ? 'District' : 'ಜಿಲ್ಲೆ'}:</strong> ${translateDistrict(point.district, currentLanguage)}<br/>
+                <strong>${currentLanguage === 'en' ? 'Density Weight' : 'ಸಾಂದ್ರತೆಯ ಪ್ರಮಾಣ'}:</strong> ${point.weight}
+              </div>
+            `);
+
+            // Attach metadata to marker for search referencing
+            (marker as any).firNumber = point.firNumber;
+
+            return marker;
+          });
+
+        markersRef.current = newMarkers;
+      }
       setMapLoaded(true);
     };
 
@@ -137,7 +166,7 @@ export default function HotspotMap() {
         scriptElement.removeEventListener('load', loadListener);
       }
     };
-  }, [loading, hotspots]);
+  }, [loading, hotspots, isHeatmapMode]);
 
   // Clean up map instance on unmount
   useEffect(() => {
@@ -187,14 +216,14 @@ export default function HotspotMap() {
   };
 
   return (
-    <div className="p-6 md:p-8 space-y-6 max-w-7xl mx-auto w-full animate-in fade-in duration-200">
+    <div className="p-3.5 sm:p-6 md:p-8 space-y-4 sm:space-y-6 w-full max-w-none animate-in fade-in duration-200">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <span className="text-[10px] uppercase tracking-wider text-steel font-bold">
+          <span className="text-[9px] sm:text-[10px] uppercase tracking-wider text-steel font-bold">
             {currentLanguage === 'en' ? 'Geospatial Intelligence' : 'ಭೂ-ಸ್ಥಳೀಯ ಗುಪ್ತಚರ'}
           </span>
-          <h1 className="text-xl md:text-2xl font-bold text-ink-deep">{t('map.title')}</h1>
+          <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-ink-deep">{t('map.title')}</h1>
         </div>
         
         {/* Filters and Search controls */}
@@ -235,6 +264,20 @@ export default function HotspotMap() {
               </span>
             )}
           </form>
+
+          {/* Heatmap Toggle */}
+          <button
+            type="button"
+            onClick={() => setIsHeatmapMode(prev => !prev)}
+            className={`px-4 py-2 border rounded-full text-xs flex items-center justify-center gap-1.5 cursor-pointer h-10 font-bold transition select-none ${
+              isHeatmapMode 
+                ? 'bg-amber-500 hover:bg-amber-600 border-amber-600 text-white' 
+                : 'bg-canvas hover:bg-surface-soft border-hairline-soft text-slate-700'
+            }`}
+          >
+            <Activity className="w-3.5 h-3.5" />
+            <span>{currentLanguage === 'en' ? 'Heatmap Overlay' : 'ಶಾಖನಕ್ಷೆ ಓವರ್ಲೇ'}</span>
+          </button>
 
           {/* Category Filter */}
           <div className="flex items-center gap-2 relative">
@@ -292,9 +335,9 @@ export default function HotspotMap() {
       </div>
 
       {/* Map Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 w-full">
         {/* Sidebar Statistics */}
-        <div className="lg:col-span-1 bg-canvas border border-hairline-soft p-5 rounded-xxxl shadow-xs space-y-4 max-h-[500px] overflow-y-auto">
+        <div className="md:col-span-1 bg-canvas border border-hairline-soft p-4 sm:p-5 rounded-2xl md:rounded-xxxl shadow-xs space-y-4 max-h-[500px] overflow-y-auto">
           <span className="text-[10px] uppercase tracking-wider text-steel font-bold">
             {currentLanguage === 'en' ? 'Spatial Distribution' : 'ಸ್ಥಳೀಯ ವಿತರಣೆ'}
           </span>
@@ -324,7 +367,7 @@ export default function HotspotMap() {
         </div>
 
         {/* Leaflet Map Frame */}
-        <div className="lg:col-span-3 h-[500px] bg-surface-soft border border-hairline-soft rounded-xxxl shadow-xs overflow-hidden relative">
+        <div className="md:col-span-3 h-[500px] bg-surface-soft border border-hairline-soft rounded-2xl md:rounded-xxxl shadow-xs overflow-hidden relative">
           {loading && (
             <div className="absolute inset-0 bg-surface-soft/80 flex flex-col items-center justify-center gap-2 z-10 animate-in fade-in duration-300">
               <div className="w-8 h-8 rounded-circle border-4 border-hairline-soft border-t-primary animate-spin" />

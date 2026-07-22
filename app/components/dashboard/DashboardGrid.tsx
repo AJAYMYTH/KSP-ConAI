@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { getDashboardSummary } from '../../lib/api';
 import type { DashboardSummary } from '../../types';
 import { 
@@ -7,7 +7,7 @@ import {
 } from 'recharts';
 import { 
   Shield, Activity, FileText, CheckCircle, 
-  MapPin, Calendar, ArrowRight, Sparkles, Users, RefreshCw 
+  MapPin, Calendar, ArrowRight, Sparkles, Users, RefreshCw, Download 
 } from 'lucide-react';
 import { useI18n } from '../../i18n/hooks';
 import { 
@@ -26,6 +26,43 @@ export default function DashboardGrid() {
   const [error, setError] = useState(false);
   const [activeTab, setActiveTab] = useState<'overview' | 'predictive' | 'demographics'>('overview');
   const [timeFilter, setTimeFilter] = useState<'7d' | '30d' | '90d' | '12m'>('12m');
+
+  const chartContainerRef = useRef<HTMLDivElement>(null);
+
+  const handleExportChart = () => {
+    if (!chartContainerRef.current) return;
+    const svgElement = chartContainerRef.current.querySelector('svg');
+    if (!svgElement) return;
+
+    try {
+      const svgString = new XMLSerializer().serializeToString(svgElement);
+      const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+      const URL = window.URL || window.webkitURL || window;
+      const blobURL = URL.createObjectURL(svgBlob);
+      const image = new Image();
+      image.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = svgElement.clientWidth * 2;
+        canvas.height = svgElement.clientHeight * 2;
+        const context = canvas.getContext('2d');
+        if (context) {
+          context.scale(2, 2);
+          context.fillStyle = '#ffffff';
+          context.fillRect(0, 0, svgElement.clientWidth, svgElement.clientHeight);
+          context.drawImage(image, 0, 0);
+          
+          const png = canvas.toDataURL('image/png');
+          const link = document.createElement('a');
+          link.href = png;
+          link.download = `ksp_crime_trend_${Date.now()}.png`;
+          link.click();
+        }
+      };
+      image.src = blobURL;
+    } catch (err) {
+      console.error('Failed to export chart image:', err);
+    }
+  };
 
   useEffect(() => {
     fetchData();
@@ -143,12 +180,12 @@ export default function DashboardGrid() {
   ];
 
   return (
-    <div className="p-6 md:p-8 space-y-6 max-w-7xl mx-auto w-full animate-in fade-in duration-300">
+    <div className="p-3.5 sm:p-6 md:p-8 space-y-4 sm:space-y-6 w-full max-w-none animate-in fade-in duration-300">
       {/* Submenu Tabs */}
-      <div className="flex border-b border-hairline-soft pb-0">
+      <div className="flex border-b border-hairline-soft pb-0 overflow-x-auto whitespace-nowrap scrollbar-none">
         <button
           onClick={() => setActiveTab('overview')}
-          className={`px-5 py-2.5 text-xs font-bold border-b-2 transition duration-150 cursor-pointer flex items-center gap-1.5 ${
+          className={`px-4 sm:px-5 py-2 sm:py-2.5 text-xs font-bold border-b-2 transition duration-150 cursor-pointer flex items-center gap-1.5 shrink-0 ${
             activeTab === 'overview'
               ? 'border-primary text-primary'
               : 'border-transparent text-stone hover:text-ink'
@@ -159,7 +196,7 @@ export default function DashboardGrid() {
         </button>
         <button
           onClick={() => setActiveTab('predictive')}
-          className={`px-5 py-2.5 text-xs font-bold border-b-2 transition duration-150 cursor-pointer flex items-center gap-1.5 ${
+          className={`px-4 sm:px-5 py-2 sm:py-2.5 text-xs font-bold border-b-2 transition duration-150 cursor-pointer flex items-center gap-1.5 shrink-0 ${
             activeTab === 'predictive'
               ? 'border-primary text-primary'
               : 'border-transparent text-stone hover:text-ink'
@@ -170,7 +207,7 @@ export default function DashboardGrid() {
         </button>
         <button
           onClick={() => setActiveTab('demographics')}
-          className={`px-5 py-2.5 text-xs font-bold border-b-2 transition duration-150 cursor-pointer flex items-center gap-1.5 ${
+          className={`px-4 sm:px-5 py-2 sm:py-2.5 text-xs font-bold border-b-2 transition duration-150 cursor-pointer flex items-center gap-1.5 shrink-0 ${
             activeTab === 'demographics'
               ? 'border-primary text-primary'
               : 'border-transparent text-stone hover:text-ink'
@@ -188,16 +225,16 @@ export default function DashboardGrid() {
       ) : (
         <>
           {/* Time Filter Row */}
-          <div className="flex flex-wrap items-center justify-between gap-4 bg-surface-soft/40 border border-hairline-soft/80 p-3.5 rounded-2xl">
-            <div className="text-xs text-steel font-bold">
+          <div className="flex flex-wrap items-center justify-between gap-3 bg-surface-soft/40 border border-hairline-soft/80 p-3 sm:p-3.5 rounded-2xl">
+            <div className="text-[11px] sm:text-xs text-steel font-bold">
               {currentLanguage === 'en' ? 'Data scope time limits:' : 'ಡೇಟಾ ವ್ಯಾಪ್ತಿಯ ಸಮಯ ಮಿತಿಗಳು:'}
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-1.5 sm:gap-2">
               {(['7d', '30d', '90d', '12m'] as const).map((filter) => (
                 <button
                   key={filter}
                   onClick={() => setTimeFilter(filter)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer select-none ${
+                  className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-[11px] sm:text-xs font-bold transition cursor-pointer select-none ${
                     timeFilter === filter
                       ? 'bg-ink-deep text-canvas'
                       : 'bg-canvas border border-hairline-soft text-ink hover:bg-surface-soft'
@@ -213,7 +250,7 @@ export default function DashboardGrid() {
           </div>
 
           {/* KPI Row */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 w-full">
             {/* KPI 1 */}
             <div className="bg-canvas border border-hairline-soft p-4 md:p-5 rounded-xl card-product-shadow flex items-start justify-between">
               <div className="space-y-1">
@@ -273,12 +310,24 @@ export default function DashboardGrid() {
           </div>
 
           {/* Main Grid: Bento Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 w-full">
             {/* Area Chart: Cases registered over time */}
-            <div className="bg-canvas border border-hairline-soft p-5 rounded-xxxl card-product-shadow md:col-span-2 flex flex-col justify-between">
-              <div className="mb-4">
-                <span className="text-[10px] uppercase tracking-wider text-steel font-bold">{t('dashboard.monthlyTrend')}</span>
-                <h3 className="text-base font-bold text-ink-deep">{t('dashboard.monthlySubtitle')}</h3>
+            <div ref={chartContainerRef} className="bg-canvas border border-hairline-soft p-4 sm:p-5 rounded-2xl md:rounded-xxxl card-product-shadow md:col-span-2 flex flex-col justify-between relative group/chart">
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <span className="text-[10px] uppercase tracking-wider text-steel font-bold">{t('dashboard.monthlyTrend')}</span>
+                  <h3 className="text-base font-bold text-ink-deep">{t('dashboard.monthlySubtitle')}</h3>
+                </div>
+                
+                {/* Export Chart Button */}
+                <button
+                  type="button"
+                  onClick={handleExportChart}
+                  className="p-2 border border-hairline-soft bg-canvas hover:bg-surface-soft text-stone hover:text-ink rounded-xl flex items-center justify-center transition cursor-pointer"
+                  title="Export Chart PNG"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                </button>
               </div>
               <div className="h-64 w-full">
                 <ResponsiveContainer width="100%" height="100%">

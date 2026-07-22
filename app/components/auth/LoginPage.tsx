@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
-import { Lock, User, ArrowRight, Shield, Database, MapPin, Mail, Globe, Eye, EyeOff, ArrowLeft } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Lock, User, ArrowRight, Shield, Database, MapPin, Mail, Globe, Eye, EyeOff, ArrowLeft, Award, Check } from 'lucide-react';
 import { useI18n } from '../../i18n/hooks';
 import { DEMO_USERS, setSession, type UserRole } from '../../lib/auth';
-import { RoleSelector } from './RoleSelector';
 
 interface LoginPageProps {
   defaultView?: 'login' | 'register';
@@ -12,6 +11,9 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
   const { t, currentLanguage, changeLanguage } = useI18n();
   const [view, setView] = useState<'login' | 'register'>(defaultView);
   
+  // Selected role directly on the login form
+  const [selectedRole, setSelectedRole] = useState<UserRole>('investigator');
+
   // Login Form states
   const [loginUser, setLoginUser] = useState('');
   const [loginPass, setLoginPass] = useState('');
@@ -23,45 +25,102 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
   const [regPass, setRegPass] = useState('');
   const [showRegPass, setShowRegPass] = useState(false);
 
-  // Role Selection staging states
-  const [showRoleSelector, setShowRoleSelector] = useState(false);
-  const [stagedUser, setStagedUser] = useState<any>(null);
+  // Automatically update the credentials when the selected role changes, to assist in KSP Copilot logins
+  useEffect(() => {
+    if (view === 'login') {
+      const demoUser = DEMO_USERS[selectedRole];
+      setLoginUser(demoUser.username);
+      setLoginPass('••••••••');
+    }
+  }, [view, selectedRole]);
 
   const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const userVal = loginUser.trim().toLowerCase();
 
-    let roleMatch: UserRole = 'investigator';
-    if (userVal.includes('admin') || userVal.includes('dayananda')) {
-      roleMatch = 'admin';
-    } else if (userVal.includes('analyst') || userVal.includes('praveen')) {
-      roleMatch = 'analyst';
-    } else if (userVal.includes('viewer') || userVal.includes('supervisor')) {
-      roleMatch = 'viewer';
+    const defaultSession = DEMO_USERS[selectedRole];
+    let badgeNum = defaultSession.badgeNumber || 'KSP-9999';
+    let name = defaultSession.name;
+    if (selectedRole === 'admin') {
+      badgeNum = 'KSP-001';
+      name = 'Shri B. Dayananda, IPS';
+    } else if (selectedRole === 'investigator') {
+      badgeNum = 'KSP-4589';
+      name = 'Mahesh Kumar (IO)';
+    } else if (selectedRole === 'analyst') {
+      badgeNum = 'KSP-2114';
+      name = 'Praveen Gowda (Analyst)';
+    } else if (selectedRole === 'viewer') {
+      badgeNum = 'KSP-009';
+      name = 'Inspector General (Supervisor)';
     }
 
-    const defaultSession = DEMO_USERS[roleMatch];
-    setStagedUser({
+    setSession({
       ...defaultSession,
-      username: userVal || defaultSession.username
+      username: userVal || defaultSession.username,
+      role: selectedRole,
+      name,
+      badgeNumber: badgeNum,
+      token: `mock-jwt-token-for-ksp-catalyst-${selectedRole}`
     });
-    setShowRoleSelector(true);
+    window.location.href = '/dashboard';
   };
 
   const handleRegisterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setStagedUser({
-      role: 'investigator',
-      name: regName || 'New Officer',
+    
+    let badgeNum = `KSP-${Math.floor(1000 + Math.random() * 9000)}`;
+    let name = regName || 'New Officer';
+    if (selectedRole === 'admin') {
+      badgeNum = 'KSP-001';
+      name = regName || 'Shri B. Dayananda, IPS';
+    } else if (selectedRole === 'investigator') {
+      badgeNum = 'KSP-4589';
+      name = regName || 'Mahesh Kumar (IO)';
+    } else if (selectedRole === 'analyst') {
+      badgeNum = 'KSP-2114';
+      name = regName || 'Praveen Gowda (Analyst)';
+    } else if (selectedRole === 'viewer') {
+      badgeNum = 'KSP-009';
+      name = regName || 'Inspector General (Supervisor)';
+    }
+
+    setSession({
+      role: selectedRole,
+      name,
       username: regEmail || 'new.officer@ksp.gov.in',
-      badgeNumber: `KSP-${Math.floor(1000 + Math.random() * 9000)}`
+      badgeNumber: badgeNum,
+      token: `mock-jwt-token-for-ksp-catalyst-${selectedRole}`
     });
-    setShowRoleSelector(true);
+    window.location.href = '/dashboard';
   };
 
   const handleGoogleSSO = () => {
-    setStagedUser(DEMO_USERS.investigator);
-    setShowRoleSelector(true);
+    const defaultSession = DEMO_USERS[selectedRole];
+    let badgeNum = defaultSession.badgeNumber || 'KSP-9999';
+    let name = defaultSession.name;
+    if (selectedRole === 'admin') {
+      badgeNum = 'KSP-001';
+      name = 'Shri B. Dayananda, IPS';
+    } else if (selectedRole === 'investigator') {
+      badgeNum = 'KSP-4589';
+      name = 'Mahesh Kumar (IO)';
+    } else if (selectedRole === 'analyst') {
+      badgeNum = 'KSP-2114';
+      name = 'Praveen Gowda (Analyst)';
+    } else if (selectedRole === 'viewer') {
+      badgeNum = 'KSP-009';
+      name = 'Inspector General (Supervisor)';
+    }
+
+    setSession({
+      ...defaultSession,
+      role: selectedRole,
+      name,
+      badgeNumber: badgeNum,
+      token: `mock-jwt-token-for-ksp-catalyst-${selectedRole}`
+    });
+    window.location.href = '/dashboard';
   };
 
   const toggleLanguage = () => {
@@ -69,8 +128,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
     changeLanguage(nextLang);
   };
 
-  // Google and Zoho OAuth buttons using button-ghost style:
-  // Transparent background, border 2px solid rgba(10, 19, 23, 0.12), rounded full, height 44px
   const socialLoginBlock = (
     <div className="space-y-4">
       <div className="flex items-center gap-3 text-[10px] text-slate-400 font-bold uppercase tracking-wider">
@@ -79,7 +136,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
         <div className="h-px flex-1 bg-slate-150"></div>
       </div>
       <div className="grid grid-cols-2 gap-3">
-        {/* Google OAuth */}
         <button
           type="button"
           onClick={handleGoogleSSO}
@@ -94,7 +150,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
           Google
         </button>
 
-        {/* Zoho OAuth */}
         <button
           type="button"
           onClick={handleGoogleSSO}
@@ -106,34 +161,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
       </div>
     </div>
   );
-
-  const onRoleSelect = (role: UserRole) => {
-    if (!stagedUser) return;
-    
-    let badgeNum = stagedUser.badgeNumber || 'KSP-9999';
-    let name = stagedUser.name;
-    if (role === 'admin') {
-      badgeNum = 'KSP-001';
-      name = 'Shri B. Dayananda, IPS';
-    } else if (role === 'investigator') {
-      badgeNum = 'KSP-4589';
-      name = 'Mahesh Kumar (IO)';
-    } else if (role === 'analyst') {
-      badgeNum = 'KSP-2114';
-      name = 'Praveen Gowda (Analyst)';
-    } else if (role === 'viewer') {
-      badgeNum = 'KSP-009';
-      name = 'Inspector General (Supervisor)';
-    }
-
-    setSession({
-      ...stagedUser,
-      role,
-      name,
-      badgeNumber: badgeNum
-    });
-    window.location.href = '/dashboard';
-  };
 
   const availableRoles: {
     role: UserRole;
@@ -209,28 +236,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
       ]
     }
   ];
-
-  if (showRoleSelector) {
-    return (
-      <div className="flex-grow flex min-h-[100dvh] w-full items-center justify-center bg-[#fbfbfd] p-6 selection:bg-primary-soft selection:text-primary-deep">
-        <div className="w-full max-w-4xl p-8 md:p-10 bg-white border border-[#dee3e9] rounded-xxxl shadow-xl shadow-slate-100/50 relative">
-          <button 
-            type="button"
-            onClick={() => setShowRoleSelector(false)}
-            className="absolute top-6 left-6 flex items-center gap-1.5 px-3 py-1.5 border border-slate-200 hover:border-slate-350 bg-transparent rounded-full text-[10px] font-bold text-slate-600 hover:bg-slate-50 transition cursor-pointer select-none shadow-xs"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>{currentLanguage === 'en' ? 'Back' : 'ಹಿಂದಕ್ಕೆ'}</span>
-          </button>
-          
-          <RoleSelector 
-            onRoleSelect={onRoleSelect} 
-            availableRoles={availableRoles} 
-          />
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="flex-grow flex min-h-[100dvh] w-full font-sans bg-[#fbfbfd] selection:bg-primary-soft selection:text-primary-deep">
@@ -338,6 +343,44 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
                 </div>
 
                 <form onSubmit={handleLoginSubmit} className="space-y-4">
+                  {/* Direct Role Selection */}
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">
+                      {currentLanguage === 'en' ? 'Select Security Role' : 'ಸುರಕ್ಷತಾ ಪಾತ್ರವನ್ನು ಆಯ್ಕೆಮಾಡಿ'}
+                    </label>
+                    <div className="grid grid-cols-2 gap-2">
+                      {availableRoles.map((roleConfig) => {
+                        const isSelected = selectedRole === roleConfig.role;
+                        const title = t(`roles.${roleConfig.role}.title`);
+                        const badge = t(`roles.${roleConfig.role}.badge`) || roleConfig.badge;
+                        return (
+                          <button
+                            key={roleConfig.role}
+                            type="button"
+                            onClick={() => setSelectedRole(roleConfig.role)}
+                            className={`group flex items-center gap-2 p-2 rounded-xl border text-left transition-all duration-150 cursor-pointer select-none ${
+                              isSelected
+                                ? 'border-primary bg-primary/5 ring-1 ring-primary'
+                                : 'border-slate-200 hover:border-slate-350 bg-white'
+                            }`}
+                          >
+                            <div className={`p-1.5 rounded-lg shrink-0 ${isSelected ? roleConfig.textColor + ' bg-white shadow-xs' : 'bg-slate-50 text-slate-400'}`}>
+                              {React.cloneElement(roleConfig.icon as React.ReactElement, { className: 'w-3.5 h-3.5' })}
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <div className={`text-[10px] font-bold truncate leading-tight ${isSelected ? 'text-slate-900 font-bold' : 'text-slate-700'}`}>
+                                {title}
+                              </div>
+                              <div className="text-[8px] text-slate-400 font-semibold tracking-wider mt-0.5 uppercase">
+                                {badge}
+                              </div>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
                   {/* User input: height 44px, border hairline, rounded lg (8px), focus border 2px solid fb-blue */}
                   <div className="space-y-1.5">
                     <label htmlFor="login-username" className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">{t('login.usernameLabel')}</label>
@@ -418,6 +461,44 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
                 </div>
 
                 <form onSubmit={handleRegisterSubmit} className="space-y-4">
+                  {/* Direct Role Selection */}
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">
+                      {currentLanguage === 'en' ? 'Select Security Role' : 'ಸುರಕ್ಷತಾ ಪಾತ್ರವನ್ನು ಆಯ್ಕೆಮಾಡಿ'}
+                    </label>
+                    <div className="grid grid-cols-2 gap-2">
+                      {availableRoles.map((roleConfig) => {
+                        const isSelected = selectedRole === roleConfig.role;
+                        const title = t(`roles.${roleConfig.role}.title`);
+                        const badge = t(`roles.${roleConfig.role}.badge`) || roleConfig.badge;
+                        return (
+                          <button
+                            key={roleConfig.role}
+                            type="button"
+                            onClick={() => setSelectedRole(roleConfig.role)}
+                            className={`group flex items-center gap-2 p-2 rounded-xl border text-left transition-all duration-150 cursor-pointer select-none ${
+                              isSelected
+                                ? 'border-primary bg-primary/5 ring-1 ring-primary'
+                                : 'border-slate-200 hover:border-slate-350 bg-white'
+                            }`}
+                          >
+                            <div className={`p-1.5 rounded-lg shrink-0 ${isSelected ? roleConfig.textColor + ' bg-white shadow-xs' : 'bg-slate-50 text-slate-400'}`}>
+                              {React.cloneElement(roleConfig.icon as React.ReactElement, { className: 'w-3.5 h-3.5' })}
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <div className={`text-[10px] font-bold truncate leading-tight ${isSelected ? 'text-slate-900 font-bold' : 'text-slate-700'}`}>
+                                {title}
+                              </div>
+                              <div className="text-[8px] text-slate-400 font-semibold tracking-wider mt-0.5 uppercase">
+                                {badge}
+                              </div>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
                   {/* Name field: height 44px, border hairline, rounded lg (8px), focus border 2px solid fb-blue */}
                   <div className="space-y-1.5">
                     <label htmlFor="reg-name" className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">{t('login.regNameLabel')}</label>

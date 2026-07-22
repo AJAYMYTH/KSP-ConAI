@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ShieldAlert, ArrowLeft, RefreshCw } from 'lucide-react';
-import { hasPermission, type Permission } from '../../lib/auth';
+import { hasPermission, getCurrentSession, type Permission } from '../../lib/auth';
 import { useI18n } from '../../i18n/hooks';
 
 interface PermissionGuardProps {
@@ -28,6 +28,15 @@ export const PermissionGuard: React.FC<PermissionGuardProps> = ({
         <div className="w-6 h-6 rounded-circle border-2 border-hairline-soft border-t-primary animate-spin" />
       </div>
     );
+  }
+
+  // Redirect if no active session
+  const session = getCurrentSession();
+  if (!session) {
+    if (typeof window !== 'undefined') {
+      window.location.href = '/login';
+    }
+    return null;
   }
 
   const allowed = hasPermission(permission);

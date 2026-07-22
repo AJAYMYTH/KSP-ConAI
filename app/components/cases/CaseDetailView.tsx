@@ -6,6 +6,7 @@ import CriminalNetworkGraph from './CriminalNetworkGraph';
 import SimilarCasePanel from './SimilarCasePanel';
 import { Shield, FileText, Calendar, MapPin, Loader2, Download, Check, Sparkles } from 'lucide-react';
 import { useI18n } from '../../i18n/hooks';
+import { getCurrentSession } from '../../lib/auth';
 
 interface Props {
   caseId: string;
@@ -19,6 +20,26 @@ export default function CaseDetailView({ caseId }: Props) {
   const [reportLoading, setReportLoading] = useState(false);
   const [reportSuccess, setReportSuccess] = useState(false);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const [currentUserRole, setCurrentUserRole] = useState<string>('investigator');
+
+  useEffect(() => {
+    const session = getCurrentSession();
+    if (session) {
+      setCurrentUserRole(session.role);
+    }
+  }, []);
+
+  const maskPII = (name: string) => {
+    if (currentUserRole === 'viewer') {
+      const parts = name.split(' ');
+      return parts.map((part) => {
+        if (part.length <= 1) return part;
+        if (part.includes('(') || part.includes(')')) return part;
+        return part.substring(0, 1) + '***' + part.substring(part.length - 1);
+      }).join(' ');
+    }
+    return name;
+  };
 
   useEffect(() => {
     async function loadDetails() {
@@ -151,9 +172,9 @@ export default function CaseDetailView({ caseId }: Props) {
   }
 
   return (
-    <div className="p-6 md:p-8 space-y-6 max-w-5xl mx-auto w-full animate-in fade-in duration-300">
+    <div className="p-3.5 sm:p-6 md:p-8 space-y-4 sm:space-y-6 w-full max-w-none animate-in fade-in duration-300">
       {/* Sticky Identity Banner */}
-      <div className="sticky top-16 z-30 bg-canvas border border-hairline-soft p-4 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 card-product-shadow">
+      <div className="sticky top-16 z-30 bg-canvas border border-hairline-soft p-3.5 sm:p-4 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 card-product-shadow">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5">
             <span className="text-xs text-steel font-bold uppercase tracking-wider">{t('caseDetail.firRecord')}</span>
@@ -270,7 +291,7 @@ export default function CaseDetailView({ caseId }: Props) {
                       const arrest = details.arrests.find(a => a.person.toLowerCase().includes(person.split(' ')[0].toLowerCase()));
                       return (
                         <div key={idx} className="p-3 bg-surface-soft/60 border border-hairline-soft rounded-lg text-xs font-bold text-ink-deep flex flex-col justify-between">
-                          <span>{person}</span>
+                          <span>{maskPII(person)}</span>
                           {/* Arrest Details */}
                           {arrest ? (
                             <span className="text-[9px] text-success font-medium mt-1">
@@ -292,13 +313,13 @@ export default function CaseDetailView({ caseId }: Props) {
                   <div className="space-y-1.5">
                     <span className="text-[10px] uppercase tracking-wider text-success font-bold">{t('caseDetail.victims')}</span>
                     <ul className="list-disc pl-4 text-xs text-steel space-y-0.5">
-                      {details.victims.map((v, i) => <li key={i}>{v}</li>)}
+                      {details.victims.map((v, i) => <li key={i}>{maskPII(v)}</li>)}
                     </ul>
                   </div>
                   <div className="space-y-1.5">
                     <span className="text-[10px] uppercase tracking-wider text-primary font-bold">{t('caseDetail.complainants')}</span>
                     <ul className="list-disc pl-4 text-xs text-steel space-y-0.5">
-                      {details.complainants.map((c, i) => <li key={i}>{c}</li>)}
+                      {details.complainants.map((c, i) => <li key={i}>{maskPII(c)}</li>)}
                     </ul>
                   </div>
                 </div>

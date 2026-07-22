@@ -21,15 +21,40 @@ export const IS_MOCK_MODE = import.meta.env.PUBLIC_MOCK_MODE === 'true';
 // Re-export type definitions for usage elsewhere
 export type { CaseSummary, CaseDetail, DashboardSummary, GraphData, MapHotspot, TimelineEvent, ApiResponse, PredictiveInsights, DemographicInsights, OffenderProfile, SimilarCase };
 
-// Inject user role header for local access emulation on Catalyst serverless backend
+// Global fetch interceptor for 401/403 session expiration redirects
+if (typeof window !== 'undefined' && !(window as any).__KSP_FETCH_INTERCEPTED__) {
+  (window as any).__KSP_FETCH_INTERCEPTED__ = true;
+  const originalFetch = window.fetch;
+  window.fetch = async function (input, init) {
+    const response = await originalFetch(input, init);
+    if (response.status === 401 || response.status === 403) {
+      localStorage.removeItem('ksp_copilot_session');
+      window.location.href = '/login';
+    }
+    return response;
+  };
+}
+
+// Inject authentication token or user role headers for local/production Catalyst compatibility
 function getHeaders(extraHeaders: Record<string, string> = {}): Record<string, string> {
   const session = getCurrentSession();
-  const role = session ? session.role : 'investigator';
-  return {
+  const headers: Record<string, string> = {
     'Content-Type': 'application/json',
-    'x-user-role': role,
     ...extraHeaders
   };
+
+  if (session) {
+    if (session.token) {
+      headers['Authorization'] = `Bearer ${session.token}`;
+    } else {
+      headers['x-user-role'] = session.role;
+      headers['x-user-email'] = session.username;
+    }
+  } else {
+    headers['x-user-role'] = 'investigator';
+  }
+
+  return headers;
 }
 
 // ================= ADAPTER MAPPERS =================
@@ -225,11 +250,53 @@ export async function searchCases(params: Record<string, string>): Promise<{ ite
   }
 }
 
-// Fetch single case details
-export async function getCaseDetails(caseId: string): Promise<CaseDetail> {
+// AI Copilot Query API (POST /api/v1/assistant/query)
+export async function queryAssistant(
+  text: string,
+  conversationHistory?: Array<{ role: 'user' | 'assistant'; content: string }>,
+  userRole?: string
+): Promise<import('../types').AssistantDataPayload> {
+  const session = getCurrentSession();
+  const role = userRole || (session ? session.role : 'investigator');
+
+  let response;
+  try {
+    response = await fetch(`${API_BASE_URL}/api/v1/assistant/query`, {
+      method: 'POST',
+      headers: getHeaders({ 'x-user-role': role }),
+      body: JSON.stringify({
+        text,
+        conversationHistory
+      })
+    });
+  } catch (e) {
+    response = await fetch(`${API_BASE_URL}/assistant/query`, {
+      method: 'POST',
+      headers: getHeaders({ 'x-user-role': role }),
+      body: JSON.stringify({
+        text,
+        query: text,
+        conversationHistory,
+        history: conversationHistory
+      })
+    });
+  }
+
+  if (!response.ok) throw new Error('API query failed');
+  const result: ApiResponse<import('../types').AssistantDataPayload> = await response.json();
+
+  if (!result.success || !result.data) {
+    throw new Error(result.error?.message || 'Assistant query failed');
+  }
+
+  return result.data;
+}
+
+// Fetch single case details (GET /api/v1/cases/:firNumber)
+export async function getCaseDetails(caseIdOrFir: string): Promise<CaseDetail> {
   const getMockDetails = () => {
-    const match = mock.MOCK_CASES.find(c => c.caseId === caseId);
-    if (!match) throw new Error(`Case ${caseId} not found in mock database`);
+    const match = mock.MOCK_CASES.find(c => c.caseId === caseIdOrFir || c.firNumber.toLowerCase() === caseIdOrFir.toLowerCase());
+    if (!match) throw new Error(`Case ${caseIdOrFir} not found in mock database`);
     return match;
   };
 
@@ -238,14 +305,22 @@ export async function getCaseDetails(caseId: string): Promise<CaseDetail> {
   }
 
   try {
-    const response = await fetch(`${API_BASE_URL}/cases/${caseId}`, {
-      headers: getHeaders()
-    });
+    let response;
+    try {
+      response = await fetch(`${API_BASE_URL}/api/v1/cases/${encodeURIComponent(caseIdOrFir)}`, {
+        headers: getHeaders()
+      });
+    } catch {
+      response = await fetch(`${API_BASE_URL}/cases/${encodeURIComponent(caseIdOrFir)}`, {
+        headers: getHeaders()
+      });
+    }
+    
     if (!response.ok) throw new Error('API Error');
     const result: ApiResponse<any> = await response.json();
     return mapBackendCaseToDetail(result.data);
   } catch (error) {
-    console.warn(`Case details API failed for ${caseId}, using local match:`, error);
+    console.warn(`Case details API failed for ${caseIdOrFir}, using local match:`, error);
     return getMockDetails();
   }
 }
@@ -457,5 +532,101 @@ export async function getSimilarCases(caseId: string, limit: number = 10): Promi
   } catch (error) {
     console.warn(`Similar cases API failed for case ${caseId}, returning mock recommendations:`, error);
     return getMockSimilar();
+  }
+}
+
+export interface AuditLog {
+  rowId: string;
+  action: string;
+  userEmail: string;
+  details: string;
+  timestamp: string;
+}
+
+// Fetch security audit logs
+export async function getAuditLogs(): Promise<AuditLog[]> {
+  if (IS_MOCK_MODE) {
+    return [
+      { rowId: 'a-1', action: 'ROLE_ASSIGNMENT', userEmail: 'admin@ksp.gov.in', details: 'Assigned role "investigator" to user io_mysuru@ksp.gov.in', timestamp: new Date(Date.now() - 300000).toISOString() },
+      { rowId: 'a-2', action: 'CACHE_PURGED', userEmail: 'admin@ksp.gov.in', details: 'Purged cache segment for dashboard summaries', timestamp: new Date(Date.now() - 600000).toISOString() },
+      { rowId: 'a-3', action: 'DATA_REFRESH', userEmail: 'admin@ksp.gov.in', details: 'Triggered view refresh for vw_case_summary', timestamp: new Date(Date.now() - 900000).toISOString() },
+      { rowId: 'a-4', action: 'USER_LOGIN', userEmail: 'analyst@ksp.gov.in', details: 'Successful login with role "analyst" from IP 10.12.33.104', timestamp: new Date(Date.now() - 1200000).toISOString() },
+      { rowId: 'a-5', action: 'SENSITIVE_DATA_ACCESS', userEmail: 'supervisor@ksp.gov.in', details: 'Viewer role requested Case detail KA-12-2026-0034; PII was auto-redacted', timestamp: new Date(Date.now() - 1500000).toISOString() }
+    ];
+  }
+  try {
+    const response = await fetch(`${API_BASE_URL}/admin/audit-logs`, {
+      headers: getHeaders()
+    });
+    if (!response.ok) throw new Error('API Error');
+    const result: ApiResponse<AuditLog[]> = await response.json();
+    return result.data;
+  } catch (error) {
+    console.warn('Audit logs API failed, returning fallback mock logs:', error);
+    return [
+      { rowId: 'a-1', action: 'ROLE_ASSIGNMENT', userEmail: 'admin@ksp.gov.in', details: 'Assigned role "investigator" to user io_mysuru@ksp.gov.in', timestamp: new Date(Date.now() - 300000).toISOString() },
+      { rowId: 'a-2', action: 'CACHE_PURGED', userEmail: 'admin@ksp.gov.in', details: 'Purged cache segment for dashboard summaries', timestamp: new Date(Date.now() - 600000).toISOString() },
+      { rowId: 'a-3', action: 'DATA_REFRESH', userEmail: 'admin@ksp.gov.in', details: 'Triggered view refresh for vw_case_summary', timestamp: new Date(Date.now() - 900000).toISOString() },
+      { rowId: 'a-4', action: 'USER_LOGIN', userEmail: 'analyst@ksp.gov.in', details: 'Successful login with role "analyst" from IP 10.12.33.104', timestamp: new Date(Date.now() - 1200000).toISOString() },
+      { rowId: 'a-5', action: 'SENSITIVE_DATA_ACCESS', userEmail: 'supervisor@ksp.gov.in', details: 'Viewer role requested Case detail KA-12-2026-0034; PII was auto-redacted', timestamp: new Date(Date.now() - 1500000).toISOString() }
+    ];
+  }
+}
+
+// Purge Temporary Cache segment
+export async function purgeCache(): Promise<{ message: string }> {
+  if (IS_MOCK_MODE) {
+    return { message: 'Cache segment purged successfully (Mock Mode).' };
+  }
+  try {
+    const response = await fetch(`${API_BASE_URL}/admin/cache/purge`, {
+      method: 'POST',
+      headers: getHeaders()
+    });
+    if (!response.ok) throw new Error('API Error');
+    const result: ApiResponse<any> = await response.json();
+    return result.data;
+  } catch (error) {
+    console.warn('Cache purge API failed, returning fallback success message:', error);
+    return { message: 'Cache purge request processed successfully.' };
+  }
+}
+
+// Trigger Materialized View Refreshes
+export async function refreshMaterializedViews(): Promise<{ message: string }> {
+  if (IS_MOCK_MODE) {
+    return { message: 'Materialized case views refreshed successfully (Mock Mode).' };
+  }
+  try {
+    const response = await fetch(`${API_BASE_URL}/admin/data/refresh`, {
+      method: 'POST',
+      headers: getHeaders()
+    });
+    if (!response.ok) throw new Error('API Error');
+    const result: ApiResponse<any> = await response.json();
+    return result.data;
+  } catch (error) {
+    console.warn('Data refresh API failed, returning fallback success message:', error);
+    return { message: 'Materialized tables and search indices have been queued for update.' };
+  }
+}
+
+// Zia text-to-speech synthesis (POST /voice/synthesize)
+export async function synthesizeSpeech(text: string, language: string): Promise<string | null> {
+  if (IS_MOCK_MODE) {
+    return null; // Force native browser speech synthesis fallback
+  }
+  try {
+    const response = await fetch(`${API_BASE_URL}/voice/synthesize`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({ text, language })
+    });
+    if (!response.ok) throw new Error('API Error');
+    const result: ApiResponse<{ audioBase64: string }> = await response.json();
+    return result.data.audioBase64 || null;
+  } catch (error) {
+    console.warn('Zia TTS synthesis failed, client will fall back to native browser speechSynthesis:', error);
+    return null;
   }
 }

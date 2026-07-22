@@ -1,0 +1,12 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ComplianceDashboard from '../components/admin/ComplianceDashboard.tsx';
+import { PermissionGuard } from '../components/auth/PermissionGuard.tsx';
+import { PERMISSIONS } from '../lib/auth';
+---
+
+<Layout title="Compliance & Security Audits">
+  <PermissionGuard permission={PERMISSIONS.VIEW_AUDIT_LOGS} client:load>
+    <ComplianceDashboard client:load />
+  </PermissionGuard>
+</Layout>

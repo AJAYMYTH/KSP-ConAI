@@ -70,19 +70,19 @@ export default function SearchInterface() {
   };
 
   return (
-    <div className="p-6 md:p-8 space-y-6 max-w-7xl mx-auto w-full animate-in fade-in duration-200">
+    <div className="p-3.5 sm:p-6 md:p-8 space-y-4 sm:space-y-6 w-full max-w-none animate-in fade-in duration-200">
       {/* Page Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <span className="text-[10px] uppercase tracking-wider text-steel font-bold">
+          <span className="text-[9px] sm:text-[10px] uppercase tracking-wider text-steel font-bold">
             {currentLanguage === 'en' ? 'Investigative Database' : 'ತನಿಖಾ ಡೇಟಾಬೇಸ್'}
           </span>
-          <h1 className="text-xl md:text-2xl font-bold text-ink-deep">{t('search.title')}</h1>
+          <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-ink-deep">{t('search.title')}</h1>
         </div>
         <div className="flex items-center gap-2">
           <button 
             onClick={exportCSV}
-            className="flex items-center gap-1.5 px-4 py-2 bg-canvas border border-hairline-soft focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none rounded-full text-xs font-bold text-ink hover:bg-surface-soft cursor-pointer transition"
+            className="flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 bg-canvas border border-hairline-soft focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none rounded-full text-[11px] sm:text-xs font-bold text-ink hover:bg-surface-soft cursor-pointer transition shadow-xs"
           >
             <Download className="w-3.5 h-3.5" aria-hidden="true" /> 
             {currentLanguage === 'en' ? 'Export Data (CSV)' : 'ಸಿಎಸ್‌ವಿ ರಫ್ತು ಮಾಡಿ'}
@@ -91,8 +91,8 @@ export default function SearchInterface() {
       </div>
 
       {/* Search and Filters Panel */}
-      <form onSubmit={fetchResults} className="bg-canvas border border-hairline-soft p-5 rounded-xxxl card-product-shadow space-y-4">
-        <div className="flex gap-2.5">
+      <form onSubmit={fetchResults} className="bg-canvas border border-hairline-soft p-3.5 sm:p-5 rounded-2xl sm:rounded-xxxl card-product-shadow space-y-4">
+        <div className="flex gap-2 sm:gap-2.5">
           <div className="relative flex-1">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-stone" aria-hidden="true" />
             <input
@@ -103,12 +103,12 @@ export default function SearchInterface() {
               placeholder={t('search.searchPlaceholder')}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-surface-soft border border-hairline-soft focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none rounded-full text-sm text-ink placeholder-stone focus:outline-none focus:border-fb-blue focus:ring-1 focus:ring-fb-blue transition h-11"
+              className="w-full pl-9 sm:pl-10 pr-3 sm:pr-4 py-2 sm:py-2.5 bg-surface-soft border border-hairline-soft focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none rounded-full text-xs sm:text-sm text-ink placeholder-stone focus:outline-none focus:border-fb-blue focus:ring-1 focus:ring-fb-blue transition h-10 sm:h-11"
             />
           </div>
           <button 
             type="submit"
-            className="px-6 py-2.5 bg-ink-button text-on-ink-button rounded-full text-sm font-bold hover:bg-charcoal transition cursor-pointer"
+            className="px-4 sm:px-6 py-2 sm:py-2.5 bg-ink-button text-on-ink-button rounded-full text-xs sm:text-sm font-bold hover:bg-charcoal transition cursor-pointer"
           >
             {currentLanguage === 'en' ? 'Search' : 'ಹುಡುಕಿ'}
           </button>

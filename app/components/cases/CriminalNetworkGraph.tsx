@@ -80,6 +80,7 @@ export default function CriminalNetworkGraph({ caseId }: Props) {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [selectedNode, setSelectedNode] = useState<any | null>(null);
+  const [graphDepth, setGraphDepth] = useState<1 | 2>(2);
 
   const fetchGraph = async () => {
     setLoading(true);
@@ -132,41 +133,48 @@ export default function CriminalNetworkGraph({ caseId }: Props) {
       });
     });
 
-    // Ring 2 Concentric positioning (Radius 260)
-    ring2Nodes.forEach((node, idx) => {
-      const angle = (idx * 2 * Math.PI) / ring2Nodes.length;
-      const x = 300 + 260 * Math.cos(angle);
-      const y = 180 + 260 * Math.sin(angle);
-      calculatedNodes.push({
-        id: node.id,
-        data: { label: node.label, type: node.type },
-        position: { x: x - 60, y: y - 20 },
-        style: getNodeStyle(node.type)
+    // Ring 2 Concentric positioning (Radius 260) - only included when depth is 2 (Extended)
+    if (graphDepth === 2) {
+      ring2Nodes.forEach((node, idx) => {
+        const angle = (idx * 2 * Math.PI) / ring2Nodes.length;
+        const x = 300 + 260 * Math.cos(angle);
+        const y = 180 + 260 * Math.sin(angle);
+        calculatedNodes.push({
+          id: node.id,
+          data: { label: node.label, type: node.type },
+          position: { x: x - 60, y: y - 20 },
+          style: getNodeStyle(node.type)
+        });
       });
-    });
+    }
 
-    // Connect concentric orbits with edges
+    // Connect concentric orbits with edges (only if both nodes exist in calculations)
     graphData.edges.forEach((edge, idx) => {
-      calculatedEdges.push({
-        id: `edge-${idx}`,
-        source: edge.source,
-        target: edge.target,
-        label: edge.relationship.replace('_', ' '),
-        animated: edge.relationship === 'accused_in',
-        style: { stroke: '#ced0d4', strokeWidth: 1.5 },
-        labelStyle: { fill: 'var(--color-slate)', fontSize: 9, fontWeight: 'bold' },
-        markerEnd: {
-          type: MarkerType.ArrowClosed,
-          width: 12,
-          height: 12,
-          color: '#ced0d4',
-        },
-      });
+      const sourceExists = calculatedNodes.some(n => n.id === edge.source);
+      const targetExists = calculatedNodes.some(n => n.id === edge.target);
+      
+      if (sourceExists && targetExists) {
+        calculatedEdges.push({
+          id: `edge-${idx}`,
+          source: edge.source,
+          target: edge.target,
+          label: edge.relationship.replace('_', ' '),
+          animated: edge.relationship === 'accused_in',
+          style: { stroke: '#ced0d4', strokeWidth: 1.5 },
+          labelStyle: { fill: 'var(--color-slate)', fontSize: 9, fontWeight: 'bold' },
+          markerEnd: {
+            type: MarkerType.ArrowClosed,
+            width: 12,
+            height: 12,
+            color: '#ced0d4',
+          },
+        });
+      }
     });
 
     setNodes(calculatedNodes);
     setEdges(calculatedEdges);
-  }, [graphData]);
+  }, [graphData, graphDepth]);
 
   const onNodeClick = (event: any, node: any) => {
     setSelectedNode(node);
@@ -210,10 +218,34 @@ export default function CriminalNetworkGraph({ caseId }: Props) {
           <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-md bg-[#7c3aed]" /> Location</div>
           <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-md bg-[#0d9488]" /> Phone</div>
         </div>
-        <div className="text-stone font-bold">
-          {currentLanguage === 'en' 
-            ? 'Drag to pan · Scroll to zoom · Double-click case node to load file' 
-            : 'ಪ್ಯಾನ್ ಮಾಡಲು ಎಳೆಯಿರಿ · ಜೂಮ್ ಮಾಡಲು ಸ್ಕ್ರಾಲ್ ಮಾಡಿ · ಪ್ರಕರಣ ತೆರೆಯಲು ಡಬಲ್-ಕ್ಲಿಕ್ ಮಾಡಿ'}
+        <div className="flex items-center gap-4 flex-wrap">
+          <div className="text-stone font-bold hidden md:block">
+            {currentLanguage === 'en' 
+              ? 'Drag to pan · Scroll to zoom · Double-click case node' 
+              : 'ಪ್ಯಾನ್ ಮಾಡಲು ಎಳೆಯಿರಿ · ಜೂಮ್ ಮಾಡಲು ಸ್ಕ್ರಾಲ್ ಮಾಡಿ · ಡಬಲ್-ಕ್ಲಿಕ್ ಮಾಡಿ'}
+          </div>
+          
+          {/* Depth Control Buttons */}
+          <div className="flex items-center bg-canvas border border-hairline-soft rounded-full p-0.5 select-none font-bold">
+            <button
+              type="button"
+              onClick={() => setGraphDepth(1)}
+              className={`px-2.5 py-1 rounded-full text-[9px] transition cursor-pointer ${
+                graphDepth === 1 ? 'bg-ink-deep text-canvas shadow-xs' : 'text-slate-500 hover:bg-slate-100'
+              }`}
+            >
+              {currentLanguage === 'en' ? 'Direct (Ring 1)' : 'ನೇರ ಸಂಪರ್ಕ'}
+            </button>
+            <button
+              type="button"
+              onClick={() => setGraphDepth(2)}
+              className={`px-2.5 py-1 rounded-full text-[9px] transition cursor-pointer ${
+                graphDepth === 2 ? 'bg-ink-deep text-canvas shadow-xs' : 'text-slate-500 hover:bg-slate-100'
+              }`}
+            >
+              {currentLanguage === 'en' ? 'Extended (Ring 2)' : 'ವಿಸ್ತೃತ ಜಾಲ'}
+            </button>
+          </div>
         </div>
       </div>
 

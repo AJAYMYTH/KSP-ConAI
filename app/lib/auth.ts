@@ -45,13 +45,12 @@ export function getCurrentSession(): UserSession | null {
   if (typeof window === 'undefined') return null;
   const data = localStorage.getItem(STORAGE_KEY);
   if (!data) {
-    // Default to investigator for demo if no session is set
-    return DEMO_USERS.investigator;
+    return null;
   }
   try {
     return JSON.parse(data);
   } catch {
-    return DEMO_USERS.investigator;
+    return null;
   }
 }
 
