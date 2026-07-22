@@ -69,29 +69,43 @@ export default function ReportsManager() {
     setIsDropdownOpen(false);
   };
 
+  // Flexible FIR search matcher helper
+  const findMatchingCase = (inputVal: string) => {
+    const clean = inputVal.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+    if (!clean) return null;
+    return MOCK_CASES.find(c => {
+      const cleanFir = c.firNumber.toLowerCase().replace(/[^a-z0-9]/g, '');
+      const cleanId = c.caseId.toLowerCase().replace(/[^a-z0-9]/g, '');
+      const cleanDist = c.district.toLowerCase();
+      const cleanCrime = c.crimeHead.toLowerCase();
+      return (
+        cleanFir.includes(clean) ||
+        clean.includes(cleanFir) ||
+        cleanId.includes(clean) ||
+        cleanDist.includes(inputVal.trim().toLowerCase()) ||
+        cleanCrime.includes(inputVal.trim().toLowerCase())
+      );
+    });
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchQuery(value);
     setIsDropdownOpen(true);
 
-    const exactMatch = MOCK_CASES.find(
-      c => c.firNumber.toLowerCase() === value.trim().toLowerCase() ||
-           c.caseId.toLowerCase() === value.trim().toLowerCase()
-    );
-    if (exactMatch) {
-      setSelectedCaseId(exactMatch.caseId);
+    const match = findMatchingCase(value);
+    if (match && value.trim().length >= 3) {
+      setSelectedCaseId(match.caseId);
     }
   };
 
   const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     const pastedText = e.clipboardData.getData('text').trim();
-    const exactMatch = MOCK_CASES.find(
-      c => c.firNumber.toLowerCase().includes(pastedText.toLowerCase()) ||
-           c.caseId.toLowerCase().includes(pastedText.toLowerCase())
-    );
-    if (exactMatch) {
-      setSelectedCaseId(exactMatch.caseId);
-      setSearchQuery(`${exactMatch.firNumber} - ${translateCrimeHead(exactMatch.crimeHead, currentLanguage)}`);
+    setSearchQuery(pastedText);
+    const match = findMatchingCase(pastedText);
+    if (match) {
+      setSelectedCaseId(match.caseId);
+      setSearchQuery(`${match.firNumber} - ${translateCrimeHead(match.crimeHead, currentLanguage)}`);
       setIsDropdownOpen(false);
     }
   };

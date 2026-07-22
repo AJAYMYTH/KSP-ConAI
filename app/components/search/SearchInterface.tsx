@@ -24,8 +24,11 @@ export default function SearchInterface() {
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
 
   useEffect(() => {
-    fetchResults();
-  }, [page, district, category]);
+    const timer = setTimeout(() => {
+      fetchResults();
+    }, 200);
+    return () => clearTimeout(timer);
+  }, [query, page, district, category]);
 
   const fetchResults = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
