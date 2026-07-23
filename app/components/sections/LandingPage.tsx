@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  Shield, Lock, Globe, ArrowRight, Bot, Network, Activity, FileText, CheckCircle2, ChevronRight, Zap, Eye, Terminal, Sparkles, Download, Check
+  Shield, Lock, ArrowRight, Bot, Network, Activity, FileText, Download
 } from 'lucide-react';
 import { useI18n } from '../../i18n/hooks';
 import LanguageSwitcher from '../../i18n/components/LanguageSwitcher';
