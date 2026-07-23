@@ -77,8 +77,8 @@ export default function CriminalNetworkGraph({ caseId }: Props) {
   const { currentLanguage } = useI18n();
   const [graphData, setGraphData] = useState<GraphData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState<any>([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<any>([]);
   const [selectedNode, setSelectedNode] = useState<any | null>(null);
   const [graphDepth, setGraphDepth] = useState<1 | 2>(2);
 

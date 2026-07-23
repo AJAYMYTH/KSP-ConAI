@@ -105,7 +105,7 @@ CONFIDENTIAL — FOR LAW ENFORCEMENT & INVESTIGATION USE ONLY
 
   const handleSelectCase = (caseId: string) => {
     setSelectedCaseId(caseId);
-    const selectedCase = MOCK_CASES.find(c => c.caseId === caseId);
+    const selectedCase = cases.find((c: CaseSummary) => c.caseId === caseId);
     if (selectedCase) {
       setSearchQuery(`${selectedCase.firNumber} - ${translateCrimeHead(selectedCase.crimeHead, currentLanguage)}`);
     }
@@ -116,7 +116,7 @@ CONFIDENTIAL — FOR LAW ENFORCEMENT & INVESTIGATION USE ONLY
   const findMatchingCase = (inputVal: string) => {
     const clean = inputVal.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
     if (!clean) return null;
-    return MOCK_CASES.find(c => {
+    return cases.find((c: CaseSummary) => {
       const cleanFir = c.firNumber.toLowerCase().replace(/[^a-z0-9]/g, '');
       const cleanId = c.caseId.toLowerCase().replace(/[^a-z0-9]/g, '');
       const cleanDist = c.district.toLowerCase();
@@ -165,7 +165,7 @@ CONFIDENTIAL — FOR LAW ENFORCEMENT & INVESTIGATION USE ONLY
   const handleGenerate = async () => {
     setGenerating(true);
     try {
-      const matchCase = MOCK_CASES.find(c => c.caseId === selectedCaseId);
+      const matchCase = cases.find((c: CaseSummary) => c.caseId === selectedCaseId);
       if (!matchCase) return;
 
       const result = await generateReport(selectedCaseId);

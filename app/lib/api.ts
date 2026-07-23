@@ -385,10 +385,10 @@ export async function getPredictiveInsights(): Promise<PredictiveInsights> {
     });
     if (!response.ok) throw new Error('API Error');
     const result: ApiResponse<PredictiveInsights> = await response.json();
-    return result.data || { highRiskZones: [], seasonalTrends: [], repeatOffenderAlerts: [] };
+    return result.data || { anomalies: [], forecast: [], earlyWarnings: [] };
   } catch (error) {
     console.warn('Predictive insights API error:', error);
-    return { highRiskZones: [], seasonalTrends: [], repeatOffenderAlerts: [] };
+    return { anomalies: [], forecast: [], earlyWarnings: [] };
   }
 }
 
@@ -400,10 +400,10 @@ export async function getDemographicInsights(entity: 'accused' | 'victims', mont
     });
     if (!response.ok) throw new Error('API Error');
     const result: ApiResponse<DemographicInsights> = await response.json();
-    return result.data || { ageDistribution: [], genderRatio: { male: 0, female: 0, other: 0 }, topOccupations: [] };
+    return result.data || { ageGroups: [], gender: [], occupation: [], locationTypes: [] };
   } catch (error) {
     console.warn(`Demographics API error for entity ${entity}:`, error);
-    return { ageDistribution: [], genderRatio: { male: 0, female: 0, other: 0 }, topOccupations: [] };
+    return { ageGroups: [], gender: [], occupation: [], locationTypes: [] };
   }
 }
 

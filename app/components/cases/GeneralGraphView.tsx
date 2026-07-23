@@ -64,7 +64,7 @@ export default function GeneralGraphView() {
   const findMatchingCase = (inputVal: string) => {
     const clean = inputVal.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
     if (!clean) return null;
-    return MOCK_CASES.find(c => {
+    return cases.find((c: CaseSummary) => {
       const cleanFir = c.firNumber.toLowerCase().replace(/[^a-z0-9]/g, '');
       const cleanId = c.caseId.toLowerCase().replace(/[^a-z0-9]/g, '');
       const cleanDist = c.district.toLowerCase();
@@ -74,8 +74,7 @@ export default function GeneralGraphView() {
         clean.includes(cleanFir) ||
         cleanId.includes(clean) ||
         cleanDist.includes(inputVal.trim().toLowerCase()) ||
-        cleanCrime.includes(inputVal.trim().toLowerCase()) ||
-        c.accused.some(a => a.toLowerCase().includes(inputVal.trim().toLowerCase()))
+        cleanCrime.includes(inputVal.trim().toLowerCase())
       );
     });
   };
