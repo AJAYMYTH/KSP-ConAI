@@ -1,0 +1,48 @@
+import { c as createComponent, r as renderComponent, a as renderTemplate, m as maybeRenderHead } from '../chunks/astro/server_GyZO-Yni.mjs';
+import 'kleur/colors';
+import 'html-escaper';
+import { $ as $$Layout } from '../chunks/Layout_iOUCx9k6.mjs';
+import { ArrowLeft, Shield } from 'lucide-react';
+export { renderers } from '../renderers.mjs';
+
+const $$Privacy = createComponent(($$result, $$props, $$slots) => {
+  return renderTemplate`${renderComponent($$result, "Layout", $$Layout, { "title": "Privacy Policy", "transitionAnimate": "fade" }, { "default": ($$result2) => renderTemplate` ${maybeRenderHead()}<div class="p-6 md:p-8 max-w-4xl mx-auto w-full space-y-6 animate-in fade-in duration-200">  <div class="flex items-center justify-between border-b border-hairline-soft pb-4"> <a href="/app/dashboard.html" class="flex items-center gap-1 text-xs font-bold text-steel hover:text-primary transition"> ${renderComponent($$result2, "ArrowLeft", ArrowLeft, { "className": "w-3.5 h-3.5" })} <span class="lang-en">Back to Dashboard</span> <span class="lang-kn">ಡ್ಯಾಶ್‌ಬೋರ್ಡ್‌ಗೆ ಹಿಂತಿರುಗಿ</span> </a> <span class="text-[9px] uppercase tracking-wider font-bold text-slate-400"> <span class="lang-en">Classified // Internal Use Only</span> <span class="lang-kn">ವರ್ಗೀಕೃತ // ಆಂತರಿಕ ಬಳಕೆಗೆ ಮಾತ್ರ</span> </span> </div>  <div class="bg-canvas border border-hairline-soft p-6 md:p-10 rounded-xxxl card-product-shadow space-y-6"> <div class="flex items-center gap-3"> <div class="w-10 h-10 rounded-circle bg-primary/10 flex items-center justify-center text-primary"> ${renderComponent($$result2, "Shield", Shield, { "className": "w-5 h-5" })} </div> <div> <span class="text-[10px] uppercase tracking-wider text-steel font-bold">KSP-ConAI Compliance</span> <h1 class="text-xl font-bold text-ink-deep"> <span class="lang-en">Data Privacy Policy</span> <span class="lang-kn">ಡೇಟಾ ಗೌಪ್ಯತಾ ನೀತಿ</span> </h1> </div> </div> <div class="text-[11px] text-stone font-medium"> <span class="lang-en">Last Updated: July 2026 | Authority: Karnataka State Police IT Cell</span> <span class="lang-kn">ಕೊನೆಯದಾಗಿ ನವೀಕರಿಸಿದ್ದು: ಜುಲೈ 2026 | ಪ್ರಾಧಿಕಾರ: ಕರ್ನಾಟಕ ರಾಜ್ಯ ಪೊಲೀಸ್ ಐಟಿ ಸೆಲ್</span> </div> <div class="space-y-5 text-xs text-steel leading-relaxed"> <section class="space-y-2"> <h2 class="text-sm font-bold text-ink-deep"> <span class="lang-en">1. Scope and Authority</span> <span class="lang-kn">1. ವ್ಯಾಪ್ತಿ ಮತ್ತು ಪ್ರಾಧಿಕಾರ</span> </h2> <p class="lang-en">
+This Privacy Policy governs the processing, storage, and auditing of all data within the Karnataka State Police Crime Intelligence Copilot (KSP-ConAI). Access to this platform is strictly restricted to authorized law enforcement officers and intelligence analysts under the Karnataka State Police Act and the Information Technology Act, 2000.
+</p> <p class="lang-kn">
+ಈ ಗೌಪ್ಯತಾ ನೀತಿಯು ಕರ್ನಾಟಕ ರಾಜ್ಯ ಪೊಲೀಸ್ ಅಪರಾಧ ಗುಪ್ತಚರ ಸಹಾಯಕ (KSP-ConAI) ಒಳಗೆ ಎಲ್ಲಾ ಡೇಟಾದ ಪ್ರಕ್ರಿಯೆ, ಸಂಗ್ರಹಣೆ ಮತ್ತು ಆಡಿಟಿಂಗ್ ಅನ್ನು ನಿಯಂತ್ರಿಸುತ್ತದೆ. ಈ ವೇದಿಕೆಗೆ ಪ್ರವೇಶವನ್ನು ಕರ್ನಾಟಕ ರಾಜ್ಯ ಪೊಲೀಸ್ ಕಾಯ್ದೆ ಮತ್ತು ಮಾಹಿತಿ ತಂತ್ರಜ್ಞಾನ ಕಾಯ್ದೆ, 2000 ರ ಅಡಿಯಲ್ಲಿ ಅಧಿಕೃತ ಕಾನೂನು ಜಾರಿ ಅಧಿಕಾರಿಗಳು ಮತ್ತು ಗುಪ್ತಚರ ವಿಶ್ಲೇಷಕರಿಗೆ ಮಾತ್ರ ಕಟ್ಟುನಿಟ್ಟಾಗಿ ನಿರ್ಬಂಧಿಸಲಾಗಿದೆ.
+</p> </section> <section class="space-y-2"> <h2 class="text-sm font-bold text-ink-deep"> <span class="lang-en">2. Information Collection and Sourcing</span> <span class="lang-kn">2. ಮಾಹಿತಿ ಸಂಗ್ರಹಣೆ ಮತ್ತು ಮೂಲ</span> </h2> <p class="lang-en">
+KSP-ConAI aggregates case records, First Information Reports (FIRs), accused transcripts, suspect networks, and geolocation coordinates from official law enforcement databases, including the CCTNS (Crime and Criminal Tracking Network & Systems) and local police station registers.
+</p> <p class="lang-kn">
+KSP-ConAI ಅಧಿಕೃತ ಕಾನೂನು ಜಾರಿ ಡೇಟಾಬೇಸ್‌ಗಳಿಂದ (CCTNS ಮತ್ತು ಸ್ಥಳೀಯ ಪೊಲೀಸ್ ಠಾಣೆ ರೆಜಿಸ್ಟರ್‌ಗಳು ಸೇರಿದಂತೆ) ಪ್ರಕರಣದ ದಾಖಲೆಗಳು, ಪ್ರಥಮ ಮಾಹಿತಿ ವರದಿಗಳು (FIR ಗಳು), ಆರೋಪಿಗಳ ಪ್ರತಿಗಳು, ಶಂಕಿತ ಜಾಲಗಳು ಮತ್ತು ಜಿಯೋಲೋಕಲೈಸೇಶನ್ ನಿರ್ದೇಶಾಂಕಗಳನ್ನು ಒಟ್ಟುಗೂಡಿಸುತ್ತದೆ.
+</p> <ul class="list-disc pl-5 space-y-1"> <li class="lang-en"><strong>Officer Activities:</strong> All queries, searches, generated summaries, and chat history entered by officers are securely logged.</li> <li class="lang-kn"><strong>ಅಧಿಕಾರಿ ಚಟುವಟಿಕೆಗಳು:</strong> ಅಧಿಕಾರಿಗಳು ನಮೂದಿಸಿದ ಎಲ್ಲಾ ಪ್ರಶ್ನೆಗಳು, ಹುಡುಕಾಟಗಳು, ರಚಿಸಲಾದ ಸಾರಾಂಶಗಳು ಮತ್ತು ಚಾಟ್ ಇತಿಹಾಸವನ್ನು ಸುರಕ್ಷಿತವಾಗಿ ಲಾಗ್ ಮಾಡಲಾಗುತ್ತದೆ.</li> <li class="lang-en"><strong>Session Metadata:</strong> Device IPs, login timestamps, active badges, and role capabilities are collected for compliance audits.</li> <li class="lang-kn"><strong>ಸೆಷನ್ ಮೆಟಾಡೇಟಾ:</strong> ಅನುಸರಣೆ ಆಡಿಟ್‌ಗಳಿಗಾಗಿ ಸಾಧನದ ಐಪಿಗಳು, ಲಾಗಿನ್ ಟೈಮ್‌ಸ್ಟ್ಯಾಂಪ್‌ಗಳು, ಸಕ್ರಿಯ ಬ್ಯಾಡ್ಜ್‌ಗಳು ಮತ್ತು ಪಾತ್ರದ ಸಾಮರ್ಥ್ಯಗಳನ್ನು ಸಂಗ್ರಹಿಸಲಾಗುತ್ತದೆ.</li> </ul> </section> <section class="space-y-2"> <h2 class="text-sm font-bold text-ink-deep"> <span class="lang-en">3. Data Auditing and Accountability</span> <span class="lang-kn">3. ಡೇಟಾ ಆಡಿಟಿಂಗ್ ಮತ್ತು ಹೊಣೆಗಾರಿಕೆ</span> </h2> <p class="lang-en">
+In compliance with national security guidelines, every interaction on this platform is subject to continuous auditing. There is no expectation of privacy for user activities on KSP-ConAI. Audit logs are reviewed periodically by the Station Administrator and the Inspector General to prevent abuse or unauthorized leakages of sensitive intelligence.
+</p> <p class="lang-kn">
+ರಾಷ್ಟ್ರೀಯ ಭದ್ರತಾ ಮಾರ್ಗಸೂಚಿಗಳಿಗೆ ಅನುಗುಣವಾಗಿ, ಈ ವೇದಿಕೆಯಲ್ಲಿನ ಪ್ರತಿಯೊಂದು ಪರಸ್ಪರ ಕ್ರಿಯೆಯು ನಿರಂತರ ಆಡಿಟಿಂಗ್‌ಗೆ ಒಳಪಟ್ಟಿರುತ್ತದೆ. KSP-ConAI ನಲ್ಲಿ ಬಳಕೆದಾರರ ಚಟುವಟಿಕೆಗಳಿಗೆ ಯಾವುದೇ ಗೌಪ್ಯತೆಯ ನಿರೀಕ್ಷೆಯಿಲ್ಲ. ಸೂಕ್ಷ್ಮ ಗುಪ್ತಚರ ಮಾಹಿತಿಯ ದುರುಪಯೋಗ ಅಥವಾ ಅನಧಿಕೃತ ಸೋರಿಕೆಯನ್ನು ತಡೆಗಟ್ಟಲು ಸ್ಟೇಷನ್ ಅಡ್ಮಿನಿಸ್ಟ್ರೇಟರ್ ಮತ್ತು ಇನ್ಸ್‌ಪೆಕ್ಟರ್ ಜನರಲ್ ಅವರು ಆಡಿಟ್ ಲಾಗ್‌ಗಳನ್ನು ನಿಯತಕಾಲಿಕವಾಗಿ ಪರಿಶೀಲಿಸುತ್ತಾರೆ.
+</p> </section> <section class="space-y-2"> <h2 class="text-sm font-bold text-ink-deep"> <span class="lang-en">4. Security Measures</span> <span class="lang-kn">4. ಭದ್ರತಾ ಕ್ರಮಗಳು</span> </h2> <p class="lang-en">
+Data inside KSP-ConAI is encrypted both in transit (using TLS 1.3) and at rest (using AES-256). Session validation is strictly managed through Secure Single Sign-On (SSO) and Multi-Factor Authentication protocols.
+</p> <p class="lang-kn">
+KSP-ConAI ಒಳಗಿನ ಡೇಟಾವನ್ನು ಸಾಗಣೆಯಲ್ಲಿ (TLS 1.3 ಬಳಸಿ) ಮತ್ತು ವಿಶ್ರಾಂತಿಯಲ್ಲಿ (AES-256 ಬಳಸಿ) ಎನ್‌ಕ್ರಿಪ್ಟ್ ಮಾಡಲಾಗುತ್ತದೆ. ಸೆಷನ್ ಸಿಂಧುತ್ವವನ್ನು ಸುರಕ್ಷಿತ ಸಿಂಗಲ್ ಸೈನ್-ಆನ್ (SSO) ಮತ್ತು ಮಲ್ಟಿ-ಫ್ಯಾಕ್ಟರ್ ಅಥೆಂಟಿಕೇಶನ್ ಪ್ರೋಟೋಕಾಲ್‌ಗಳ ಮೂಲಕ ಕಟ್ಟುನಿಟ್ಟಾಗಿ ನಿರ್ವಹಿಸಲಾಗುತ್ತದೆ.
+</p> </section> <section class="space-y-2"> <h2 class="text-sm font-bold text-ink-deep"> <span class="lang-en">5. Data Retention</span> <span class="lang-kn">5. ಡೇಟಾ ಉಳಿಸಿಕೊಳ್ಳುವಿಕೆ</span> </h2> <p class="lang-en">
+Crime records and related intelligence analysis are retained in accordance with the Karnataka Police Manual and judicial archiving guidelines. Logs of search history and AI interactions are stored for a minimum of 7 years to facilitate administrative investigations.
+</p> <p class="lang-kn">
+ಅಪರಾಧ ದಾಖಲೆಗಳು ಮತ್ತು ಸಂಬಂಧಿತ ಗುಪ್ತಚರ ವಿಶ್ಲೇಷಣೆಯನ್ನು ಕರ್ನಾಟಕ ಪೊಲೀಸ್ ಕೈಪಿಡಿ ಮತ್ತು ನ್ಯಾಯಾಂಗ ಆರ್ಕೈವಿಂಗ್ ಮಾರ್ಗಸೂಚಿಗಳಿಗೆ ಅನುಗುಣವಾಗಿ ಉಳಿಸಿಕೊಳ್ಳಲಾಗುತ್ತದೆ. ಆಡಳಿತಾತ್ಮಕ ತನಿಖೆಗಳನ್ನು ಸುಲಭಗೊಳಿಸಲು ಹುಡುಕಾಟ ಇತಿಹಾಸ ಮತ್ತು AI ಸಂವಹನಗಳ ಲಾಗ್‌ಗಳನ್ನು ಕನಿಷ್ಠ 7 ವರ್ಷಗಳವರೆಗೆ ಸಂಗ್ರಹಿಸಲಾಗುತ್ತದೆ.
+</p> </section> <section class="space-y-2"> <h2 class="text-sm font-bold text-ink-deep"> <span class="lang-en">6. Contact & Grievances</span> <span class="lang-kn">6. ಸಂಪರ್ಕ ಮತ್ತು ಕುಂದುಕೊರತೆಗಳು</span> </h2> <p class="lang-en">
+For privacy queries, logging discrepancies, or to report unauthorized access, officers must contact the KSP IT Cell at <code>itcell@ksp.gov.in</code>.
+</p> <p class="lang-kn">
+ಗೌಪ್ಯತೆ ಪ್ರಶ್ನೆಗಳು, ಲಾಗಿಂಗ್ ವ್ಯತ್ಯಾಸಗಳು ಅಥವಾ ಅನಧಿಕೃತ ಪ್ರವೇಶವನ್ನು ವರದಿ ಮಾಡಲು, ಅಧಿಕಾರಿಗಳು KSP IT ಸೆಲ್ ಅನ್ನು <code>itcell@ksp.gov.in</code> ನಲ್ಲಿ ಸಂಪರ್ಕಿಸಬೇಕು.
+</p> </section> </div> <div class="border-t border-hairline-soft pt-4 flex justify-between items-center text-[10px] text-stone"> <span>KSP-ConAI Protocol V1.0</span> <button onclick="window.print()" class="text-primary hover:underline font-bold cursor-pointer"> <span class="lang-en">Print Document</span> <span class="lang-kn">ದಾಖಲೆಯನ್ನು ಪ್ರಿಂಟ್ ಮಾಡಿ</span> </button> </div> </div> </div> ` })}`;
+}, "C:/Users/cheth/Desktop/KSP Copilot/app/pages/privacy.astro", void 0);
+
+const $$file = "C:/Users/cheth/Desktop/KSP Copilot/app/pages/privacy.astro";
+const $$url = "/app/privacy.html";
+
+const _page = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: $$Privacy,
+  file: $$file,
+  url: $$url
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const page = () => _page;
+
+export { page };

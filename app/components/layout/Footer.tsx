@@ -11,7 +11,7 @@ export default function Footer() {
         {/* Brand Block */}
         <div className="col-span-2 flex flex-col gap-3">
           <div className="flex items-center gap-2.5">
-            <img src="/karnataka_emblem.png" alt="Government Seal" className="w-8 h-8 object-contain" width="32" height="32" />
+            <img src="/app/karnataka_emblem.png" alt="Government Seal" className="w-8 h-8 object-contain" width="32" height="32" />
             <span className="font-display font-bold text-base tracking-tight text-ink-deep">
               KSP-ConAI
             </span>

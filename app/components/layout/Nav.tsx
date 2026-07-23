@@ -43,7 +43,7 @@ export default function Nav({ currentPath = '/' }: NavProps) {
       {/* Brand Logo and Status Badge */}
       <div className="flex items-center gap-4">
         <a href="/app/dashboard.html" className="flex items-center gap-2.5 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none rounded-lg">
-          <img src="/karnataka_emblem.png" alt="Government Seal" className="w-9 h-9 object-contain" width="36" height="36" />
+          <img src="/app/karnataka_emblem.png" alt="Government Seal" className="w-9 h-9 object-contain" width="36" height="36" />
           <div className="flex flex-col">
             <span className="font-display font-bold text-base leading-tight tracking-tight text-ink-deep">
               KSP-ConAI

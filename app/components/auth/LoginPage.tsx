@@ -271,7 +271,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
         {/* Top brand header */}
         <div className="relative z-10 flex items-center gap-3 shrink-0">
           <div className="p-2.5 rounded-2xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-md shadow-lg flex items-center justify-center">
-            <img src="/karnataka_emblem.png" alt="Karnataka Coat of Arms" className="w-9 h-9 object-contain brightness-[1.05]" width="36" height="36" />
+            <img src="/app/karnataka_emblem.png" alt="Karnataka Coat of Arms" className="w-9 h-9 object-contain brightness-[1.05]" width="36" height="36" />
           </div>
           <div className="flex flex-col text-left">
             <span className="text-[9px] font-bold tracking-[0.18em] text-blue-400 uppercase leading-none">{t('nav.govKarnataka')}</span>

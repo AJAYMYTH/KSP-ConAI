@@ -733,7 +733,7 @@ export default function AssistantChat() {
                   </div>
                 ) : (
                   <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-slate-50 border border-slate-200/60 flex items-center justify-center p-0.5 shrink-0 shadow-xs mt-0.5">
-                    <img src="/karnataka_emblem.png" alt="KSP AI" className="w-full h-full object-contain" width="28" height="28" />
+                    <img src="/app/karnataka_emblem.png" alt="Emblem" className="w-4 h-4 object-contain" width="28" height="28" />
                   </div>
                 )}
 

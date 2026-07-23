@@ -46,7 +46,7 @@ export const LandingPage: React.FC = () => {
       {/* Top Navigation: Sticky white bar with bottom 1px solid hairline-soft, height ~64px */}
       <header className="sticky top-0 z-40 w-full h-16 bg-white/95 backdrop-blur-md border-b border-[#dee3e9] px-6 md:px-12 flex items-center justify-between shadow-xs">
         <div className="flex items-center gap-3">
-          <img src="/karnataka_emblem.png" alt="Karnataka Coat of Arms" className="w-9 h-9 object-contain" width="36" height="36" />
+          <img src="/app/karnataka_emblem.png" alt="Karnataka Coat of Arms" className="w-9 h-9 object-contain" width="36" height="36" />
           <div className="flex flex-col text-left border-l border-[#dee3e9] pl-3">
             <span className="text-[8px] font-sans font-bold tracking-[0.2em] text-slate-500 uppercase leading-none">
               {t('nav.govKarnataka')}
@@ -134,7 +134,7 @@ export const LandingPage: React.FC = () => {
               mounted ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
             }`}>
               <a 
-                href="/login" 
+                href="/app/login.html" 
                 className="h-11 px-8 bg-black hover:bg-slate-800 text-white rounded-full text-xs font-bold focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none transition-all duration-150 shadow-md flex items-center justify-center gap-1.5 select-none font-display active:scale-[0.98]"
               >
                 {t('hero.launch')} <ArrowRight className="w-3.5 h-3.5" />
@@ -206,7 +206,7 @@ export const LandingPage: React.FC = () => {
               {/* Card 1: Relationship Link Analysis (card-feature-photo: full-bleed visual card, copy bottom-left in white) */}
               <div className="md:col-span-2 bg-[#080d1a] rounded-xxxl shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden min-h-[300px] group border border-[#dee3e9]/30">
                 <img 
-                  src="/network_mockup.png" 
+                  src="/app/network_mockup.png" 
                   alt="Network Graph Link Analysis representation" 
                   className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-[1.02] transition-transform duration-500"
                 />

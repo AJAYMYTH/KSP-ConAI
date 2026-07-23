@@ -11,7 +11,21 @@ function devSrcDirRewrite() {
         if (req.url) {
           const urlPath = req.url.split('?')[0];
           const query = req.url.includes('?') ? '?' + req.url.split('?')[1] : '';
-          
+
+          // Redirect un-namespaced root requests to /app/
+          if (urlPath === '/' || urlPath === '') {
+            res.writeHead(302, { Location: '/app/' });
+            return res.end();
+          }
+          if (urlPath === '/login') {
+            res.writeHead(302, { Location: '/app/login.html' });
+            return res.end();
+          }
+          if (urlPath === '/dashboard') {
+            res.writeHead(302, { Location: '/app/dashboard.html' });
+            return res.end();
+          }
+
           const cleanPath = urlPath.startsWith('/app/') 
             ? urlPath.substring(4) 
             : (urlPath.startsWith('/app') ? urlPath.substring(4) : urlPath);
@@ -33,7 +47,7 @@ function devSrcDirRewrite() {
 export default defineConfig({
   srcDir: './app',
   outDir: './client',
-  base: '/app/',
+  base: '/app',
   build: {
     format: 'file'
   },
