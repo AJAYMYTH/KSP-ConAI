@@ -144,18 +144,18 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
   };
 
   const socialLoginBlock = (
-    <div className="space-y-4 pt-2">
+    <div className="space-y-3 pt-1">
       <div id="loginDivElementId" className="w-full min-h-[10px]"></div>
       <div className="flex items-center gap-3 text-[9px] text-[#8595a4] font-bold uppercase tracking-wider">
         <div className="h-px flex-1 bg-[#dee3e9]"></div>
         <span className="shrink-0 font-mono">OR CONTINUE WITH</span>
         <div className="h-px flex-1 bg-[#dee3e9]"></div>
       </div>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-2.5">
         <button
           type="button"
           onClick={handleGoogleSSO}
-          className="group flex items-center justify-center gap-2.5 h-11 px-5 border border-[#dee3e9] hover:border-slate-300 bg-white active:scale-[0.98] rounded-full text-xs font-bold text-[#0a1317] cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0064e0] transition-all duration-150 shadow-2xs"
+          className="group flex items-center justify-center gap-2 h-10 px-4 border border-[#dee3e9] hover:border-slate-300 bg-white active:scale-[0.98] rounded-full text-xs font-bold text-[#0a1317] cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0064e0] transition-all duration-150 shadow-2xs"
         >
           <svg className="w-4 h-4 shrink-0 transition-transform group-hover:scale-110" viewBox="0 0 24 24">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -169,7 +169,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
         <button
           type="button"
           onClick={handleGoogleSSO}
-          className="group flex items-center justify-center gap-2.5 h-11 px-5 border border-[#dee3e9] hover:border-slate-300 bg-white active:scale-[0.98] rounded-full text-xs font-bold text-[#0a1317] cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0064e0] transition-all duration-150 shadow-2xs"
+          className="group flex items-center justify-center gap-2 h-10 px-4 border border-[#dee3e9] hover:border-slate-300 bg-white active:scale-[0.98] rounded-full text-xs font-bold text-[#0a1317] cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0064e0] transition-all duration-150 shadow-2xs"
         >
           <div className="w-4 h-4 bg-amber-500 rounded flex items-center justify-center text-white font-black text-[9px] leading-none select-none shrink-0 transition-transform group-hover:rotate-12 group-hover:scale-110">Z</div>
           Zoho
@@ -186,22 +186,22 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
     {
       role: 'admin',
       badge: 'KSP-001',
-      icon: <Shield className="w-4 h-4" />
+      icon: <Shield className="w-3.5 h-3.5" />
     },
     {
       role: 'investigator',
       badge: 'KSP-4589',
-      icon: <Eye className="w-4 h-4" />
+      icon: <Eye className="w-3.5 h-3.5" />
     },
     {
       role: 'analyst',
       badge: 'KSP-2114',
-      icon: <Database className="w-4 h-4" />
+      icon: <Database className="w-3.5 h-3.5" />
     },
     {
       role: 'viewer',
       badge: 'KSP-009',
-      icon: <Lock className="w-4 h-4" />
+      icon: <Lock className="w-3.5 h-3.5" />
     }
   ];
 
@@ -210,10 +210,10 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
   };
 
   return (
-    <div className="flex min-h-[100dvh] w-full font-sans bg-[#fbfbfd] text-[#0a1317] selection:bg-primary-soft selection:text-primary-deep">
+    <div className="flex h-[100dvh] max-h-[100dvh] w-full font-sans bg-[#fbfbfd] text-[#0a1317] selection:bg-primary-soft selection:text-primary-deep overflow-hidden">
       
       {/* ================= LEFT BRAND HERO PANEL ================= */}
-      <div className="hidden lg:flex flex-col justify-between w-[46%] bg-[#080d1a] text-white p-12 lg:p-16 relative overflow-hidden select-none border-r border-[#dee3e9]/10">
+      <div className="hidden lg:flex flex-col justify-between w-[44%] bg-[#080d1a] text-white p-10 lg:p-12 relative overflow-hidden select-none border-r border-[#dee3e9]/10 h-full">
         
         {/* Glow ambient background lights */}
         <div className="absolute top-1/4 -left-1/4 w-[80%] h-[50%] rounded-full bg-[#0064e0]/15 blur-[120px] pointer-events-none"></div>
@@ -230,28 +230,28 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
         </svg>
 
         {/* Top Header Logo Seal */}
-        <div className="relative z-10 flex items-center gap-3.5 shrink-0">
-          <img src="/app/karnataka_emblem.png" alt="Karnataka State Emblem" className="w-10 h-10 object-contain brightness-[1.08]" width="40" height="40" />
+        <div className="relative z-10 flex items-center gap-3 shrink-0">
+          <img src="/app/karnataka_emblem.png" alt="Karnataka State Emblem" className="w-9 h-9 object-contain brightness-[1.08]" width="36" height="36" />
           <div className="flex flex-col text-left">
             <span className="text-[8px] font-mono font-bold tracking-[0.2em] text-slate-400 uppercase leading-none">
               {t('nav.govKarnataka')}
             </span>
-            <span className="text-base font-extrabold text-white tracking-tight mt-1 font-display" style={headingStyle}>
+            <span className="text-sm font-extrabold text-white tracking-tight mt-1 font-display" style={headingStyle}>
               KSP-ConAI
             </span>
           </div>
         </div>
 
         {/* Center Content Section */}
-        <div className="relative z-10 space-y-8 max-w-md my-auto flex flex-col justify-center">
+        <div className="relative z-10 space-y-6 max-w-md my-auto flex flex-col justify-center">
           
-          <div className="space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.06] border border-white/10 backdrop-blur-sm text-[9.5px] font-bold tracking-widest text-blue-300 uppercase font-mono w-fit">
-              <Shield className="w-3.5 h-3.5 text-[#0064e0]" />
+          <div className="space-y-3">
+            <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-white/[0.06] border border-white/10 backdrop-blur-sm text-[9px] font-bold tracking-widest text-blue-300 uppercase font-mono w-fit">
+              <Shield className="w-3 h-3 text-[#0064e0]" />
               <span>CORE GATEWAY</span>
             </div>
             
-            <h1 className="text-4xl lg:text-5xl font-medium text-white leading-[1.12] tracking-tight font-display text-left" style={headingStyle}>
+            <h1 className="text-3xl lg:text-4xl font-medium text-white leading-[1.12] tracking-tight font-display text-left" style={headingStyle}>
               {currentLanguage === 'en' ? (
                 <>
                   Real-time intelligence.<br/>
@@ -265,13 +265,13 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
               )}
             </h1>
 
-            <p className="text-xs md:text-sm text-slate-300 leading-[1.60] text-left font-medium">
+            <p className="text-xs text-slate-300 leading-relaxed text-left font-medium">
               {t('hero.description')}
             </p>
           </div>
 
-          {/* 3 Pill Feature Items matching reference screenshot */}
-          <div className="space-y-3.5 w-full">
+          {/* 3 Pill Feature Items */}
+          <div className="space-y-2.5 w-full">
             {[
               { icon: Shield, text: t('login.bullet1') },
               { icon: Database, text: t('login.bullet2') },
@@ -279,9 +279,9 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
             ].map(({ icon: Icon, text }, idx) => (
               <div 
                 key={idx} 
-                className="flex items-center gap-3.5 px-4 py-3 rounded-2xl bg-white/[0.04] border border-white/[0.08] hover:bg-white/[0.07] transition-all duration-200 text-xs text-slate-200 font-medium"
+                className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.08] text-xs text-slate-200 font-medium"
               >
-                <div className="w-7 h-7 rounded-xl bg-[#0064e0]/20 border border-[#0064e0]/30 flex items-center justify-center shrink-0">
+                <div className="w-6 h-6 rounded-lg bg-[#0064e0]/20 border border-[#0064e0]/30 flex items-center justify-center shrink-0">
                   <Icon className="w-3.5 h-3.5 text-blue-400" />
                 </div>
                 <span>{text}</span>
@@ -291,19 +291,19 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
         </div>
 
         {/* Footer info line */}
-        <div className="relative z-10 text-[9px] text-slate-500 font-mono tracking-widest uppercase">
+        <div className="relative z-10 text-[8.5px] text-slate-500 font-mono tracking-widest uppercase shrink-0">
           OFFICIAL LAW ENFORCEMENT PORTAL · KSP DATATHON 2026
         </div>
       </div>
 
       {/* ================= RIGHT FORM PANEL ================= */}
-      <div className="flex-1 flex flex-col justify-between px-6 py-8 md:px-12 lg:px-16 relative bg-[#fbfbfd]">
+      <div className="flex-1 flex flex-col justify-between px-6 py-6 md:px-12 lg:px-16 relative bg-[#fbfbfd] h-full overflow-hidden">
         
         {/* Top Right Language Switcher */}
-        <div className="flex justify-end relative z-10">
+        <div className="flex justify-end relative z-10 shrink-0">
           <button
             onClick={toggleLanguage}
-            className="flex items-center gap-2 px-4 py-2 bg-white border border-[#dee3e9] hover:border-slate-300 rounded-full text-xs font-bold text-[#0a1317] hover:bg-slate-50 transition duration-150 cursor-pointer shadow-2xs font-display"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-white border border-[#dee3e9] hover:border-slate-300 rounded-full text-xs font-bold text-[#0a1317] hover:bg-slate-50 transition duration-150 cursor-pointer shadow-2xs font-display"
           >
             <Globe className="w-3.5 h-3.5 text-[#5d6c7b]" />
             <span>{currentLanguage === 'en' ? 'English' : 'ಕನ್ನಡ'}</span>
@@ -311,28 +311,28 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
         </div>
 
         {/* Form Container Card */}
-        <div className="flex-grow flex items-center justify-center my-6 relative z-10">
-          <div className="w-full max-w-md space-y-6 bg-white p-8 md:p-10 rounded-3xl border border-[#dee3e9] shadow-md">
+        <div className="flex-grow flex items-center justify-center my-auto relative z-10 overflow-hidden py-2">
+          <div className="w-full max-w-md space-y-4 bg-white p-6 md:p-8 rounded-3xl border border-[#dee3e9] shadow-md my-auto max-h-[92dvh] overflow-y-auto">
             
             {/* ======== LOGIN VIEW ======== */}
             {view === 'login' && (
-              <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
+              <div className="space-y-4 animate-in fade-in duration-200">
                 
                 {/* Header Titles */}
-                <div className="space-y-1">
-                  <span className="text-[10px] font-bold tracking-widest text-[#0064e0] uppercase font-mono block">CORE GATEWAY</span>
-                  <h2 className="text-2xl font-bold text-[#0a1317] tracking-tight font-display" style={headingStyle}>{t('login.title')}</h2>
+                <div className="space-y-0.5">
+                  <span className="text-[9px] font-bold tracking-widest text-[#0064e0] uppercase font-mono block">CORE GATEWAY</span>
+                  <h2 className="text-xl md:text-2xl font-bold text-[#0a1317] tracking-tight font-display" style={headingStyle}>{t('login.title')}</h2>
                   <p className="text-xs text-[#5d6c7b] font-medium">{t('login.subtitle')}</p>
                 </div>
 
-                <form onSubmit={handleLoginSubmit} className="space-y-5">
+                <form onSubmit={handleLoginSubmit} className="space-y-3.5">
                   
-                  {/* Security Role Selector Grid (matching image exactly) */}
-                  <div className="space-y-2">
-                    <label className="text-[9.5px] font-bold text-[#5d6c7b] uppercase tracking-wider font-mono block">
+                  {/* Security Role Selector Grid */}
+                  <div className="space-y-1.5">
+                    <label className="text-[9px] font-bold text-[#5d6c7b] uppercase tracking-wider font-mono block">
                       {currentLanguage === 'en' ? 'SELECT SECURITY ROLE' : 'ಸುರಕ್ಷತಾ ಪಾತ್ರವನ್ನು ಆಯ್ಕೆಮಾಡಿ'}
                     </label>
-                    <div className="grid grid-cols-2 gap-2.5">
+                    <div className="grid grid-cols-2 gap-2">
                       {availableRoles.map((roleConfig) => {
                         const isSelected = selectedRole === roleConfig.role;
                         const title = t(`roles.${roleConfig.role}.title`);
@@ -342,25 +342,25 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
                             key={roleConfig.role}
                             type="button"
                             onClick={() => setSelectedRole(roleConfig.role)}
-                            className={`group relative flex items-center gap-2.5 p-2.5 rounded-2xl border text-left transition-all duration-150 cursor-pointer select-none ${
+                            className={`group relative flex items-center gap-2 p-2 rounded-xl border text-left transition-all duration-150 cursor-pointer select-none ${
                               isSelected
                                 ? 'border-[#0064e0] bg-[#0064e0]/5 ring-1 ring-[#0064e0]'
                                 : 'border-[#dee3e9] hover:border-slate-300 bg-white'
                             }`}
                           >
-                            <div className={`w-7 h-7 rounded-xl flex items-center justify-center shrink-0 ${isSelected ? 'bg-[#0064e0] text-white shadow-2xs' : 'bg-slate-100 text-[#5d6c7b]'}`}>
-                              {React.cloneElement(roleConfig.icon as React.ReactElement, { className: 'w-3.5 h-3.5' })}
+                            <div className={`w-6 h-6 rounded-lg flex items-center justify-center shrink-0 ${isSelected ? 'bg-[#0064e0] text-white shadow-2xs' : 'bg-slate-100 text-[#5d6c7b]'}`}>
+                              {React.cloneElement(roleConfig.icon as React.ReactElement, { className: 'w-3 h-3' })}
                             </div>
                             <div className="min-w-0 flex-1">
-                              <div className={`text-[11px] font-bold truncate leading-tight ${isSelected ? 'text-[#0064e0]' : 'text-[#0a1317]'}`}>
+                              <div className={`text-[10px] font-bold truncate leading-tight ${isSelected ? 'text-[#0064e0]' : 'text-[#0a1317]'}`}>
                                 {title}
                               </div>
-                              <div className="text-[8.5px] text-[#8595a4] font-semibold tracking-wider mt-0.5 uppercase font-mono">
+                              <div className="text-[8px] text-[#8595a4] font-semibold tracking-wider mt-0.5 uppercase font-mono">
                                 {badge}
                               </div>
                             </div>
                             {isSelected && (
-                              <Check className="w-3.5 h-3.5 text-[#0064e0] absolute top-2 right-2" />
+                              <Check className="w-3 h-3 text-[#0064e0] absolute top-1.5 right-1.5" />
                             )}
                           </button>
                         );
@@ -369,12 +369,12 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
                   </div>
 
                   {/* Username / Official Email Input */}
-                  <div className="space-y-1.5">
-                    <label htmlFor="login-username" className="text-[9.5px] font-bold text-[#5d6c7b] uppercase tracking-wider font-mono block">
+                  <div className="space-y-1">
+                    <label htmlFor="login-username" className="text-[9px] font-bold text-[#5d6c7b] uppercase tracking-wider font-mono block">
                       OFFICIAL EMAIL / USERNAME
                     </label>
                     <div className="relative group">
-                      <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8595a4] group-focus-within:text-[#0064e0] transition-colors" />
+                      <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8595a4] group-focus-within:text-[#0064e0] transition-colors" />
                       <input
                         type="text"
                         id="login-username"
@@ -382,18 +382,18 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
                         value={loginUser}
                         onChange={(e) => setLoginUser(e.target.value)}
                         placeholder="officer.name@ksp.gov.in"
-                        className="w-full pl-10 pr-4 bg-white border border-[#dee3e9] hover:border-slate-350 focus:border-[#0064e0] focus:ring-2 focus:ring-[#0064e0]/20 rounded-2xl text-xs text-[#0a1317] placeholder-[#8595a4] h-11 transition-all duration-150 outline-none font-medium"
+                        className="w-full pl-9 pr-3 bg-white border border-[#dee3e9] hover:border-slate-350 focus:border-[#0064e0] focus:ring-2 focus:ring-[#0064e0]/20 rounded-xl text-xs text-[#0a1317] placeholder-[#8595a4] h-10 transition-all duration-150 outline-none font-medium"
                       />
                     </div>
                   </div>
 
                   {/* Password Input */}
-                  <div className="space-y-1.5">
-                    <label htmlFor="login-password" className="text-[9.5px] font-bold text-[#5d6c7b] uppercase tracking-wider font-mono block">
+                  <div className="space-y-1">
+                    <label htmlFor="login-password" className="text-[9px] font-bold text-[#5d6c7b] uppercase tracking-wider font-mono block">
                       PASSWORD
                     </label>
                     <div className="relative group">
-                      <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8595a4] group-focus-within:text-[#0064e0] transition-colors" />
+                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8595a4] group-focus-within:text-[#0064e0] transition-colors" />
                       <input
                         type={showLoginPass ? "text" : "password"}
                         id="login-password"
@@ -401,12 +401,12 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
                         value={loginPass}
                         onChange={(e) => setLoginPass(e.target.value)}
                         placeholder="Min. 8 characters"
-                        className="w-full pl-10 pr-10 bg-white border border-[#dee3e9] hover:border-slate-350 focus:border-[#0064e0] focus:ring-2 focus:ring-[#0064e0]/20 rounded-2xl text-xs text-[#0a1317] placeholder-[#8595a4] h-11 transition-all duration-150 outline-none font-medium"
+                        className="w-full pl-9 pr-9 bg-white border border-[#dee3e9] hover:border-slate-350 focus:border-[#0064e0] focus:ring-2 focus:ring-[#0064e0]/20 rounded-xl text-xs text-[#0a1317] placeholder-[#8595a4] h-10 transition-all duration-150 outline-none font-medium"
                       />
                       <button
                         type="button"
                         onClick={() => setShowLoginPass(!showLoginPass)}
-                        className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 text-[#8595a4] hover:text-[#0a1317] focus:outline-none rounded"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-[#8595a4] hover:text-[#0a1317] focus:outline-none rounded"
                         aria-label={showLoginPass ? "Hide password" : "Show password"}
                       >
                         {showLoginPass ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
@@ -417,7 +417,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
                   {/* Primary Action Button */}
                   <button
                     type="submit"
-                    className="w-full h-12 bg-[#0064e0] hover:bg-[#0457cb] active:scale-[0.98] text-white font-bold rounded-full text-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0064e0] transition-all duration-150 cursor-pointer flex items-center justify-center gap-2 shadow-md font-display mt-2"
+                    className="w-full h-11 bg-[#0064e0] hover:bg-[#0457cb] active:scale-[0.98] text-white font-bold rounded-full text-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0064e0] transition-all duration-150 cursor-pointer flex items-center justify-center gap-2 shadow-md font-display pt-0.5"
                   >
                     <span>Sign In</span> <ArrowRight className="w-4 h-4" />
                   </button>
@@ -427,7 +427,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
 
                 <div className="h-px bg-[#dee3e9]"></div>
 
-                <p className="text-center text-xs text-[#5d6c7b] font-medium">
+                <p className="text-center text-xs text-[#5d6c7b] font-medium pt-0.5">
                   Don't have an account?{' '}
                   <button
                     type="button"
@@ -442,23 +442,23 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
 
             {/* ======== REQUEST ACCESS VIEW (REGISTER) ======== */}
             {view === 'register' && (
-              <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
+              <div className="space-y-4 animate-in fade-in duration-200">
                 
                 {/* Header Titles */}
-                <div className="space-y-1">
-                  <span className="text-[10px] font-bold tracking-widest text-[#0064e0] uppercase font-mono block">CORE GATEWAY</span>
-                  <h2 className="text-2xl font-bold text-[#0a1317] tracking-tight font-display" style={headingStyle}>Request access</h2>
+                <div className="space-y-0.5">
+                  <span className="text-[9px] font-bold tracking-widest text-[#0064e0] uppercase font-mono block">CORE GATEWAY</span>
+                  <h2 className="text-xl md:text-2xl font-bold text-[#0a1317] tracking-tight font-display" style={headingStyle}>Request access</h2>
                   <p className="text-xs text-[#5d6c7b] font-medium">Submit your details for administrator review.</p>
                 </div>
 
-                <form onSubmit={handleRegisterSubmit} className="space-y-4">
+                <form onSubmit={handleRegisterSubmit} className="space-y-3">
                   
                   {/* Security Role Selector Grid */}
-                  <div className="space-y-2">
-                    <label className="text-[9.5px] font-bold text-[#5d6c7b] uppercase tracking-wider font-mono block">
+                  <div className="space-y-1.5">
+                    <label className="text-[9px] font-bold text-[#5d6c7b] uppercase tracking-wider font-mono block">
                       SELECT SECURITY ROLE
                     </label>
-                    <div className="grid grid-cols-2 gap-2.5">
+                    <div className="grid grid-cols-2 gap-2">
                       {availableRoles.map((roleConfig) => {
                         const isSelected = selectedRole === roleConfig.role;
                         const title = t(`roles.${roleConfig.role}.title`);
@@ -468,25 +468,25 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
                             key={roleConfig.role}
                             type="button"
                             onClick={() => setSelectedRole(roleConfig.role)}
-                            className={`group relative flex items-center gap-2.5 p-2.5 rounded-2xl border text-left transition-all duration-150 cursor-pointer select-none ${
+                            className={`group relative flex items-center gap-2 p-2 rounded-xl border text-left transition-all duration-150 cursor-pointer select-none ${
                               isSelected
                                 ? 'border-[#0064e0] bg-[#0064e0]/5 ring-1 ring-[#0064e0]'
                                 : 'border-[#dee3e9] hover:border-slate-300 bg-white'
                             }`}
                           >
-                            <div className={`w-7 h-7 rounded-xl flex items-center justify-center shrink-0 ${isSelected ? 'bg-[#0064e0] text-white shadow-2xs' : 'bg-slate-100 text-[#5d6c7b]'}`}>
-                              {React.cloneElement(roleConfig.icon as React.ReactElement, { className: 'w-3.5 h-3.5' })}
+                            <div className={`w-6 h-6 rounded-lg flex items-center justify-center shrink-0 ${isSelected ? 'bg-[#0064e0] text-white shadow-2xs' : 'bg-slate-100 text-[#5d6c7b]'}`}>
+                              {React.cloneElement(roleConfig.icon as React.ReactElement, { className: 'w-3 h-3' })}
                             </div>
                             <div className="min-w-0 flex-1">
-                              <div className={`text-[11px] font-bold truncate leading-tight ${isSelected ? 'text-[#0064e0]' : 'text-[#0a1317]'}`}>
+                              <div className={`text-[10px] font-bold truncate leading-tight ${isSelected ? 'text-[#0064e0]' : 'text-[#0a1317]'}`}>
                                 {title}
                               </div>
-                              <div className="text-[8.5px] text-[#8595a4] font-semibold tracking-wider mt-0.5 uppercase font-mono">
+                              <div className="text-[8px] text-[#8595a4] font-semibold tracking-wider mt-0.5 uppercase font-mono">
                                 {badge}
                               </div>
                             </div>
                             {isSelected && (
-                              <Check className="w-3.5 h-3.5 text-[#0064e0] absolute top-2 right-2" />
+                              <Check className="w-3 h-3 text-[#0064e0] absolute top-1.5 right-1.5" />
                             )}
                           </button>
                         );
@@ -495,12 +495,12 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
                   </div>
 
                   {/* Full Name field */}
-                  <div className="space-y-1.5">
-                    <label htmlFor="reg-name" className="text-[9.5px] font-bold text-[#5d6c7b] uppercase tracking-wider font-mono block">
+                  <div className="space-y-1">
+                    <label htmlFor="reg-name" className="text-[9px] font-bold text-[#5d6c7b] uppercase tracking-wider font-mono block">
                       FULL NAME
                     </label>
                     <div className="relative group">
-                      <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8595a4] group-focus-within:text-[#0064e0] transition-colors" />
+                      <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8595a4] group-focus-within:text-[#0064e0] transition-colors" />
                       <input
                         type="text"
                         id="reg-name"
@@ -508,18 +508,18 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
                         value={regName}
                         onChange={(e) => setRegName(e.target.value)}
                         placeholder="Officer Full Name"
-                        className="w-full pl-10 pr-4 bg-white border border-[#dee3e9] hover:border-slate-350 focus:border-[#0064e0] focus:ring-2 focus:ring-[#0064e0]/20 rounded-2xl text-xs text-[#0a1317] placeholder-[#8595a4] h-11 transition-all duration-150 outline-none font-medium"
+                        className="w-full pl-9 pr-3 bg-white border border-[#dee3e9] hover:border-slate-350 focus:border-[#0064e0] focus:ring-2 focus:ring-[#0064e0]/20 rounded-xl text-xs text-[#0a1317] placeholder-[#8595a4] h-10 transition-all duration-150 outline-none font-medium"
                       />
                     </div>
                   </div>
 
                   {/* Official Email field */}
-                  <div className="space-y-1.5">
-                    <label htmlFor="reg-email" className="text-[9.5px] font-bold text-[#5d6c7b] uppercase tracking-wider font-mono block">
+                  <div className="space-y-1">
+                    <label htmlFor="reg-email" className="text-[9px] font-bold text-[#5d6c7b] uppercase tracking-wider font-mono block">
                       OFFICIAL EMAIL
                     </label>
                     <div className="relative group">
-                      <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8595a4] group-focus-within:text-[#0064e0] transition-colors" />
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8595a4] group-focus-within:text-[#0064e0] transition-colors" />
                       <input
                         type="email"
                         id="reg-email"
@@ -527,18 +527,18 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
                         value={regEmail}
                         onChange={(e) => setRegEmail(e.target.value)}
                         placeholder="officer.name@ksp.gov.in"
-                        className="w-full pl-10 pr-4 bg-white border border-[#dee3e9] hover:border-slate-350 focus:border-[#0064e0] focus:ring-2 focus:ring-[#0064e0]/20 rounded-2xl text-xs text-[#0a1317] placeholder-[#8595a4] h-11 transition-all duration-150 outline-none font-medium"
+                        className="w-full pl-9 pr-3 bg-white border border-[#dee3e9] hover:border-slate-350 focus:border-[#0064e0] focus:ring-2 focus:ring-[#0064e0]/20 rounded-xl text-xs text-[#0a1317] placeholder-[#8595a4] h-10 transition-all duration-150 outline-none font-medium"
                       />
                     </div>
                   </div>
 
                   {/* Password field */}
-                  <div className="space-y-1.5">
-                    <label htmlFor="reg-password" className="text-[9.5px] font-bold text-[#5d6c7b] uppercase tracking-wider font-mono block">
+                  <div className="space-y-1">
+                    <label htmlFor="reg-password" className="text-[9px] font-bold text-[#5d6c7b] uppercase tracking-wider font-mono block">
                       SET PASSWORD
                     </label>
                     <div className="relative group">
-                      <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8595a4] group-focus-within:text-[#0064e0] transition-colors" />
+                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8595a4] group-focus-within:text-[#0064e0] transition-colors" />
                       <input
                         type={showRegPass ? "text" : "password"}
                         id="reg-password"
@@ -546,12 +546,12 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
                         value={regPass}
                         onChange={(e) => setRegPass(e.target.value)}
                         placeholder="Min. 8 characters"
-                        className="w-full pl-10 pr-10 bg-white border border-[#dee3e9] hover:border-slate-350 focus:border-[#0064e0] focus:ring-2 focus:ring-[#0064e0]/20 rounded-2xl text-xs text-[#0a1317] placeholder-[#8595a4] h-11 transition-all duration-150 outline-none font-medium"
+                        className="w-full pl-9 pr-9 bg-white border border-[#dee3e9] hover:border-slate-350 focus:border-[#0064e0] focus:ring-2 focus:ring-[#0064e0]/20 rounded-xl text-xs text-[#0a1317] placeholder-[#8595a4] h-10 transition-all duration-150 outline-none font-medium"
                       />
                       <button
                         type="button"
                         onClick={() => setShowRegPass(!showRegPass)}
-                        className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 text-[#8595a4] hover:text-[#0a1317] focus:outline-none rounded"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-[#8595a4] hover:text-[#0a1317] focus:outline-none rounded"
                         aria-label={showRegPass ? "Hide password" : "Show password"}
                       >
                         {showRegPass ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
@@ -562,7 +562,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
                   {/* Primary Action Button */}
                   <button
                     type="submit"
-                    className="w-full h-12 bg-[#0064e0] hover:bg-[#0457cb] active:scale-[0.98] text-white font-bold rounded-full text-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0064e0] transition-all duration-150 cursor-pointer flex items-center justify-center gap-2 shadow-md font-display mt-2"
+                    className="w-full h-11 bg-[#0064e0] hover:bg-[#0457cb] active:scale-[0.98] text-white font-bold rounded-full text-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0064e0] transition-all duration-150 cursor-pointer flex items-center justify-center gap-2 shadow-md font-display pt-0.5"
                   >
                     <span>Create Account</span> <ArrowRight className="w-4 h-4" />
                   </button>
@@ -572,7 +572,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
 
                 <div className="h-px bg-[#dee3e9]"></div>
 
-                <p className="text-center text-xs text-[#5d6c7b] font-medium">
+                <p className="text-center text-xs text-[#5d6c7b] font-medium pt-0.5">
                   Already have an account?{' '}
                   <button
                     type="button"
@@ -588,7 +588,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
         </div>
 
         {/* Bottom Footer Notice */}
-        <div className="text-center text-[9.5px] text-[#8595a4] font-semibold uppercase tracking-wider relative z-10 font-mono">
+        <div className="text-center text-[9px] text-[#8595a4] font-semibold uppercase tracking-wider relative z-10 font-mono shrink-0">
           {currentLanguage === 'en' 
             ? 'Karnataka State Police · Datathon 2026' 
             : 'ಕರ್ನಾಟಕ ರಾಜ್ಯ ಪೊಲೀಸ್ · ದತ್ತಾಂಶ ಹಬ್ಬ ೨೦೨೬'}
