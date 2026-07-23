@@ -90,14 +90,21 @@ export const LandingPage: React.FC = () => {
       {/* Main Container */}
       <div className="space-y-0 bg-[#ffffff]">
         
-        {/* ================= 2. HERO SECTION (100% UNTOUCHED) ================= */}
-        <section className="relative w-full pt-8 pb-10 md:pt-12 md:pb-12 flex flex-col items-center justify-center text-center px-6 overflow-hidden border-b border-[#dee3e9] bg-[#ffffff]">
-          {/* Subtle dotted background pattern */}
-          <div className="absolute inset-0 opacity-[0.22] pointer-events-none" style={{ backgroundImage: 'radial-gradient(var(--color-primary) 1.5px, transparent 1.5px)', backgroundSize: '32px 32px' }}></div>
+        {/* ================= 2. HERO SECTION (EXTENDED & ADJUSTED TO MATCH REFERENCE IMAGE) ================= */}
+        <section className="relative w-full pt-16 pb-20 md:pt-28 md:pb-32 min-h-[520px] md:min-h-[580px] flex flex-col items-center justify-center text-center px-6 overflow-hidden border-b border-[#dee3e9] bg-[#ffffff]">
+          {/* Extended subtle blue dotted background grid pattern matching reference image */}
+          <div 
+            className="absolute inset-0 opacity-[0.28] pointer-events-none" 
+            style={{ 
+              backgroundImage: 'radial-gradient(#0064e0 1.5px, transparent 1.5px)', 
+              backgroundSize: '40px 40px' 
+            }}
+          />
           
-          <div className="max-w-4xl mx-auto space-y-5 relative z-10 flex flex-col items-center min-h-[280px] sm:min-h-[300px] md:min-h-[320px] justify-center">
+          <div className="max-w-5xl mx-auto space-y-6 relative z-10 flex flex-col items-center justify-center">
+            {/* Red Eyebrow Badge */}
             <span 
-              className={`font-display font-bold text-[10px] tracking-[0.25em] text-[#991b1b] uppercase block transition-all duration-700 delay-100 ${
+              className={`font-display font-bold text-[11px] md:text-xs tracking-[0.25em] text-[#b91c1c] uppercase block transition-all duration-700 delay-100 ${
                 mounted ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
               }`}
               style={headingStyle}
@@ -105,39 +112,39 @@ export const LandingPage: React.FC = () => {
               {t('hero.badge')}
             </span>
             
-            {/* Optimistic VF hero-display title */}
+            {/* Hero Main Headline */}
             <h1 
-              className={`text-4xl md:text-6xl lg:text-7xl font-medium text-[#0a1317] leading-[1.12] tracking-tight text-center max-w-4xl font-display transition-all duration-750 delay-200 ${
+              className={`text-4xl sm:text-6xl md:text-7xl lg:text-[80px] font-medium text-[#0a1317] leading-[1.08] tracking-tight text-center max-w-5xl font-display transition-all duration-750 delay-200 ${
                 mounted ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
               }`}
               style={headingStyle}
             >
               KSP-ConAI: <br/>
-              <span className="bg-gradient-to-r from-primary via-blue-600 to-primary-deep bg-clip-text text-transparent">
+              <span className="text-[#0064e0] font-medium block mt-1">
                 {t('hero.title')}
               </span>
             </h1>
 
-            {/* Subtitle lead paragraph: subtitle-md style */}
-            <p className={`text-sm md:text-lg text-slate-500 leading-[1.44] max-w-2xl text-center font-medium transition-all duration-700 delay-300 ${
+            {/* Subtitle lead paragraph */}
+            <p className={`text-base md:text-xl text-[#5d6c7b] leading-[1.55] max-w-2xl text-center font-normal transition-all duration-700 delay-300 ${
               mounted ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
             }`}>
               {t('hero.description')}
             </p>
             
-            {/* Dual CTA buttons: button-primary (black) + button-secondary (ghost outline) */}
-            <div className={`flex flex-wrap justify-center gap-4 pt-2 transition-all duration-700 delay-400 ${
+            {/* Dual CTA buttons */}
+            <div className={`flex flex-wrap justify-center gap-4 pt-4 transition-all duration-700 delay-400 ${
               mounted ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
             }`}>
               <a 
                 href="/app/login.html" 
-                className="h-11 px-8 bg-black hover:bg-slate-800 text-white rounded-full text-xs font-bold focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none transition-all duration-150 shadow-md flex items-center justify-center gap-1.5 select-none font-display active:scale-[0.98]"
+                className="h-12 px-8 bg-[#0a1317] hover:bg-slate-800 text-white rounded-full text-xs md:text-sm font-bold focus-visible:ring-2 focus-visible:ring-[#0064e0] focus-visible:outline-none transition-all duration-200 shadow-md flex items-center justify-center gap-2 select-none font-display active:scale-[0.98]"
               >
-                {t('hero.launch')} <ArrowRight className="w-3.5 h-3.5" />
+                {t('hero.launch')} <ArrowRight className="w-4 h-4" />
               </a>
               <a 
                 href="#capabilities" 
-                className="h-11 px-8 bg-transparent border-2 border-[#0a1317] text-[#0a1317] hover:bg-slate-50 rounded-full text-xs font-bold focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none transition-all duration-150 select-none flex items-center justify-center font-display active:scale-[0.98]"
+                className="h-12 px-8 bg-white border-2 border-[#0a1317] text-[#0a1317] hover:bg-slate-50 rounded-full text-xs md:text-sm font-bold focus-visible:ring-2 focus-visible:ring-[#0064e0] focus-visible:outline-none transition-all duration-200 select-none flex items-center justify-center font-display active:scale-[0.98]"
               >
                 {t('hero.explore')}
               </a>
