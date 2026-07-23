@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Lock, User, ArrowRight, Shield, Database, MapPin, Mail, Globe, Eye, EyeOff, ArrowLeft, Award, Check } from 'lucide-react';
+import { Lock, User, ArrowRight, Shield, Database, MapPin, Mail, Globe, Eye, EyeOff, Check } from 'lucide-react';
 import { useI18n } from '../../i18n/hooks';
 import { DEMO_USERS, setSession, type UserRole } from '../../lib/auth';
 
@@ -25,7 +25,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
   const [regPass, setRegPass] = useState('');
   const [showRegPass, setShowRegPass] = useState(false);
 
-  // Automatically update the credentials when the selected role changes, to assist in KSP Copilot logins
+  // Automatically update credentials when role changes to assist demo login
   useEffect(() => {
     if (view === 'login') {
       const demoUser = DEMO_USERS[selectedRole];
@@ -103,7 +103,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
     setSession({
       role: selectedRole,
       name,
-      username: regEmail || 'new.officer@ksp.gov.in',
+      username: regEmail || 'officer.name@ksp.gov.in',
       badgeNumber: badgeNum,
       token: `mock-jwt-token-for-ksp-catalyst-${selectedRole}`
     });
@@ -144,18 +144,18 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
   };
 
   const socialLoginBlock = (
-    <div className="space-y-4">
+    <div className="space-y-4 pt-2">
       <div id="loginDivElementId" className="w-full min-h-[10px]"></div>
-      <div className="flex items-center gap-3 text-[10px] text-slate-400 font-bold uppercase tracking-wider">
-        <div className="h-px flex-1 bg-slate-150"></div>
-        <span className="shrink-0">{t('login.divider')}</span>
-        <div className="h-px flex-1 bg-slate-150"></div>
+      <div className="flex items-center gap-3 text-[9px] text-[#8595a4] font-bold uppercase tracking-wider">
+        <div className="h-px flex-1 bg-[#dee3e9]"></div>
+        <span className="shrink-0 font-mono">OR CONTINUE WITH</span>
+        <div className="h-px flex-1 bg-[#dee3e9]"></div>
       </div>
       <div className="grid grid-cols-2 gap-3">
         <button
           type="button"
           onClick={handleGoogleSSO}
-          className="group flex items-center justify-center gap-2 h-11 px-5 border-2 border-slate-200/60 hover:border-slate-350 bg-transparent active:scale-[0.98] rounded-full text-xs font-bold text-slate-700 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-fb-blue transition-all duration-150"
+          className="group flex items-center justify-center gap-2.5 h-11 px-5 border border-[#dee3e9] hover:border-slate-300 bg-white active:scale-[0.98] rounded-full text-xs font-bold text-[#0a1317] cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0064e0] transition-all duration-150 shadow-2xs"
         >
           <svg className="w-4 h-4 shrink-0 transition-transform group-hover:scale-110" viewBox="0 0 24 24">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -169,7 +169,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
         <button
           type="button"
           onClick={handleGoogleSSO}
-          className="group flex items-center justify-center gap-2 h-11 px-5 border-2 border-slate-200/60 hover:border-slate-350 bg-transparent active:scale-[0.98] rounded-full text-xs font-bold text-slate-700 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-fb-blue transition-all duration-150"
+          className="group flex items-center justify-center gap-2.5 h-11 px-5 border border-[#dee3e9] hover:border-slate-300 bg-white active:scale-[0.98] rounded-full text-xs font-bold text-[#0a1317] cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0064e0] transition-all duration-150 shadow-2xs"
         >
           <div className="w-4 h-4 bg-amber-500 rounded flex items-center justify-center text-white font-black text-[9px] leading-none select-none shrink-0 transition-transform group-hover:rotate-12 group-hover:scale-110">Z</div>
           Zoho
@@ -182,189 +182,157 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
     role: UserRole;
     badge: string;
     icon: React.ReactNode;
-    color: string;
-    textColor: string;
-    borderColor: string;
-    permissions: { name: string; allowed: boolean }[];
   }[] = [
     {
       role: 'admin',
       badge: 'KSP-001',
-      icon: <Shield className="w-5 h-5" />,
-      color: 'bg-indigo-50',
-      textColor: 'text-indigo-600',
-      borderColor: 'border-indigo-100',
-      permissions: [
-        { name: currentLanguage === 'en' ? 'Dashboard access' : 'ಡ್ಯಾಶ್‌ಬೋರ್ಡ್', allowed: true },
-        { name: currentLanguage === 'en' ? 'FIR Search' : 'ಎಫ್‌ಐಆರ್ ಹುಡುಕಾಟ', allowed: true },
-        { name: currentLanguage === 'en' ? 'Hotspot Map' : 'ಹಾಟ್‌ಸ್ಪಾಟ್ ನಕ್ಷೆ', allowed: true },
-        { name: currentLanguage === 'en' ? 'AI Assistant' : 'AI ಸಹಾಯಕ', allowed: true },
-        { name: currentLanguage === 'en' ? 'Reports Vault' : 'ವರದಿಗಳ ಕನ್ಸೋಲ್', allowed: true },
-        { name: currentLanguage === 'en' ? 'Admin Tools' : 'ನಿರ್ವಾಹಕ ಉಪಕರಣಗಳು', allowed: true },
-      ]
+      icon: <Shield className="w-4 h-4" />
     },
     {
       role: 'investigator',
       badge: 'KSP-4589',
-      icon: <Eye className="w-5 h-5" />,
-      color: 'bg-emerald-50',
-      textColor: 'text-emerald-600',
-      borderColor: 'border-emerald-100',
-      permissions: [
-        { name: currentLanguage === 'en' ? 'Dashboard access' : 'ಡ್ಯಾಶ್‌ಬೋರ್ಡ್', allowed: true },
-        { name: currentLanguage === 'en' ? 'FIR Search' : 'ಎಫ್‌ಐಆರ್ ಹುಡುಕಾಟ', allowed: true },
-        { name: currentLanguage === 'en' ? 'Hotspot Map' : 'ಹಾಟ್‌ಸ್ಪಾಟ್ ನಕ್ಷೆ', allowed: true },
-        { name: currentLanguage === 'en' ? 'AI Assistant' : 'AI ಸಹಾಯಕ', allowed: true },
-        { name: currentLanguage === 'en' ? 'Reports Vault' : 'ವರದಿಗಳ ಕನ್ಸೋಲ್', allowed: true },
-        { name: currentLanguage === 'en' ? 'Admin Tools' : 'ನಿರ್ವಾಹಕ ಉಪಕರಣಗಳು', allowed: false },
-      ]
+      icon: <Eye className="w-4 h-4" />
     },
     {
       role: 'analyst',
       badge: 'KSP-2114',
-      icon: <Database className="w-5 h-5" />,
-      color: 'bg-amber-50',
-      textColor: 'text-amber-600',
-      borderColor: 'border-amber-100',
-      permissions: [
-        { name: currentLanguage === 'en' ? 'Dashboard access' : 'ಡ್ಯಾಶ್‌ಬೋರ್ಡ್', allowed: true },
-        { name: currentLanguage === 'en' ? 'FIR Search' : 'ಎಫ್‌ಐಆರ್ ಹುಡುಕಾಟ', allowed: true },
-        { name: currentLanguage === 'en' ? 'Hotspot Map' : 'ಹಾಟ್‌ಸ್ಪಾಟ್ ನಕ್ಷೆ', allowed: true },
-        { name: currentLanguage === 'en' ? 'AI Assistant' : 'AI ಸಹಾಯಕ', allowed: true },
-        { name: currentLanguage === 'en' ? 'Reports Vault' : 'ವರದಿಗಳ ಕನ್ಸೋಲ್', allowed: true },
-        { name: currentLanguage === 'en' ? 'Admin Tools' : 'ನಿರ್ವಾಹಕ ಉಪಕರಣಗಳು', allowed: false },
-      ]
+      icon: <Database className="w-4 h-4" />
     },
     {
       role: 'viewer',
       badge: 'KSP-009',
-      icon: <Lock className="w-5 h-5" />,
-      color: 'bg-slate-100',
-      textColor: 'text-slate-600',
-      borderColor: 'border-slate-200',
-      permissions: [
-        { name: currentLanguage === 'en' ? 'Dashboard access' : 'ಡ್ಯಾಶ್‌ಬೋರ್ಡ್', allowed: true },
-        { name: currentLanguage === 'en' ? 'FIR Search' : 'ಎಫ್‌ಐಆರ್ ಹುಡುಕಾಟ', allowed: true },
-        { name: currentLanguage === 'en' ? 'Hotspot Map' : 'ಹಾಟ್‌ಸ್ಪಾಟ್ ನಕ್ಷೆ', allowed: false },
-        { name: currentLanguage === 'en' ? 'AI Assistant' : 'AI ಸಹಾಯಕ', allowed: false },
-        { name: currentLanguage === 'en' ? 'Reports Vault' : 'ವರದಿಗಳ ಕನ್ಸೋಲ್', allowed: false },
-        { name: currentLanguage === 'en' ? 'Admin Tools' : 'ನಿರ್ವಾಹಕ ಉಪಕರಣಗಳು', allowed: false },
-      ]
+      icon: <Lock className="w-4 h-4" />
     }
   ];
 
+  const headingStyle = {
+    fontFeatureSettings: '"ss01" on, "ss02" on'
+  };
+
   return (
-    <div className="flex-grow flex min-h-[100dvh] w-full font-sans bg-[#fbfbfd] selection:bg-primary-soft selection:text-primary-deep">
-      {/* Left Brand Panel (hidden on mobile) */}
-      <div className="hidden lg:flex flex-col justify-between w-[42%] bg-[#080d1a] text-white p-12 relative overflow-hidden select-none border-r border-[#dee3e9]/10">
-        {/* Glow ambient orbs */}
-        <div className="absolute top-1/4 -left-1/4 w-[80%] h-[50%] rounded-full bg-blue-600/10 blur-[100px] pointer-events-none"></div>
-        <div className="absolute bottom-1/4 -right-1/4 w-[80%] h-[50%] rounded-full bg-[#0064e0]/10 blur-[100px] pointer-events-none"></div>
+    <div className="flex min-h-[100dvh] w-full font-sans bg-[#fbfbfd] text-[#0a1317] selection:bg-primary-soft selection:text-primary-deep">
+      
+      {/* ================= LEFT BRAND HERO PANEL ================= */}
+      <div className="hidden lg:flex flex-col justify-between w-[46%] bg-[#080d1a] text-white p-12 lg:p-16 relative overflow-hidden select-none border-r border-[#dee3e9]/10">
+        
+        {/* Glow ambient background lights */}
+        <div className="absolute top-1/4 -left-1/4 w-[80%] h-[50%] rounded-full bg-[#0064e0]/15 blur-[120px] pointer-events-none"></div>
+        <div className="absolute bottom-1/4 -right-1/4 w-[80%] h-[50%] rounded-full bg-[#0064e0]/10 blur-[120px] pointer-events-none"></div>
 
         {/* Subtle grid mesh background */}
-        <svg className="absolute inset-0 w-full h-full opacity-[0.035]" xmlns="http://www.w3.org/2000/svg">
+        <svg className="absolute inset-0 w-full h-full opacity-[0.04]" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse">
-              <path d="M 24 0 L 0 0 0 24" fill="none" stroke="white" strokeWidth="1" />
+            <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+              <path d="M 32 0 L 0 0 0 32" fill="none" stroke="white" strokeWidth="1" />
             </pattern>
           </defs>
           <rect width="100%" height="100%" fill="url(#grid)" />
         </svg>
 
-        {/* Top brand header */}
-        <div className="relative z-10 flex items-center gap-3 shrink-0">
-          <div className="p-2.5 rounded-2xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-md shadow-lg flex items-center justify-center">
-            <img src="/app/karnataka_emblem.png" alt="Karnataka Coat of Arms" className="w-9 h-9 object-contain brightness-[1.05]" width="36" height="36" />
-          </div>
+        {/* Top Header Logo Seal */}
+        <div className="relative z-10 flex items-center gap-3.5 shrink-0">
+          <img src="/app/karnataka_emblem.png" alt="Karnataka State Emblem" className="w-10 h-10 object-contain brightness-[1.08]" width="40" height="40" />
           <div className="flex flex-col text-left">
-            <span className="text-[9px] font-bold tracking-[0.18em] text-blue-400 uppercase leading-none">{t('nav.govKarnataka')}</span>
-            <span className="text-sm font-extrabold text-white tracking-tight mt-1.5 font-display">
+            <span className="text-[8px] font-mono font-bold tracking-[0.2em] text-slate-400 uppercase leading-none">
+              {t('nav.govKarnataka')}
+            </span>
+            <span className="text-base font-extrabold text-white tracking-tight mt-1 font-display" style={headingStyle}>
               KSP-ConAI
             </span>
           </div>
         </div>
 
-        {/* Center Content in the Blue Section */}
-        <div className="relative z-10 space-y-7 max-w-sm my-auto pl-2 flex flex-col items-start justify-center">
-          <div className="space-y-3.5">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] backdrop-blur-sm text-[9px] font-bold tracking-wider text-blue-305 uppercase">
-              <Shield className="w-3.5 h-3.5 text-blue-400" />
-              {t('hero.gateway')}
+        {/* Center Content Section */}
+        <div className="relative z-10 space-y-8 max-w-md my-auto flex flex-col justify-center">
+          
+          <div className="space-y-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.06] border border-white/10 backdrop-blur-sm text-[9.5px] font-bold tracking-widest text-blue-300 uppercase font-mono w-fit">
+              <Shield className="w-3.5 h-3.5 text-[#0064e0]" />
+              <span>CORE GATEWAY</span>
             </div>
-            <h1 className="text-3xl font-extrabold text-white leading-[1.16] tracking-tight font-display text-left">
+            
+            <h1 className="text-4xl lg:text-5xl font-medium text-white leading-[1.12] tracking-tight font-display text-left" style={headingStyle}>
               {currentLanguage === 'en' ? (
                 <>
                   Real-time intelligence.<br/>
-                  <span className="bg-gradient-to-r from-blue-400 to-blue-500 bg-clip-text text-transparent">Smarter policing.</span>
+                  <span className="text-[#0064e0] font-medium">Smarter policing.</span>
                 </>
               ) : (
                 <>
                   ನೈಜ-ಸಮಯದ ಗುಪ್ತಚರ ಮಾಹಿತಿ.<br/>
-                  <span className="bg-gradient-to-r from-blue-400 to-blue-500 bg-clip-text text-transparent">ಚುರುಕಾದ ಪೊಲೀಸಿಂಗ್.</span>
+                  <span className="text-[#0064e0] font-medium">ಚುರುಕಾದ ಪೊಲೀಸಿಂಗ್.</span>
                 </>
               )}
             </h1>
-            <p className="text-xs text-slate-400 leading-relaxed text-left font-medium">
+
+            <p className="text-xs md:text-sm text-slate-300 leading-[1.60] text-left font-medium">
               {t('hero.description')}
             </p>
           </div>
 
-          {/* Feature bullets - rounded-xl (16px) */}
-          <div className="space-y-3 w-full pt-1.5">
+          {/* 3 Pill Feature Items matching reference screenshot */}
+          <div className="space-y-3.5 w-full">
             {[
               { icon: Shield, text: t('login.bullet1') },
               { icon: Database, text: t('login.bullet2') },
-              { icon: MapPin, text: t('login.bullet3') },
+              { icon: MapPin, text: t('login.bullet3') }
             ].map(({ icon: Icon, text }, idx) => (
               <div 
                 key={idx} 
-                className="group/item flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-white/[0.01] hover:bg-white/[0.03] border border-white/[0.02] hover:border-white/[0.06] transition-all duration-200 text-xs text-slate-300 font-medium"
+                className="flex items-center gap-3.5 px-4 py-3 rounded-2xl bg-white/[0.04] border border-white/[0.08] hover:bg-white/[0.07] transition-all duration-200 text-xs text-slate-200 font-medium"
               >
-                <div className="w-7 h-7 rounded-lg bg-white/[0.04] border border-white/[0.08] flex items-center justify-center shrink-0 transition-all duration-200 group-hover/item:bg-blue-600/20 group-hover/item:border-blue-500/30">
-                  <Icon className="w-3.5 h-3.5 text-blue-400 transition-transform duration-200 group-hover/item:scale-110" />
+                <div className="w-7 h-7 rounded-xl bg-[#0064e0]/20 border border-[#0064e0]/30 flex items-center justify-center shrink-0">
+                  <Icon className="w-3.5 h-3.5 text-blue-400" />
                 </div>
-                <span className="transition-colors duration-200 group-hover/item:text-white">{text}</span>
+                <span>{text}</span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Empty bottom space to balance layout */}
-        <div className="h-12 shrink-0"></div>
+        {/* Footer info line */}
+        <div className="relative z-10 text-[9px] text-slate-500 font-mono tracking-widest uppercase">
+          OFFICIAL LAW ENFORCEMENT PORTAL · KSP DATATHON 2026
+        </div>
       </div>
 
-      {/* Right Form Panel */}
-      <div className="flex-1 flex flex-col justify-between px-6 py-10 md:px-16 lg:px-20 relative">
-        {/* Top Header controls (bilingual toggle in card-pill-tab active/inactive style) */}
+      {/* ================= RIGHT FORM PANEL ================= */}
+      <div className="flex-1 flex flex-col justify-between px-6 py-8 md:px-12 lg:px-16 relative bg-[#fbfbfd]">
+        
+        {/* Top Right Language Switcher */}
         <div className="flex justify-end relative z-10">
           <button
             onClick={toggleLanguage}
-            className="flex items-center gap-1.5 px-4 py-1.5 bg-white border border-slate-200 hover:border-slate-300 rounded-full text-[10px] font-bold text-slate-700 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-fb-blue transition-all duration-150 cursor-pointer select-none shadow-xs"
+            className="flex items-center gap-2 px-4 py-2 bg-white border border-[#dee3e9] hover:border-slate-300 rounded-full text-xs font-bold text-[#0a1317] hover:bg-slate-50 transition duration-150 cursor-pointer shadow-2xs font-display"
           >
-            <Globe className="w-3.5 h-3.5 text-slate-400" />
+            <Globe className="w-3.5 h-3.5 text-[#5d6c7b]" />
             <span>{currentLanguage === 'en' ? 'English' : 'ಕನ್ನಡ'}</span>
           </button>
         </div>
 
-        {/* Form Container: card-product-feature styled - rounded-xxxl (32px), border 1px solid hairline-soft */}
+        {/* Form Container Card */}
         <div className="flex-grow flex items-center justify-center my-6 relative z-10">
-          <div className="w-full max-w-sm space-y-7 bg-white p-8 md:p-10 rounded-xxxl border border-[#dee3e9] shadow-xl shadow-slate-100/50">
+          <div className="w-full max-w-md space-y-6 bg-white p-8 md:p-10 rounded-3xl border border-[#dee3e9] shadow-md">
+            
             {/* ======== LOGIN VIEW ======== */}
             {view === 'login' && (
               <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                
+                {/* Header Titles */}
                 <div className="space-y-1">
-                  <div className="text-[10px] font-bold tracking-widest text-primary uppercase">{t('hero.gateway')}</div>
-                  <h2 className="text-xl font-bold text-slate-900 tracking-tight font-display">{t('login.title')}</h2>
-                  <p className="text-xs text-slate-500 font-medium">{t('login.subtitle')}</p>
+                  <span className="text-[10px] font-bold tracking-widest text-[#0064e0] uppercase font-mono block">CORE GATEWAY</span>
+                  <h2 className="text-2xl font-bold text-[#0a1317] tracking-tight font-display" style={headingStyle}>{t('login.title')}</h2>
+                  <p className="text-xs text-[#5d6c7b] font-medium">{t('login.subtitle')}</p>
                 </div>
 
-                <form onSubmit={handleLoginSubmit} className="space-y-4">
-                  {/* Direct Role Selection */}
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">
-                      {currentLanguage === 'en' ? 'Select Security Role' : 'ಸುರಕ್ಷತಾ ಪಾತ್ರವನ್ನು ಆಯ್ಕೆಮಾಡಿ'}
+                <form onSubmit={handleLoginSubmit} className="space-y-5">
+                  
+                  {/* Security Role Selector Grid (matching image exactly) */}
+                  <div className="space-y-2">
+                    <label className="text-[9.5px] font-bold text-[#5d6c7b] uppercase tracking-wider font-mono block">
+                      {currentLanguage === 'en' ? 'SELECT SECURITY ROLE' : 'ಸುರಕ್ಷತಾ ಪಾತ್ರವನ್ನು ಆಯ್ಕೆಮಾಡಿ'}
                     </label>
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="grid grid-cols-2 gap-2.5">
                       {availableRoles.map((roleConfig) => {
                         const isSelected = selectedRole === roleConfig.role;
                         const title = t(`roles.${roleConfig.role}.title`);
@@ -374,66 +342,71 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
                             key={roleConfig.role}
                             type="button"
                             onClick={() => setSelectedRole(roleConfig.role)}
-                            className={`group flex items-center gap-2 p-2 rounded-xl border text-left transition-all duration-150 cursor-pointer select-none ${
+                            className={`group relative flex items-center gap-2.5 p-2.5 rounded-2xl border text-left transition-all duration-150 cursor-pointer select-none ${
                               isSelected
-                                ? 'border-primary bg-primary/5 ring-1 ring-primary'
-                                : 'border-slate-200 hover:border-slate-350 bg-white'
+                                ? 'border-[#0064e0] bg-[#0064e0]/5 ring-1 ring-[#0064e0]'
+                                : 'border-[#dee3e9] hover:border-slate-300 bg-white'
                             }`}
                           >
-                            <div className={`p-1.5 rounded-lg shrink-0 ${isSelected ? roleConfig.textColor + ' bg-white shadow-xs' : 'bg-slate-50 text-slate-400'}`}>
+                            <div className={`w-7 h-7 rounded-xl flex items-center justify-center shrink-0 ${isSelected ? 'bg-[#0064e0] text-white shadow-2xs' : 'bg-slate-100 text-[#5d6c7b]'}`}>
                               {React.cloneElement(roleConfig.icon as React.ReactElement, { className: 'w-3.5 h-3.5' })}
                             </div>
                             <div className="min-w-0 flex-1">
-                              <div className={`text-[10px] font-bold truncate leading-tight ${isSelected ? 'text-slate-900 font-bold' : 'text-slate-700'}`}>
+                              <div className={`text-[11px] font-bold truncate leading-tight ${isSelected ? 'text-[#0064e0]' : 'text-[#0a1317]'}`}>
                                 {title}
                               </div>
-                              <div className="text-[8px] text-slate-400 font-semibold tracking-wider mt-0.5 uppercase">
+                              <div className="text-[8.5px] text-[#8595a4] font-semibold tracking-wider mt-0.5 uppercase font-mono">
                                 {badge}
                               </div>
                             </div>
+                            {isSelected && (
+                              <Check className="w-3.5 h-3.5 text-[#0064e0] absolute top-2 right-2" />
+                            )}
                           </button>
                         );
                       })}
                     </div>
                   </div>
 
-                  {/* User input: height 44px, border hairline, rounded lg (8px), focus border 2px solid fb-blue */}
+                  {/* Username / Official Email Input */}
                   <div className="space-y-1.5">
-                    <label htmlFor="login-username" className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">{t('login.usernameLabel')}</label>
+                    <label htmlFor="login-username" className="text-[9.5px] font-bold text-[#5d6c7b] uppercase tracking-wider font-mono block">
+                      OFFICIAL EMAIL / USERNAME
+                    </label>
                     <div className="relative group">
-                      <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-fb-blue transition-colors" />
+                      <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8595a4] group-focus-within:text-[#0064e0] transition-colors" />
                       <input
                         type="text"
                         id="login-username"
                         required
                         value={loginUser}
                         onChange={(e) => setLoginUser(e.target.value)}
-                        placeholder={t('login.usernamePlaceholder')}
-                        className="w-full pl-10 pr-4 bg-white border border-[#ced0d4] hover:border-slate-350 focus:border-2 focus:border-fb-blue focus:ring-0 rounded-lg text-xs text-slate-900 placeholder-slate-400 h-11 transition-all duration-150 outline-none"
+                        placeholder="officer.name@ksp.gov.in"
+                        className="w-full pl-10 pr-4 bg-white border border-[#dee3e9] hover:border-slate-350 focus:border-[#0064e0] focus:ring-2 focus:ring-[#0064e0]/20 rounded-2xl text-xs text-[#0a1317] placeholder-[#8595a4] h-11 transition-all duration-150 outline-none font-medium"
                       />
                     </div>
                   </div>
 
-                  {/* Password input: height 44px, border hairline, rounded lg (8px), focus border 2px solid fb-blue */}
+                  {/* Password Input */}
                   <div className="space-y-1.5">
-                    <div className="flex justify-between items-center">
-                      <label htmlFor="login-password" className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">{t('login.passwordLabel')}</label>
-                    </div>
+                    <label htmlFor="login-password" className="text-[9.5px] font-bold text-[#5d6c7b] uppercase tracking-wider font-mono block">
+                      PASSWORD
+                    </label>
                     <div className="relative group">
-                      <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-fb-blue transition-colors" />
+                      <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8595a4] group-focus-within:text-[#0064e0] transition-colors" />
                       <input
                         type={showLoginPass ? "text" : "password"}
                         id="login-password"
                         required
                         value={loginPass}
                         onChange={(e) => setLoginPass(e.target.value)}
-                        placeholder={t('login.passwordPlaceholder')}
-                        className="w-full pl-10 pr-10 bg-white border border-[#ced0d4] hover:border-slate-350 focus:border-2 focus:border-fb-blue focus:ring-0 rounded-lg text-xs text-slate-900 placeholder-slate-400 h-11 transition-all duration-150 outline-none"
+                        placeholder="Min. 8 characters"
+                        className="w-full pl-10 pr-10 bg-white border border-[#dee3e9] hover:border-slate-350 focus:border-[#0064e0] focus:ring-2 focus:ring-[#0064e0]/20 rounded-2xl text-xs text-[#0a1317] placeholder-[#8595a4] h-11 transition-all duration-150 outline-none font-medium"
                       />
                       <button
                         type="button"
                         onClick={() => setShowLoginPass(!showLoginPass)}
-                        className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 focus:outline-none rounded"
+                        className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 text-[#8595a4] hover:text-[#0a1317] focus:outline-none rounded"
                         aria-label={showLoginPass ? "Hide password" : "Show password"}
                       >
                         {showLoginPass ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
@@ -441,27 +414,27 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
                     </div>
                   </div>
 
-                  {/* Primary submit button buy-cta style: bg-primary, active bg-primary-deep, rounded full, height 44px */}
+                  {/* Primary Action Button */}
                   <button
                     type="submit"
-                    className="w-full h-11 bg-primary hover:bg-primary-deep active:bg-primary-deep text-white font-bold rounded-full text-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-fb-blue transition-all duration-150 cursor-pointer flex items-center justify-center gap-1.5 shadow-md shadow-primary/10 mt-2 font-display"
+                    className="w-full h-12 bg-[#0064e0] hover:bg-[#0457cb] active:scale-[0.98] text-white font-bold rounded-full text-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0064e0] transition-all duration-150 cursor-pointer flex items-center justify-center gap-2 shadow-md font-display mt-2"
                   >
-                    {t('login.submitBtn')} <ArrowRight className="w-3.5 h-3.5" />
+                    <span>Sign In</span> <ArrowRight className="w-4 h-4" />
                   </button>
                 </form>
 
                 {socialLoginBlock}
 
-                <div className="h-px bg-slate-100"></div>
+                <div className="h-px bg-[#dee3e9]"></div>
 
-                <p className="text-center text-[11px] text-slate-400 font-medium">
-                  {t('login.noAccount')}{' '}
+                <p className="text-center text-xs text-[#5d6c7b] font-medium">
+                  Don't have an account?{' '}
                   <button
                     type="button"
                     onClick={() => setView('register')}
-                    className="text-primary hover:text-primary-deep hover:underline font-bold focus:outline-none focus-visible:ring-2 focus-visible:ring-fb-blue rounded-sm cursor-pointer bg-transparent border-0 p-0"
+                    className="text-[#0064e0] hover:underline font-bold focus:outline-none cursor-pointer bg-transparent border-0 p-0 ml-1"
                   >
-                    {t('login.requestAccess')}
+                    Request access
                   </button>
                 </p>
               </div>
@@ -470,19 +443,22 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
             {/* ======== REQUEST ACCESS VIEW (REGISTER) ======== */}
             {view === 'register' && (
               <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                
+                {/* Header Titles */}
                 <div className="space-y-1">
-                  <div className="text-[10px] font-bold tracking-widest text-primary uppercase">{t('hero.gateway')}</div>
-                  <h2 className="text-xl font-bold text-slate-900 tracking-tight font-display">{t('login.regTitle')}</h2>
-                  <p className="text-xs text-slate-500 font-medium">{t('login.regSubtitle')}</p>
+                  <span className="text-[10px] font-bold tracking-widest text-[#0064e0] uppercase font-mono block">CORE GATEWAY</span>
+                  <h2 className="text-2xl font-bold text-[#0a1317] tracking-tight font-display" style={headingStyle}>Request access</h2>
+                  <p className="text-xs text-[#5d6c7b] font-medium">Submit your details for administrator review.</p>
                 </div>
 
                 <form onSubmit={handleRegisterSubmit} className="space-y-4">
-                  {/* Direct Role Selection */}
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">
-                      {currentLanguage === 'en' ? 'Select Security Role' : 'ಸುರಕ್ಷತಾ ಪಾತ್ರವನ್ನು ಆಯ್ಕೆಮಾಡಿ'}
+                  
+                  {/* Security Role Selector Grid */}
+                  <div className="space-y-2">
+                    <label className="text-[9.5px] font-bold text-[#5d6c7b] uppercase tracking-wider font-mono block">
+                      SELECT SECURITY ROLE
                     </label>
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="grid grid-cols-2 gap-2.5">
                       {availableRoles.map((roleConfig) => {
                         const isSelected = selectedRole === roleConfig.role;
                         const title = t(`roles.${roleConfig.role}.title`);
@@ -492,81 +468,90 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
                             key={roleConfig.role}
                             type="button"
                             onClick={() => setSelectedRole(roleConfig.role)}
-                            className={`group flex items-center gap-2 p-2 rounded-xl border text-left transition-all duration-150 cursor-pointer select-none ${
+                            className={`group relative flex items-center gap-2.5 p-2.5 rounded-2xl border text-left transition-all duration-150 cursor-pointer select-none ${
                               isSelected
-                                ? 'border-primary bg-primary/5 ring-1 ring-primary'
-                                : 'border-slate-200 hover:border-slate-350 bg-white'
+                                ? 'border-[#0064e0] bg-[#0064e0]/5 ring-1 ring-[#0064e0]'
+                                : 'border-[#dee3e9] hover:border-slate-300 bg-white'
                             }`}
                           >
-                            <div className={`p-1.5 rounded-lg shrink-0 ${isSelected ? roleConfig.textColor + ' bg-white shadow-xs' : 'bg-slate-50 text-slate-400'}`}>
+                            <div className={`w-7 h-7 rounded-xl flex items-center justify-center shrink-0 ${isSelected ? 'bg-[#0064e0] text-white shadow-2xs' : 'bg-slate-100 text-[#5d6c7b]'}`}>
                               {React.cloneElement(roleConfig.icon as React.ReactElement, { className: 'w-3.5 h-3.5' })}
                             </div>
                             <div className="min-w-0 flex-1">
-                              <div className={`text-[10px] font-bold truncate leading-tight ${isSelected ? 'text-slate-900 font-bold' : 'text-slate-700'}`}>
+                              <div className={`text-[11px] font-bold truncate leading-tight ${isSelected ? 'text-[#0064e0]' : 'text-[#0a1317]'}`}>
                                 {title}
                               </div>
-                              <div className="text-[8px] text-slate-400 font-semibold tracking-wider mt-0.5 uppercase">
+                              <div className="text-[8.5px] text-[#8595a4] font-semibold tracking-wider mt-0.5 uppercase font-mono">
                                 {badge}
                               </div>
                             </div>
+                            {isSelected && (
+                              <Check className="w-3.5 h-3.5 text-[#0064e0] absolute top-2 right-2" />
+                            )}
                           </button>
                         );
                       })}
                     </div>
                   </div>
 
-                  {/* Name field: height 44px, border hairline, rounded lg (8px), focus border 2px solid fb-blue */}
+                  {/* Full Name field */}
                   <div className="space-y-1.5">
-                    <label htmlFor="reg-name" className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">{t('login.regNameLabel')}</label>
+                    <label htmlFor="reg-name" className="text-[9.5px] font-bold text-[#5d6c7b] uppercase tracking-wider font-mono block">
+                      FULL NAME
+                    </label>
                     <div className="relative group">
-                      <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-fb-blue transition-colors" />
+                      <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8595a4] group-focus-within:text-[#0064e0] transition-colors" />
                       <input
                         type="text"
                         id="reg-name"
                         required
                         value={regName}
                         onChange={(e) => setRegName(e.target.value)}
-                        placeholder={t('login.regNamePlaceholder')}
-                        className="w-full pl-10 pr-4 bg-white border border-[#ced0d4] hover:border-slate-350 focus:border-2 focus:border-fb-blue focus:ring-0 rounded-lg text-xs text-slate-900 placeholder-slate-400 h-11 transition-all duration-150 outline-none"
+                        placeholder="Officer Full Name"
+                        className="w-full pl-10 pr-4 bg-white border border-[#dee3e9] hover:border-slate-350 focus:border-[#0064e0] focus:ring-2 focus:ring-[#0064e0]/20 rounded-2xl text-xs text-[#0a1317] placeholder-[#8595a4] h-11 transition-all duration-150 outline-none font-medium"
                       />
                     </div>
                   </div>
 
-                  {/* Email field: height 44px, border hairline, rounded lg (8px), focus border 2px solid fb-blue */}
+                  {/* Official Email field */}
                   <div className="space-y-1.5">
-                    <label htmlFor="reg-email" className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">{t('login.regEmailLabel')}</label>
+                    <label htmlFor="reg-email" className="text-[9.5px] font-bold text-[#5d6c7b] uppercase tracking-wider font-mono block">
+                      OFFICIAL EMAIL
+                    </label>
                     <div className="relative group">
-                      <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-fb-blue transition-colors" />
+                      <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8595a4] group-focus-within:text-[#0064e0] transition-colors" />
                       <input
                         type="email"
                         id="reg-email"
                         required
                         value={regEmail}
                         onChange={(e) => setRegEmail(e.target.value)}
-                        placeholder={t('login.regEmailPlaceholder')}
-                        className="w-full pl-10 pr-4 bg-white border border-[#ced0d4] hover:border-slate-350 focus:border-2 focus:border-fb-blue focus:ring-0 rounded-lg text-xs text-slate-900 placeholder-slate-400 h-11 transition-all duration-150 outline-none"
+                        placeholder="officer.name@ksp.gov.in"
+                        className="w-full pl-10 pr-4 bg-white border border-[#dee3e9] hover:border-slate-350 focus:border-[#0064e0] focus:ring-2 focus:ring-[#0064e0]/20 rounded-2xl text-xs text-[#0a1317] placeholder-[#8595a4] h-11 transition-all duration-150 outline-none font-medium"
                       />
                     </div>
                   </div>
 
-                  {/* Password field: height 44px, border hairline, rounded lg (8px), focus border 2px solid fb-blue */}
+                  {/* Password field */}
                   <div className="space-y-1.5">
-                    <label htmlFor="reg-password" className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">{t('login.regPasswordLabel')}</label>
+                    <label htmlFor="reg-password" className="text-[9.5px] font-bold text-[#5d6c7b] uppercase tracking-wider font-mono block">
+                      SET PASSWORD
+                    </label>
                     <div className="relative group">
-                      <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-fb-blue transition-colors" />
+                      <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8595a4] group-focus-within:text-[#0064e0] transition-colors" />
                       <input
                         type={showRegPass ? "text" : "password"}
                         id="reg-password"
                         required
                         value={regPass}
                         onChange={(e) => setRegPass(e.target.value)}
-                        placeholder={t('login.regPasswordPlaceholder')}
-                        className="w-full pl-10 pr-10 bg-white border border-[#ced0d4] hover:border-slate-350 focus:border-2 focus:border-fb-blue focus:ring-0 rounded-lg text-xs text-slate-900 placeholder-slate-400 h-11 transition-all duration-150 outline-none"
+                        placeholder="Min. 8 characters"
+                        className="w-full pl-10 pr-10 bg-white border border-[#dee3e9] hover:border-slate-350 focus:border-[#0064e0] focus:ring-2 focus:ring-[#0064e0]/20 rounded-2xl text-xs text-[#0a1317] placeholder-[#8595a4] h-11 transition-all duration-150 outline-none font-medium"
                       />
                       <button
                         type="button"
                         onClick={() => setShowRegPass(!showRegPass)}
-                        className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 focus:outline-none rounded"
+                        className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 text-[#8595a4] hover:text-[#0a1317] focus:outline-none rounded"
                         aria-label={showRegPass ? "Hide password" : "Show password"}
                       >
                         {showRegPass ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
@@ -574,27 +559,27 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
                     </div>
                   </div>
 
-                  {/* Primary submit button buy-cta style: bg-primary, active bg-primary-deep, rounded full, height 44px */}
+                  {/* Primary Action Button */}
                   <button
                     type="submit"
-                    className="w-full h-11 bg-primary hover:bg-primary-deep active:bg-primary-deep text-white font-bold rounded-full text-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-fb-blue transition-all duration-150 cursor-pointer flex items-center justify-center gap-1.5 shadow-md shadow-primary/10 mt-2 font-display"
+                    className="w-full h-12 bg-[#0064e0] hover:bg-[#0457cb] active:scale-[0.98] text-white font-bold rounded-full text-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0064e0] transition-all duration-150 cursor-pointer flex items-center justify-center gap-2 shadow-md font-display mt-2"
                   >
-                    {t('login.regSubmitBtn')} <ArrowRight className="w-3.5 h-3.5" />
+                    <span>Create Account</span> <ArrowRight className="w-4 h-4" />
                   </button>
                 </form>
 
                 {socialLoginBlock}
 
-                <div className="h-px bg-slate-100"></div>
+                <div className="h-px bg-[#dee3e9]"></div>
 
-                <p className="text-center text-[11px] text-slate-400 font-medium">
-                  {t('login.hasAccount')}{' '}
+                <p className="text-center text-xs text-[#5d6c7b] font-medium">
+                  Already have an account?{' '}
                   <button
                     type="button"
                     onClick={() => setView('login')}
-                    className="text-primary hover:text-primary-deep hover:underline font-bold focus:outline-none focus-visible:ring-2 focus-visible:ring-fb-blue rounded-sm cursor-pointer bg-transparent border-0 p-0"
+                    className="text-[#0064e0] hover:underline font-bold focus:outline-none cursor-pointer bg-transparent border-0 p-0 ml-1"
                   >
-                    {t('login.signInLink')}
+                    Sign In
                   </button>
                 </p>
               </div>
@@ -602,8 +587,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
           </div>
         </div>
 
-        {/* Bottom footer text */}
-        <div className="text-center text-[9px] text-slate-400 font-semibold uppercase tracking-wider relative z-10">
+        {/* Bottom Footer Notice */}
+        <div className="text-center text-[9.5px] text-[#8595a4] font-semibold uppercase tracking-wider relative z-10 font-mono">
           {currentLanguage === 'en' 
             ? 'Karnataka State Police · Datathon 2026' 
             : 'ಕರ್ನಾಟಕ ರಾಜ್ಯ ಪೊಲೀಸ್ · ದತ್ತಾಂಶ ಹಬ್ಬ ೨೦೨೬'}
