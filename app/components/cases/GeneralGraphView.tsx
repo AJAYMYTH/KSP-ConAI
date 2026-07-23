@@ -1,29 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import CriminalNetworkGraph from './CriminalNetworkGraph';
-import { MOCK_CASES } from '../../lib/mockData';
+import { searchCases } from '../../lib/api';
+import type { CaseSummary } from '../../types';
 import { Network, Search, ChevronDown, X, Check } from 'lucide-react';
 import { useI18n } from '../../i18n/hooks';
 import { translateDistrict } from '../../i18n/utils';
 
 export default function GeneralGraphView() {
   const { t, currentLanguage } = useI18n();
-  const [selectedCaseId, setSelectedCaseId] = useState(MOCK_CASES[0].caseId);
+  const [cases, setCases] = useState<CaseSummary[]>([]);
+  const [selectedCaseId, setSelectedCaseId] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  // Sync initial query with default case
   useEffect(() => {
-    const defaultCase = MOCK_CASES.find(c => c.caseId === selectedCaseId);
+    async function loadCases() {
+      const res = await searchCases({ limit: '20' });
+      setCases(res.items);
+      if (res.items.length > 0) {
+        setSelectedCaseId(res.items[0].caseId);
+      }
+    }
+    loadCases();
+  }, []);
+
+  useEffect(() => {
+    const defaultCase = cases.find(c => c.caseId === selectedCaseId);
     if (defaultCase) {
       setSearchQuery(`${defaultCase.firNumber} (${translateDistrict(defaultCase.district, currentLanguage)})`);
     }
-  }, [selectedCaseId, currentLanguage]);
+  }, [selectedCaseId, currentLanguage, cases]);
 
-  // Filter cases matching the pasted/typed query
-  const filteredCases = MOCK_CASES.filter(c => {
+  const filteredCases = cases.filter(c => {
     const q = searchQuery.toLowerCase().trim();
     if (!q) return true;
-    const currentCase = MOCK_CASES.find(sc => sc.caseId === selectedCaseId);
+    const currentCase = cases.find(sc => sc.caseId === selectedCaseId);
     if (currentCase && (searchQuery.includes(currentCase.firNumber) || searchQuery === `${currentCase.firNumber} (${translateDistrict(currentCase.district, currentLanguage)})`)) {
       return true;
     }
@@ -36,14 +47,13 @@ export default function GeneralGraphView() {
       cleanId.includes(cleanQ) ||
       c.district.toLowerCase().includes(q) ||
       c.station.toLowerCase().includes(q) ||
-      c.crimeHead.toLowerCase().includes(q) ||
-      c.accused.some(a => a.toLowerCase().includes(q))
+      c.crimeHead.toLowerCase().includes(q)
     );
   });
 
   const handleSelectCase = (caseId: string) => {
     setSelectedCaseId(caseId);
-    const selectedCase = MOCK_CASES.find(c => c.caseId === caseId);
+    const selectedCase = cases.find(c => c.caseId === caseId);
     if (selectedCase) {
       setSearchQuery(`${selectedCase.firNumber} (${translateDistrict(selectedCase.district, currentLanguage)})`);
     }

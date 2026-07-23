@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { generateReport } from '../../lib/api';
-import type { CaseDetail } from '../../types';
-import { MOCK_CASES } from '../../lib/mockData';
+import { generateReport, searchCases } from '../../lib/api';
+import type { CaseSummary } from '../../types';
 import { FileText, Calendar, Download, ShieldCheck, Loader2, Check, ChevronDown, Search, X } from 'lucide-react';
 import { useI18n } from '../../i18n/hooks';
 import { translateCrimeHead, translateDistrict } from '../../i18n/utils';
@@ -17,47 +16,50 @@ interface ReportHistoryItem {
 
 export default function ReportsManager() {
   const { t, currentLanguage } = useI18n();
-  const [selectedCaseId, setSelectedCaseId] = useState(MOCK_CASES[0].caseId);
+  const [cases, setCases] = useState<CaseSummary[]>([]);
+  const [selectedCaseId, setSelectedCaseId] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [history, setHistory] = useState<ReportHistoryItem[]>([
-    {
-      id: 'REP-001',
-      firNumber: 'FIR-0124/2026',
-      caseId: 'KA-MY-2026-00124',
-      dateGenerated: '2026-07-05T14:30:00Z',
-      generatedBy: 'Mahesh Kumar (IO)',
-      pdfUrl: '/reports/pdf_mock_KA-MY-2026-00124.pdf'
-    },
-    {
-      id: 'REP-002',
-      firNumber: 'FIR-0055/2026',
-      caseId: 'KA-KA-2026-00055',
-      dateGenerated: '2026-07-10T11:15:00Z',
-      generatedBy: 'Shri B. Dayananda, IPS',
-      pdfUrl: '/reports/pdf_mock_KA-KA-2026-00055.pdf'
-    }
-  ]);
+  const [history, setHistory] = useState<ReportHistoryItem[]>([]);
   const [generating, setGenerating] = useState(false);
 
-  // Sync searchQuery when selectedCaseId or language changes
   useEffect(() => {
-    const selectedCase = MOCK_CASES.find(c => c.caseId === selectedCaseId);
+    async function loadInitialCases() {
+      const res = await searchCases({ limit: '20' });
+      setCases(res.items);
+      if (res.items.length > 0) {
+        setSelectedCaseId(res.items[0].caseId);
+      }
+    }
+    loadInitialCases();
+  }, []);
+
+  useEffect(() => {
+    const selectedCase = cases.find(c => c.caseId === selectedCaseId);
     if (selectedCase) {
       setSearchQuery(`${selectedCase.firNumber} - ${translateCrimeHead(selectedCase.crimeHead, currentLanguage)}`);
     }
-  }, [selectedCaseId, currentLanguage]);
+  }, [selectedCaseId, currentLanguage, cases]);
 
-  // Filter cases matching user query
-  const filteredCases = MOCK_CASES.filter(c => {
+  const filteredCases = cases.filter(c => {
     const q = searchQuery.toLowerCase().trim();
     if (!q) return true;
-    const currentCase = MOCK_CASES.find(sc => sc.caseId === selectedCaseId);
+    const currentCase = cases.find(sc => sc.caseId === selectedCaseId);
     if (currentCase && (searchQuery.includes(currentCase.firNumber) || searchQuery === `${currentCase.firNumber} - ${translateCrimeHead(currentCase.crimeHead, currentLanguage)}`)) {
       return true;
     }
     const cleanQ = q.replace(/[^a-z0-9]/g, '');
     const cleanFir = c.firNumber.toLowerCase().replace(/[^a-z0-9]/g, '');
+    const cleanId = c.caseId.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+    return (
+      cleanFir.includes(cleanQ) ||
+      cleanId.includes(cleanQ) ||
+      c.district.toLowerCase().includes(q) ||
+      c.station.toLowerCase().includes(q) ||
+      c.crimeHead.toLowerCase().includes(q)
+    );
+  });
     const cleanId = c.caseId.toLowerCase().replace(/[^a-z0-9]/g, '');
 
     return (

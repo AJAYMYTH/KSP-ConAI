@@ -1,5 +1,4 @@
-// API Abstraction Layer for KSP Crime Intelligence Copilot
-import * as mock from './mockData';
+// API Abstraction Layer for KSP Crime Intelligence Copilot — Production Zoho Catalyst API Client
 import type { 
   CaseSummary, 
   CaseDetail, 
@@ -16,7 +15,7 @@ import type {
 import { getCurrentSession } from './auth';
 
 export const API_BASE_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:3000/server';
-export const IS_MOCK_MODE = import.meta.env.PUBLIC_MOCK_MODE === 'true';
+export const IS_MOCK_MODE = false;
 
 // Re-export type definitions for usage elsewhere
 export type { CaseSummary, CaseDetail, DashboardSummary, GraphData, MapHotspot, TimelineEvent, ApiResponse, PredictiveInsights, DemographicInsights, OffenderProfile, SimilarCase };
@@ -60,44 +59,44 @@ function getHeaders(extraHeaders: Record<string, string> = {}): Record<string, s
 // ================= ADAPTER MAPPERS =================
 
 function mapBackendCaseToSummary(c: any): CaseSummary {
-  const stationMatch = c.fir_number ? c.fir_number.split('/')[0] : 'Unknown PS';
+  const stationMatch = c.fir_number ? c.fir_number.split('/')[0] : (c.station || 'Unknown PS');
   return {
-    caseId: c.ROWID || '',
-    firNumber: c.fir_number || '',
-    district: c.district_name || 'Bengaluru Urban',
+    caseId: c.ROWID || c.caseId || '',
+    firNumber: c.fir_number || c.firNumber || '',
+    district: c.district_name || c.district || 'Bengaluru Urban',
     station: stationMatch,
-    incidentDate: c.crime_registered_date || '',
-    registeredDate: c.crime_registered_date || '',
-    category: c.category_name || 'Theft',
-    status: c.status_name || c.fir_status || 'Under Investigation',
-    gravity: c.gravity_level || 'Medium',
-    crimeHead: c.category_name || 'Theft',
+    incidentDate: c.crime_registered_date || c.incidentDate || '',
+    registeredDate: c.crime_registered_date || c.registeredDate || '',
+    category: c.category_name || c.category || 'Theft',
+    status: c.status_name || c.fir_status || c.status || 'Under Investigation',
+    gravity: c.gravity_level || c.gravity || 'Medium',
+    crimeHead: c.category_name || c.crimeHead || 'Theft',
   };
 }
 
 function mapBackendCaseToDetail(data: any): CaseDetail {
-  const c = data.case || {};
+  const c = data.case || data;
   const base = mapBackendCaseToSummary(c);
   
   const complainants = (data.complainants || []).map((comp: any) => 
-    `${comp.name} (${comp.gender || 'N/A'}, Age: ${comp.age || 'N/A'})`
+    typeof comp === 'string' ? comp : `${comp.name || 'Complainant'} (${comp.gender || 'N/A'}, Age: ${comp.age || 'N/A'})`
   );
   const victims = (data.victims || []).map((vic: any) => 
-    `${vic.name} (${vic.gender || 'N/A'})`
+    typeof vic === 'string' ? vic : `${vic.name || 'Victim'} (${vic.gender || 'N/A'})`
   );
   const accused = (data.accused || []).map((acc: any) => 
-    `${acc.name} (${acc.status || 'Accused'})`
+    typeof acc === 'string' ? acc : `${acc.name || 'Accused'} (${acc.status || 'Accused'})`
   );
   
   const arrests = (data.arrests || []).map((arr: any) => ({
-    date: arr.date_time || '',
-    person: arr.person_name || 'Accused',
-    location: arr.place || ''
+    date: arr.date_time || arr.date || '',
+    person: arr.person_name || arr.person || 'Accused',
+    location: arr.place || arr.location || ''
   }));
   
   const chargesheets = data.chargesheets || [];
-  const hasChargesheet = chargesheets.length > 0;
-  const csDate = hasChargesheet ? chargesheets[0].date_filed : undefined;
+  const hasChargesheet = data.chargesheeted !== undefined ? data.chargesheeted : chargesheets.length > 0;
+  const csDate = data.chargesheetDate || (hasChargesheet && chargesheets[0] ? chargesheets[0].date_filed : undefined);
 
   return {
     ...base,
@@ -105,28 +104,28 @@ function mapBackendCaseToDetail(data: any): CaseDetail {
     victims,
     accused,
     arrests,
-    actsSections: c.acts_sections ? JSON.parse(c.acts_sections) : [{ act: 'IPC', section: '379' }],
-    court: c.court_name || 'Chief Metropolitan Magistrate, Bengaluru',
+    actsSections: c.acts_sections ? (typeof c.acts_sections === 'string' ? JSON.parse(c.acts_sections) : c.acts_sections) : (c.actsSections || [{ act: 'IPC', section: '379' }]),
+    court: c.court_name || c.court || 'Chief Metropolitan Magistrate, Bengaluru',
     chargesheeted: hasChargesheet,
     chargesheetDate: csDate,
-    summaryText: c.summary_of_facts || ''
+    summaryText: c.summary_of_facts || c.summaryText || ''
   };
 }
 
 function mapBackendDashboardToSummary(data: any): DashboardSummary {
   return {
     kpis: {
-      totalFirs: data.totalCases || 0,
-      activeCases: data.activeInvestigations || 0,
-      chargesheeted: Math.round((data.totalCases || 0) * ((data.solvedRate || 0) / 100)),
-      arrests: data.activeInvestigations ? Math.round(data.activeInvestigations * 1.2) : 0
+      totalFirs: data.totalCases || data.kpis?.totalFirs || 0,
+      activeCases: data.activeInvestigations || data.kpis?.activeCases || 0,
+      chargesheeted: data.kpis?.chargesheeted !== undefined ? data.kpis.chargesheeted : Math.round((data.totalCases || 0) * ((data.solvedRate || 0) / 100)),
+      arrests: data.kpis?.arrests !== undefined ? data.kpis.arrests : (data.activeInvestigations ? Math.round(data.activeInvestigations * 1.2) : 0)
     },
-    topDistricts: (data.hotspots || []).map((h: any) => ({
-      district: h.district_name || 'Unknown',
+    topDistricts: (data.hotspots || data.topDistricts || []).map((h: any) => ({
+      district: h.district_name || h.district || 'Unknown',
       count: h.count || 0
     })),
-    topCategories: (data.casesByCategory || []).map((c: any) => ({
-      category: c.category_name || 'Other',
+    topCategories: (data.casesByCategory || data.topCategories || []).map((c: any) => ({
+      category: c.category_name || c.category || 'Other',
       count: c.count || 0
     })),
     recentFirs: []
@@ -138,9 +137,9 @@ function mapBackendHotspots(points: any[]): MapHotspot[] {
     latitude: p.latitude || 0,
     longitude: p.longitude || 0,
     weight: p.weight || 1.0,
-    firNumber: p.fir_number || '',
-    category: p.category_name || 'Theft',
-    district: p.district_name || 'Bengaluru Urban'
+    firNumber: p.fir_number || p.firNumber || '',
+    category: p.category_name || p.category || 'Theft',
+    district: p.district_name || p.district || 'Bengaluru Urban'
   }));
 }
 
@@ -151,28 +150,25 @@ function mapBackendGraph(data: any): GraphData {
       label: n.label || '',
       type: (n.group === 'case' ? 'case' : n.group === 'accused' ? 'accused' : n.group === 'victim' ? 'victim' : 'officer') as any
     })),
-    edges: (data.links || []).map((l: any) => ({
+    edges: (data.links || data.edges || []).map((l: any) => ({
       source: l.source,
       target: l.target,
-      relationship: l.type || 'LINKED'
+      relationship: l.type || l.relationship || 'LINKED'
     }))
   };
 }
 
-// ================= API ENDPOINTS =================
+// ================= PRODUCTION API ENDPOINTS =================
 
 // Fetch dashboard KPIs
 export async function getDashboardSummary(): Promise<DashboardSummary> {
-  if (IS_MOCK_MODE) {
-    return mock.MOCK_DASHBOARD;
-  }
   try {
     const response = await fetch(`${API_BASE_URL}/analytics/dashboard`, {
       headers: getHeaders()
     });
     if (!response.ok) throw new Error('API Error');
     const result: ApiResponse<any> = await response.json();
-    const summary = mapBackendDashboardToSummary(result.data);
+    const summary = mapBackendDashboardToSummary(result.data || {});
 
     try {
       const casesRes = await searchCases({ limit: '5' });
@@ -195,26 +191,6 @@ export async function getDashboardSummary(): Promise<DashboardSummary> {
 
 // Fetch cases search
 export async function searchCases(params: Record<string, string>): Promise<{ items: CaseSummary[]; total: number }> {
-  if (IS_MOCK_MODE) {
-    let items = [...mock.MOCK_CASES] as CaseSummary[];
-    if (params.query) {
-      const q = params.query.toLowerCase();
-      items = items.filter(c => 
-        c.firNumber.toLowerCase().includes(q) || 
-        c.district.toLowerCase().includes(q) || 
-        c.station.toLowerCase().includes(q) || 
-        c.category.toLowerCase().includes(q)
-      );
-    }
-    if (params.district && params.district !== 'all') {
-      items = items.filter(c => c.district.toLowerCase() === params.district.toLowerCase());
-    }
-    if (params.category && params.category !== 'all') {
-      items = items.filter(c => c.category.toLowerCase() === params.category.toLowerCase());
-    }
-    return { items, total: items.length };
-  }
-
   try {
     const backendParams = new URLSearchParams();
     const limitNum = parseInt(params.limit || '10', 10);
@@ -235,8 +211,8 @@ export async function searchCases(params: Record<string, string>): Promise<{ ite
     const result: ApiResponse<any> = await response.json();
     
     return {
-      items: (result.data.cases || []).map(mapBackendCaseToSummary),
-      total: result.data.total || 0
+      items: (result.data?.cases || result.data?.items || []).map(mapBackendCaseToSummary),
+      total: result.data?.total || 0
     };
   } catch (error) {
     console.warn('Search API error:', error);
@@ -288,12 +264,6 @@ export async function queryAssistant(
 
 // Fetch single case details (GET /api/v1/cases/:firNumber)
 export async function getCaseDetails(caseIdOrFir: string): Promise<CaseDetail> {
-  if (IS_MOCK_MODE) {
-    const match = mock.MOCK_CASES.find(c => c.caseId === caseIdOrFir || c.firNumber.toLowerCase() === caseIdOrFir.toLowerCase());
-    if (!match) throw new Error(`Case ${caseIdOrFir} not found in database`);
-    return match;
-  }
-
   let response;
   try {
     response = await fetch(`${API_BASE_URL}/api/v1/cases/${encodeURIComponent(caseIdOrFir)}`, {
@@ -307,19 +277,11 @@ export async function getCaseDetails(caseIdOrFir: string): Promise<CaseDetail> {
   
   if (!response.ok) throw new Error(`Case ${caseIdOrFir} not found in database`);
   const result: ApiResponse<any> = await response.json();
-  return mapBackendCaseToDetail(result.data);
+  return mapBackendCaseToDetail(result.data || {});
 }
 
 // Fetch map hotspots
 export async function getMapHotspots(params?: Record<string, string>): Promise<MapHotspot[]> {
-  if (IS_MOCK_MODE) {
-    let items = [...mock.MOCK_MAP_HOTSPOTS];
-    if (params && params.category && params.category !== 'all') {
-      items = items.filter(h => h.category.toLowerCase() === params.category.toLowerCase());
-    }
-    return items;
-  }
-
   try {
     const backendParams = new URLSearchParams();
     if (params && params.category && params.category !== 'all') {
@@ -334,7 +296,7 @@ export async function getMapHotspots(params?: Record<string, string>): Promise<M
     });
     if (!response.ok) throw new Error('API Error');
     const result: ApiResponse<any> = await response.json();
-    return mapBackendHotspots(result.data.points || []);
+    return mapBackendHotspots(result.data?.points || result.data || []);
   } catch (error) {
     console.warn('Map hotspots API error:', error);
     return [];
@@ -343,16 +305,13 @@ export async function getMapHotspots(params?: Record<string, string>): Promise<M
 
 // Fetch case network graph
 export async function getCaseGraph(caseId: string): Promise<GraphData> {
-  if (IS_MOCK_MODE) {
-    return mock.MOCK_GRAPHS[caseId] || mock.DEFAULT_GRAPH;
-  }
   try {
-    const response = await fetch(`${API_BASE_URL}/graph/case/${caseId}`, {
+    const response = await fetch(`${API_BASE_URL}/graph/case/${encodeURIComponent(caseId)}`, {
       headers: getHeaders()
     });
     if (!response.ok) throw new Error('API Error');
     const result: ApiResponse<any> = await response.json();
-    return mapBackendGraph(result.data);
+    return mapBackendGraph(result.data || {});
   } catch (error) {
     console.warn(`Graph API error for ${caseId}:`, error);
     return { nodes: [], edges: [] };
@@ -361,15 +320,12 @@ export async function getCaseGraph(caseId: string): Promise<GraphData> {
 
 // Fetch case timeline events (Reconstructed client-side from details payload)
 export async function getCaseTimeline(caseId: string): Promise<TimelineEvent[]> {
-  if (IS_MOCK_MODE) {
-    return mock.MOCK_TIMELINES[caseId] || [];
-  }
   try {
     const details = await getCaseDetails(caseId);
     
     const events: TimelineEvent[] = [
       {
-        date: details.registeredDate || '2026-05-12 14:30:00',
+        date: details.registeredDate || new Date().toISOString(),
         title: 'FIR Registered',
         description: `FIR registered at ${details.station} under category ${details.category}.`,
         type: 'registration'
@@ -389,7 +345,7 @@ export async function getCaseTimeline(caseId: string): Promise<TimelineEvent[]> 
 
     if (details.chargesheeted) {
       events.push({
-        date: details.chargesheetDate || '2026-06-15',
+        date: details.chargesheetDate || new Date().toISOString(),
         title: 'Chargesheet Filed',
         description: `Final investigation report submitted to ${details.court || 'jurisdictional court'}.`,
         type: 'chargesheet'
@@ -398,121 +354,86 @@ export async function getCaseTimeline(caseId: string): Promise<TimelineEvent[]> 
 
     return events.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   } catch (error) {
-    console.warn(`Timeline construction failed for ${caseId}, using reconstructed timeline fallback:`, error);
-    return mock.MOCK_TIMELINES[caseId] || [];
+    console.warn(`Timeline construction error for ${caseId}:`, error);
+    return [];
   }
 }
 
 // Trigger PDF Report Generation
 export async function generateReport(caseId: string): Promise<{ pdfUrl: string }> {
-  if (IS_MOCK_MODE) {
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    return {
-      pdfUrl: `/reports/pdf_mock_${caseId}.pdf`
-    };
-  }
   try {
-    const response = await fetch(`${API_BASE_URL}/reports/case/${caseId}`, {
+    const response = await fetch(`${API_BASE_URL}/reports/case/${encodeURIComponent(caseId)}`, {
       method: 'POST',
       headers: getHeaders()
     });
     if (!response.ok) throw new Error('API Error');
     const result: ApiResponse<any> = await response.json();
     return {
-      pdfUrl: result.data.downloadUrl || `/reports/pdf_mock_${caseId}.pdf`
+      pdfUrl: result.data?.downloadUrl || result.data?.pdfUrl || ''
     };
   } catch (error) {
-    console.warn(`Report generation API failed for ${caseId}, returning mock URL:`, error);
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    return {
-      pdfUrl: `/reports/pdf_mock_${caseId}.pdf`
-    };
+    console.warn(`Report generation API error for ${caseId}:`, error);
+    throw error;
   }
 }
 
 // Fetch Predictive Analytics & Early Warnings
 export async function getPredictiveInsights(): Promise<PredictiveInsights> {
-  if (IS_MOCK_MODE) {
-    return mock.MOCK_PREDICTIVE;
-  }
   try {
     const response = await fetch(`${API_BASE_URL}/analytics/predictive`, {
       headers: getHeaders()
     });
     if (!response.ok) throw new Error('API Error');
     const result: ApiResponse<PredictiveInsights> = await response.json();
-    return result.data;
+    return result.data || { highRiskZones: [], seasonalTrends: [], repeatOffenderAlerts: [] };
   } catch (error) {
-    console.warn('Predictive insights API failed, falling back to mock data:', error);
-    return mock.MOCK_PREDICTIVE;
+    console.warn('Predictive insights API error:', error);
+    return { highRiskZones: [], seasonalTrends: [], repeatOffenderAlerts: [] };
   }
 }
 
 // Fetch Socio-Demographic Insights
 export async function getDemographicInsights(entity: 'accused' | 'victims', months: string = '12'): Promise<DemographicInsights> {
-  if (IS_MOCK_MODE) {
-    return mock.MOCK_DEMOGRAPHICS[entity] || mock.MOCK_DEMOGRAPHICS.accused;
-  }
   try {
     const response = await fetch(`${API_BASE_URL}/analytics/demographics?entity=${entity}&months=${months}`, {
       headers: getHeaders()
     });
     if (!response.ok) throw new Error('API Error');
     const result: ApiResponse<DemographicInsights> = await response.json();
-    return result.data;
+    return result.data || { ageDistribution: [], genderRatio: { male: 0, female: 0, other: 0 }, topOccupations: [] };
   } catch (error) {
-    console.warn(`Demographics API failed for entity ${entity}, using mock data:`, error);
-    return mock.MOCK_DEMOGRAPHICS[entity] || mock.MOCK_DEMOGRAPHICS.accused;
+    console.warn(`Demographics API error for entity ${entity}:`, error);
+    return { ageDistribution: [], genderRatio: { male: 0, female: 0, other: 0 }, topOccupations: [] };
   }
 }
 
 // Fetch Offender Profiles for Behavioral Profiling
 export async function getOffenderProfiles(searchQuery: string = ''): Promise<OffenderProfile[]> {
-  const getMockOffenders = () => {
-    if (!searchQuery) return mock.MOCK_OFFENDERS;
-    const q = searchQuery.toLowerCase();
-    return mock.MOCK_OFFENDERS.filter(o => 
-      o.name.toLowerCase().includes(q) || 
-      o.aliases.some(a => a.toLowerCase().includes(q)) ||
-      o.id.toLowerCase().includes(q)
-    );
-  };
-
-  if (IS_MOCK_MODE) {
-    return getMockOffenders();
-  }
   try {
     const response = await fetch(`${API_BASE_URL}/analytics/offender?search=${encodeURIComponent(searchQuery)}`, {
       headers: getHeaders()
     });
     if (!response.ok) throw new Error('API Error');
     const result: ApiResponse<OffenderProfile[]> = await response.json();
-    return result.data;
+    return result.data || [];
   } catch (error) {
-    console.warn(`Offender profile API failed for query ${searchQuery}, using mock database:`, error);
-    return getMockOffenders();
+    console.warn(`Offender profile API error for query ${searchQuery}:`, error);
+    return [];
   }
 }
 
 // Fetch Similar-Case Recommendations
 export async function getSimilarCases(caseId: string, limit: number = 10): Promise<SimilarCase[]> {
-  const getMockSimilar = () => {
-    return mock.MOCK_SIMILAR_CASES[caseId] || [];
-  };
-
-  if (IS_MOCK_MODE) {
-    return getMockSimilar();
-  }
   try {
-    const response = await fetch(`${API_BASE_URL}/cases/${caseId}/similar?limit=${limit}`, {
+    const response = await fetch(`${API_BASE_URL}/cases/${encodeURIComponent(caseId)}/similar?limit=${limit}`, {
       headers: getHeaders()
     });
     if (!response.ok) throw new Error('API Error');
     const result: ApiResponse<SimilarCase[]> = await response.json();
-    return result.data;
+    return result.data || [];
   } catch (error) {
-    console.warn(`Similar cases API failed for case ${caseId}, returning mock recommendations:`, error);
-    return getMockSimilar();
+    console.warn(`Similar cases API error for case ${caseId}:`, error);
+    return [];
   }
 }
 
@@ -526,39 +447,24 @@ export interface AuditLog {
 
 // Fetch security audit logs
 export async function getAuditLogs(): Promise<AuditLog[]> {
-  if (IS_MOCK_MODE) {
-    return [
-      { rowId: 'a-1', action: 'ROLE_ASSIGNMENT', userEmail: 'admin@ksp.gov.in', details: 'Assigned role "investigator" to user io_mysuru@ksp.gov.in', timestamp: new Date(Date.now() - 300000).toISOString() },
-      { rowId: 'a-2', action: 'CACHE_PURGED', userEmail: 'admin@ksp.gov.in', details: 'Purged cache segment for dashboard summaries', timestamp: new Date(Date.now() - 600000).toISOString() },
-      { rowId: 'a-3', action: 'DATA_REFRESH', userEmail: 'admin@ksp.gov.in', details: 'Triggered view refresh for vw_case_summary', timestamp: new Date(Date.now() - 900000).toISOString() },
-      { rowId: 'a-4', action: 'USER_LOGIN', userEmail: 'analyst@ksp.gov.in', details: 'Successful login with role "analyst" from IP 10.12.33.104', timestamp: new Date(Date.now() - 1200000).toISOString() },
-      { rowId: 'a-5', action: 'SENSITIVE_DATA_ACCESS', userEmail: 'supervisor@ksp.gov.in', details: 'Viewer role requested Case detail KA-12-2026-0034; PII was auto-redacted', timestamp: new Date(Date.now() - 1500000).toISOString() }
-    ];
-  }
   try {
-    const response = await fetch(`${API_BASE_URL}/admin/audit-logs`, {
-      headers: getHeaders()
-    });
+    let response;
+    try {
+      response = await fetch(`${API_BASE_URL}/admin/audit-logs`, { headers: getHeaders() });
+    } catch {
+      response = await fetch(`${API_BASE_URL}/admin/compliance-logs`, { headers: getHeaders() });
+    }
     if (!response.ok) throw new Error('API Error');
     const result: ApiResponse<AuditLog[]> = await response.json();
-    return result.data;
+    return result.data || [];
   } catch (error) {
-    console.warn('Audit logs API failed, returning fallback mock logs:', error);
-    return [
-      { rowId: 'a-1', action: 'ROLE_ASSIGNMENT', userEmail: 'admin@ksp.gov.in', details: 'Assigned role "investigator" to user io_mysuru@ksp.gov.in', timestamp: new Date(Date.now() - 300000).toISOString() },
-      { rowId: 'a-2', action: 'CACHE_PURGED', userEmail: 'admin@ksp.gov.in', details: 'Purged cache segment for dashboard summaries', timestamp: new Date(Date.now() - 600000).toISOString() },
-      { rowId: 'a-3', action: 'DATA_REFRESH', userEmail: 'admin@ksp.gov.in', details: 'Triggered view refresh for vw_case_summary', timestamp: new Date(Date.now() - 900000).toISOString() },
-      { rowId: 'a-4', action: 'USER_LOGIN', userEmail: 'analyst@ksp.gov.in', details: 'Successful login with role "analyst" from IP 10.12.33.104', timestamp: new Date(Date.now() - 1200000).toISOString() },
-      { rowId: 'a-5', action: 'SENSITIVE_DATA_ACCESS', userEmail: 'supervisor@ksp.gov.in', details: 'Viewer role requested Case detail KA-12-2026-0034; PII was auto-redacted', timestamp: new Date(Date.now() - 1500000).toISOString() }
-    ];
+    console.warn('Audit logs API error:', error);
+    return [];
   }
 }
 
 // Purge Temporary Cache segment
 export async function purgeCache(): Promise<{ message: string }> {
-  if (IS_MOCK_MODE) {
-    return { message: 'Cache segment purged successfully (Mock Mode).' };
-  }
   try {
     const response = await fetch(`${API_BASE_URL}/admin/cache/purge`, {
       method: 'POST',
@@ -566,18 +472,15 @@ export async function purgeCache(): Promise<{ message: string }> {
     });
     if (!response.ok) throw new Error('API Error');
     const result: ApiResponse<any> = await response.json();
-    return result.data;
+    return result.data || { message: 'Cache purge request sent.' };
   } catch (error) {
-    console.warn('Cache purge API failed, returning fallback success message:', error);
-    return { message: 'Cache purge request processed successfully.' };
+    console.warn('Cache purge API error:', error);
+    return { message: 'Cache purge request submitted.' };
   }
 }
 
 // Trigger Materialized View Refreshes
 export async function refreshMaterializedViews(): Promise<{ message: string }> {
-  if (IS_MOCK_MODE) {
-    return { message: 'Materialized case views refreshed successfully (Mock Mode).' };
-  }
   try {
     const response = await fetch(`${API_BASE_URL}/admin/data/refresh`, {
       method: 'POST',
@@ -585,18 +488,15 @@ export async function refreshMaterializedViews(): Promise<{ message: string }> {
     });
     if (!response.ok) throw new Error('API Error');
     const result: ApiResponse<any> = await response.json();
-    return result.data;
+    return result.data || { message: 'Data refresh request sent.' };
   } catch (error) {
-    console.warn('Data refresh API failed, returning fallback success message:', error);
-    return { message: 'Materialized tables and search indices have been queued for update.' };
+    console.warn('Data refresh API error:', error);
+    return { message: 'Data refresh request submitted.' };
   }
 }
 
 // Zia text-to-speech synthesis (POST /voice/synthesize)
 export async function synthesizeSpeech(text: string, language: string): Promise<string | null> {
-  if (IS_MOCK_MODE) {
-    return null; // Force native browser speech synthesis fallback
-  }
   try {
     const response = await fetch(`${API_BASE_URL}/voice/synthesize`, {
       method: 'POST',
@@ -605,7 +505,7 @@ export async function synthesizeSpeech(text: string, language: string): Promise<
     });
     if (!response.ok) throw new Error('API Error');
     const result: ApiResponse<{ audioBase64: string }> = await response.json();
-    return result.data.audioBase64 || null;
+    return result.data?.audioBase64 || null;
   } catch (error) {
     console.warn('Zia TTS synthesis failed, client will fall back to native browser speechSynthesis:', error);
     return null;
