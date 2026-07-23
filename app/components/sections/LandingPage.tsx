@@ -472,25 +472,21 @@ export const LandingPage: React.FC = () => {
             <div className="space-y-4">
               {[
                 { q: t('faq.q1'), a: t('faq.a1') },
-                { q: q => q, qText: t('faq.q2'), aText: t('faq.a2') },
-                { q: q => q, qText: t('faq.q3'), aText: t('faq.a3') }
-              ].map((item, idx) => {
-                const questionText = idx === 0 ? t('faq.q1') : idx === 1 ? t('faq.q2') : t('faq.q3');
-                const answerText = idx === 0 ? t('faq.a1') : idx === 1 ? t('faq.a2') : t('faq.a3');
-                return (
-                  <details key={idx} className="group bg-white border border-[#dee3e9] rounded-2xl overflow-hidden shadow-2xs transition duration-200">
-                    <summary className="px-6 py-5 text-xs font-bold text-[#0a1317] flex items-center justify-between cursor-pointer select-none font-display" style={headingStyle}>
-                      <span>{questionText}</span>
-                      <svg className="w-4 h-4 text-[#8595a4] transition-transform duration-200 group-open:rotate-180 shrink-0" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </summary>
-                    <div className="px-6 pb-5 border-t border-[#dee3e9] pt-4 text-xs text-[#5d6c7b] leading-relaxed bg-[#f1f4f7]/40 font-medium">
-                      {answerText}
-                    </div>
-                  </details>
-                );
-              })}
+                { q: t('faq.q2'), a: t('faq.a2') },
+                { q: t('faq.q3'), a: t('faq.a3') }
+              ].map((item, idx) => (
+                <details key={idx} className="group bg-white border border-[#dee3e9] rounded-2xl overflow-hidden shadow-2xs transition duration-200">
+                  <summary className="px-6 py-5 text-xs font-bold text-[#0a1317] flex items-center justify-between cursor-pointer select-none font-display" style={headingStyle}>
+                    <span>{item.q}</span>
+                    <svg className="w-4 h-4 text-[#8595a4] transition-transform duration-200 group-open:rotate-180 shrink-0" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </summary>
+                  <div className="px-6 pb-5 border-t border-[#dee3e9] pt-4 text-xs text-[#5d6c7b] leading-relaxed bg-[#f1f4f7]/40 font-medium">
+                    {item.a}
+                  </div>
+                </details>
+              ))}
             </div>
           </div>
         </section>

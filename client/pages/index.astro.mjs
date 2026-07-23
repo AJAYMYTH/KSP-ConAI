@@ -445,19 +445,15 @@ const LandingPage = () => {
         ] }),
         /* @__PURE__ */ jsx("div", { className: "space-y-4", children: [
           { q: t("faq.q1"), a: t("faq.a1") },
-          { q: (q) => q, qText: t("faq.q2"), aText: t("faq.a2") },
-          { q: (q) => q, qText: t("faq.q3"), aText: t("faq.a3") }
-        ].map((item, idx) => {
-          const questionText = idx === 0 ? t("faq.q1") : idx === 1 ? t("faq.q2") : t("faq.q3");
-          const answerText = idx === 0 ? t("faq.a1") : idx === 1 ? t("faq.a2") : t("faq.a3");
-          return /* @__PURE__ */ jsxs("details", { className: "group bg-white border border-[#dee3e9] rounded-2xl overflow-hidden shadow-2xs transition duration-200", children: [
-            /* @__PURE__ */ jsxs("summary", { className: "px-6 py-5 text-xs font-bold text-[#0a1317] flex items-center justify-between cursor-pointer select-none font-display", style: headingStyle, children: [
-              /* @__PURE__ */ jsx("span", { children: questionText }),
-              /* @__PURE__ */ jsx("svg", { className: "w-4 h-4 text-[#8595a4] transition-transform duration-200 group-open:rotate-180 shrink-0", "aria-hidden": "true", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", strokeWidth: "2.5", children: /* @__PURE__ */ jsx("path", { strokeLinecap: "round", strokeLinejoin: "round", d: "M19 9l-7 7-7-7" }) })
-            ] }),
-            /* @__PURE__ */ jsx("div", { className: "px-6 pb-5 border-t border-[#dee3e9] pt-4 text-xs text-[#5d6c7b] leading-relaxed bg-[#f1f4f7]/40 font-medium", children: answerText })
-          ] }, idx);
-        }) })
+          { q: t("faq.q2"), a: t("faq.a2") },
+          { q: t("faq.q3"), a: t("faq.a3") }
+        ].map((item, idx) => /* @__PURE__ */ jsxs("details", { className: "group bg-white border border-[#dee3e9] rounded-2xl overflow-hidden shadow-2xs transition duration-200", children: [
+          /* @__PURE__ */ jsxs("summary", { className: "px-6 py-5 text-xs font-bold text-[#0a1317] flex items-center justify-between cursor-pointer select-none font-display", style: headingStyle, children: [
+            /* @__PURE__ */ jsx("span", { children: item.q }),
+            /* @__PURE__ */ jsx("svg", { className: "w-4 h-4 text-[#8595a4] transition-transform duration-200 group-open:rotate-180 shrink-0", "aria-hidden": "true", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", strokeWidth: "2.5", children: /* @__PURE__ */ jsx("path", { strokeLinecap: "round", strokeLinejoin: "round", d: "M19 9l-7 7-7-7" }) })
+          ] }),
+          /* @__PURE__ */ jsx("div", { className: "px-6 pb-5 border-t border-[#dee3e9] pt-4 text-xs text-[#5d6c7b] leading-relaxed bg-[#f1f4f7]/40 font-medium", children: item.a })
+        ] }, idx)) })
       ] }) }),
       /* @__PURE__ */ jsx("section", { className: "border-t border-[#dee3e9] py-16 bg-[#f1f4f7] px-6", children: /* @__PURE__ */ jsxs("div", { className: "max-w-4xl mx-auto bg-[#080d1a] text-white p-12 md:p-16 rounded-3xl text-center space-y-6 shadow-xl relative overflow-hidden", children: [
         /* @__PURE__ */ jsx("div", { className: "absolute top-0 right-0 w-[50%] h-[100%] rounded-full bg-[#0064e0]/10 blur-[100px] pointer-events-none" }),
