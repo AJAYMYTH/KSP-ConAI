@@ -1,7 +1,7 @@
 import { c as createComponent, r as renderComponent, a as renderTemplate, m as maybeRenderHead } from '../chunks/astro/server_GyZO-Yni.mjs';
 import 'kleur/colors';
 import 'html-escaper';
-import { $ as $$Layout } from '../chunks/Layout_CNp57hTW.mjs';
+import { $ as $$Layout } from '../chunks/Layout_CWPCJZx0.mjs';
 import { ArrowLeft, FileText } from 'lucide-react';
 export { renderers } from '../renderers.mjs';
 
