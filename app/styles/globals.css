@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+Kannada:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -39,8 +39,8 @@
 
   /* Typography configuration */
   --font-mono: "JetBrains Mono", monospace;
-  --font-display: "JetBrains Mono", monospace;
-  --font-sans: "Inter", "Helvetica Neue", sans-serif;
+  --font-display: "Plus Jakarta Sans", "Noto Sans Kannada", sans-serif;
+  --font-sans: "Plus Jakarta Sans", "Noto Sans Kannada", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
   --radius-xs: 2px;
   --radius-sm: 4px;
