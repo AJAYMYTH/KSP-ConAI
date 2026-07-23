@@ -8,12 +8,19 @@ function devSrcDirRewrite() {
     name: 'dev-src-dir-rewrite',
     configureServer(server) {
       server.middlewares.use((req, res, next) => {
-        if (req.url && req.url.startsWith('/app/') && !req.url.startsWith('/app/app/')) {
-          const subPath = req.url.substring(5); // path after '/app/'
-          const firstSegment = subPath.split('/')[0].split('?')[0];
+        if (req.url) {
+          const urlPath = req.url.split('?')[0];
+          const query = req.url.includes('?') ? '?' + req.url.split('?')[1] : '';
+          
+          const cleanPath = urlPath.startsWith('/app/') 
+            ? urlPath.substring(4) 
+            : (urlPath.startsWith('/app') ? urlPath.substring(4) : urlPath);
+            
+          const firstSegment = cleanPath.split('/')[1];
           const srcFolders = ['styles', 'i18n', 'components', 'layouts', 'lib', 'types', 'pages', 'assets'];
+          
           if (srcFolders.includes(firstSegment)) {
-            req.url = '/app/app/' + subPath;
+            req.url = '/app' + (cleanPath.startsWith('/') ? cleanPath : '/' + cleanPath) + query;
           }
         }
         next();
@@ -38,6 +45,13 @@ export default defineConfig({
         '@': fileURLToPath(new URL('./app', import.meta.url)),
         '/app': fileURLToPath(new URL('./app', import.meta.url)),
         'app': fileURLToPath(new URL('./app', import.meta.url)),
+        '/styles': fileURLToPath(new URL('./app/styles', import.meta.url)),
+        '/i18n': fileURLToPath(new URL('./app/i18n', import.meta.url)),
+        '/components': fileURLToPath(new URL('./app/components', import.meta.url)),
+        '/layouts': fileURLToPath(new URL('./app/layouts', import.meta.url)),
+        '/lib': fileURLToPath(new URL('./app/lib', import.meta.url)),
+        '/types': fileURLToPath(new URL('./app/types', import.meta.url)),
+        '/pages': fileURLToPath(new URL('./app/pages', import.meta.url)),
       },
     },
   },
