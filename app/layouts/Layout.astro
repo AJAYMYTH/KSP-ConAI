@@ -46,6 +46,8 @@ const { title, description = 'KSP-ConAI', hideNav = false, hideFooter = false, t
       window.addEventListener('storage', (e) => {
         if (e.key === 'ksp_language') syncLang();
       });
+      document.addEventListener('astro:page-load', syncLang);
+      document.addEventListener('astro:after-swap', syncLang);
     </script>
   </head>
   <body class="min-h-screen bg-canvas flex flex-col">
