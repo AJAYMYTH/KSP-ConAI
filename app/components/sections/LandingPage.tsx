@@ -511,52 +511,103 @@ export const LandingPage: React.FC = () => {
           </div>
         </section>
 
-        {/* ================= 9. GOVERNMENT THEMED FOOTER ================= */}
-        <footer className="bg-white border-t border-[#dee3e9] px-6 md:px-12 py-16 text-[10px] space-y-6">
-          <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="flex items-center gap-3">
-              <img src="/app/karnataka_emblem.png" alt="Government Seal" className="w-8 h-8 object-contain" width="32" height="32" />
-              <div className="flex flex-col text-left">
-                <span className="font-extrabold text-[#0a1317] leading-tight font-display" style={headingStyle}>
-                  {t('nav.govKarnataka')}
-                </span>
-                <span className="text-[#5d6c7b] font-bold leading-none mt-0.5 uppercase tracking-wider text-[8px]">
-                  {t('nav.statePolice')}
-                </span>
-              </div>
-            </div>
+        {/* ================= 9. EXECUTIVE META-STYLE GOVERNMENT FOOTER ================= */}
+        <footer className="bg-[#ffffff] border-t border-[#dee3e9] pt-16 pb-12 px-6 md:px-12 text-xs">
+          <div className="max-w-7xl mx-auto space-y-12">
             
-            <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 text-[10px] font-medium text-[#5d6c7b]">
-              <a href="/app/index.html" className="hover:text-[#0064e0] transition">
-                {t('nav.about')}
-              </a>
-              <span aria-hidden="true" className="text-[#dee3e9]">•</span>
-              <a href="/app/privacy.html" className="hover:text-[#0064e0] transition">
-                {t('footer.privacy')}
-              </a>
-              <span aria-hidden="true" className="text-[#dee3e9]">•</span>
-              <a href="/app/terms.html" className="hover:text-[#0064e0] transition">
-                {t('footer.terms')}
-              </a>
-              <span aria-hidden="true" className="text-[#dee3e9]">•</span>
-              <a href="/app/disclaimer.html" className="hover:text-[#0064e0] transition">
-                {t('footer.disclaimer')}
-              </a>
-              <span aria-hidden="true" className="text-[#dee3e9]">•</span>
-              <a href="mailto:support@ksp.gov.in" className="hover:text-[#0064e0] transition">
-                {t('footer.support')}
-              </a>
+            {/* Top Multi-Column Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
+              
+              {/* Column 1: Official Brand Identity & Seal */}
+              <div className="lg:col-span-2 space-y-4 pr-0 lg:pr-6">
+                <div className="flex items-center gap-3">
+                  <img src="/app/karnataka_emblem.png" alt="Karnataka State Emblem" className="w-10 h-10 object-contain shrink-0" width="40" height="40" />
+                  <div className="flex flex-col text-left">
+                    <span className="font-display font-bold text-lg leading-tight tracking-tight text-[#0a1317]" style={headingStyle}>
+                      KSP-ConAI
+                    </span>
+                    <span className="text-[9px] uppercase font-bold tracking-wider text-[#5d6c7b]">
+                      {currentLanguage === 'en' ? 'Karnataka State Police' : 'ಕರ್ನಾಟಕ ರಾಜ್ಯ ಪೊಲೀಸ್'}
+                    </span>
+                  </div>
+                </div>
+
+                <p className="text-xs text-[#5d6c7b] leading-relaxed max-w-sm font-medium">
+                  {currentLanguage === 'en' 
+                    ? 'An official, retrieval-grounded crime intelligence workspace built for Karnataka State Police investigators and analysts.'
+                    : 'ಕರ್ನಾಟಕ ರಾಜ್ಯ ಪೊಲೀಸ್ ತನಿಖಾಧಿಕಾರಿಗಳು ಮತ್ತು ವಿಶ್ಲೇಷಕರಿಗಾಗಿ ನಿರ್ಮಿಸಲಾದ ಅಧಿಕೃತ ಅಪರಾಧ ಗುಪ್ತಚರ ವೇದಿಕೆ.'}
+                </p>
+
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#f1f4f7] border border-[#dee3e9] text-[9.5px] font-bold text-[#0a1317] font-mono select-none">
+                  <span className="w-2 h-2 rounded-full bg-[#31a24c] animate-pulse"></span>
+                  <span>OFFICIAL KSP GATEWAY (v1.1)</span>
+                </div>
+              </div>
+
+              {/* Column 2: Core Platform Tools */}
+              <div className="space-y-3">
+                <span className="text-[10px] font-bold text-[#0a1317] uppercase tracking-widest font-mono block">
+                  {t('footer.tools')}
+                </span>
+                <ul className="space-y-2.5 font-medium text-[#5d6c7b]">
+                  <li><a href="/app/dashboard.html" className="hover:text-[#0064e0] transition">{t('nav.dashboard')}</a></li>
+                  <li><a href="/app/search.html" className="hover:text-[#0064e0] transition">{t('nav.search')}</a></li>
+                  <li><a href="/app/map.html" className="hover:text-[#0064e0] transition">{t('nav.map')}</a></li>
+                  <li><a href="/app/assistant.html" className="hover:text-[#0064e0] transition">{t('nav.assistant')}</a></li>
+                  <li><a href="/app/graph.html" className="hover:text-[#0064e0] transition">{t('nav.graph')}</a></li>
+                  <li><a href="/app/reports.html" className="hover:text-[#0064e0] transition">{t('nav.reports')}</a></li>
+                </ul>
+              </div>
+
+              {/* Column 3: Legal & Compliance */}
+              <div className="space-y-3">
+                <span className="text-[10px] font-bold text-[#0a1317] uppercase tracking-widest font-mono block">
+                  LEGAL & POLICY
+                </span>
+                <ul className="space-y-2.5 font-medium text-[#5d6c7b]">
+                  <li><a href="/app/privacy.html" className="hover:text-[#0064e0] transition">{t('footer.privacy')}</a></li>
+                  <li><a href="/app/terms.html" className="hover:text-[#0064e0] transition">{t('footer.terms')}</a></li>
+                  <li><a href="/app/disclaimer.html" className="hover:text-[#0064e0] transition">{t('footer.disclaimer')}</a></li>
+                  <li><a href="/app/compliance.html" className="hover:text-[#0064e0] transition">{t('footer.audit')}</a></li>
+                  <li><a href="/app/admin.html" className="hover:text-[#0064e0] transition">{t('footer.admin')}</a></li>
+                </ul>
+              </div>
+
+              {/* Column 4: Support & Contact */}
+              <div className="space-y-3">
+                <span className="text-[10px] font-bold text-[#0a1317] uppercase tracking-widest font-mono block">
+                  {t('footer.support')}
+                </span>
+                <ul className="space-y-2.5 font-medium text-[#5d6c7b]">
+                  <li><a href="mailto:itcell@ksp.gov.in" className="hover:text-[#0064e0] transition">KSP IT Support Cell</a></li>
+                  <li><a href="/app/disclaimer.html" className="hover:text-[#0064e0] transition">SOP Guidelines</a></li>
+                  <li><a href="mailto:support@ksp.gov.in" className="hover:text-[#0064e0] transition">Technical Helpdesk</a></li>
+                  <li><a href="/app/login.html" className="hover:text-[#0064e0] transition">Officer Single Sign-On</a></li>
+                </ul>
+              </div>
+
             </div>
 
-            <div className="text-center md:text-right text-[#8595a4] font-bold font-mono">
-              <span>{t('appName')} Portal (v1.1)</span>
+            {/* Bottom Divider & Confidentiality Disclaimer */}
+            <div className="border-t border-[#dee3e9] pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-[10px] text-[#8595a4]">
+              <div className="space-y-1 text-center md:text-left">
+                <p className="font-semibold text-[#5d6c7b]">
+                  © 2026 Karnataka State Police — Datathon 2026. All rights reserved.
+                </p>
+                <p className="text-[9.5px] max-w-3xl leading-relaxed">
+                  CONFIDENTIALITY NOTICE: This portal contains sensitive law enforcement intelligence. Access is restricted to authorized personnel. All queries and exports are audited under Section 66 of the Information Technology Act.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-4 shrink-0 font-mono font-bold text-[#5d6c7b]">
+                <a href="/app/privacy.html" className="hover:text-[#0064e0] transition">{t('footer.privacy')}</a>
+                <span>·</span>
+                <a href="/app/terms.html" className="hover:text-[#0064e0] transition">{t('footer.terms')}</a>
+                <span>·</span>
+                <a href="/app/disclaimer.html" className="hover:text-[#0064e0] transition">{t('footer.disclaimer')}</a>
+              </div>
             </div>
-          </div>
-          
-          <div className="max-w-7xl mx-auto border-t border-[#dee3e9] pt-6 text-center text-[9px] text-[#8595a4] leading-relaxed font-medium">
-            {currentLanguage === 'en' 
-              ? '© 2026 Government of Karnataka. All Rights Reserved. Confidential law-enforcement tool. Access and actions are governed under official information security guidelines.'
-              : '© 2026 ಕರ್ನಾಟಕ ಸರ್ಕಾರ. ಎಲ್ಲ ಹಕ್ಕುಗಳನ್ನು ಕಾಯ್ದಿರಿಸಲಾಗಿದೆ. ಗೌಪ್ಯ ಕಾನೂನು ಜಾರಿ ಸಾಧನ. ಪ್ರವೇಶ ಮತ್ತು ಕ್ರಮಗಳನ್ನು ಅಧಿಕೃತ ಮಾಹಿತಿ ಭದ್ರತಾ ಮಾರ್ಗಸೂಚಿಗಳ ಅಡಿಯಲ್ಲಿ ನಿಯಂತ್ರಿಸಲಾಗುತ್ತದೆ.'}
+
           </div>
         </footer>
       </div>
