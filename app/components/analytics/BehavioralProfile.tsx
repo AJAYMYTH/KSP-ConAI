@@ -234,7 +234,7 @@ export default function BehavioralProfile() {
                         </div>
                         <p className="text-xs text-steel">{c.role}</p>
                         <a 
-                          href={`/cases/${c.caseId}`}
+                          href={`/app/cases/detail.html?id=${encodeURIComponent(c.caseId)}`}
                           className="inline-flex items-center gap-1 text-[10px] font-bold text-primary hover:underline mt-1"
                         >
                           <Eye className="w-3.5 h-3.5" /> {currentLanguage === 'en' ? 'Inspect Incident File' : 'ಪ್ರಕರಣ ಪರಿಶೀಲಿಸಿ'}

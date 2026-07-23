@@ -4,5 +4,8 @@ import { LoginPage } from '../components/auth/LoginPage';
 ---
 
 <Layout title="Secure Login Gateway" hideNav={true} hideFooter={true} transitionAnimate="fade">
-  <LoginPage client:load defaultView="login" />
+  <script is:inline src="https://static.zohocdn.com/catalyst/sdk/js/4.6.2/catalystWebSDK.js"></script>
+  <script is:inline src="/__catalyst/sdk/init.js"></script>
+  
+  <LoginPage client:only="react" defaultView="login" />
 </Layout>

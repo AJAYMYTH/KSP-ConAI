@@ -41,11 +41,28 @@ export default function CaseDetailView({ caseId }: Props) {
     return name;
   };
 
+  const getResolvedCaseId = () => {
+    if (caseId) return caseId;
+    if (typeof window === 'undefined') return '';
+    const params = new URLSearchParams(window.location.search);
+    const searchId = params.get('id') || params.get('caseId');
+    if (searchId) return searchId;
+    const pathSegments = window.location.pathname.split('/').filter(Boolean);
+    const lastSeg = pathSegments[pathSegments.length - 1] || '';
+    return lastSeg.replace('.html', '');
+  };
+
+  const resolvedId = getResolvedCaseId();
+
   useEffect(() => {
     async function loadDetails() {
+      if (!resolvedId) {
+        setLoading(false);
+        return;
+      }
       setLoading(true);
       try {
-        const data = await getCaseDetails(caseId);
+        const data = await getCaseDetails(resolvedId);
         setDetails(data);
       } catch (err) {
         console.error(err);
@@ -54,13 +71,14 @@ export default function CaseDetailView({ caseId }: Props) {
       }
     }
     loadDetails();
-  }, [caseId]);
+  }, [resolvedId]);
 
   const handleGenerateReport = async () => {
+    if (!resolvedId) return;
     setReportLoading(true);
     setReportSuccess(false);
     try {
-      const result = await generateReport(caseId);
+      const result = await generateReport(resolvedId);
       setPdfUrl(result.pdfUrl);
       setReportSuccess(true);
     } catch (err) {

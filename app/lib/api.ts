@@ -29,7 +29,7 @@ if (typeof window !== 'undefined' && !(window as any).__KSP_FETCH_INTERCEPTED__)
     const response = await originalFetch(input, init);
     if (response.status === 401 || response.status === 403) {
       localStorage.removeItem('ksp_copilot_session');
-      window.location.href = '/login';
+      window.location.href = '/app/login.html';
     }
     return response;
   };

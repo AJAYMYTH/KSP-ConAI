@@ -7,8 +7,8 @@ import { PERMISSIONS } from '../lib/auth';
 
 <Layout title="AI Assistant" hideFooter={true}>
   <div class="w-full h-[calc(100vh-64px)] max-h-[calc(100vh-64px)] flex flex-col overflow-hidden">
-    <PermissionGuard permission={PERMISSIONS.USE_ASSISTANT} client:load>
-      <AssistantChat client:load />
+    <PermissionGuard permission={PERMISSIONS.USE_ASSISTANT} client:only="react">
+      <AssistantChat client:only="react" />
     </PermissionGuard>
   </div>
 </Layout>

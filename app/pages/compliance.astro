@@ -6,7 +6,7 @@ import { PERMISSIONS } from '../lib/auth';
 ---
 
 <Layout title="Compliance & Security Audits">
-  <PermissionGuard permission={PERMISSIONS.VIEW_AUDIT_LOGS} client:load>
-    <ComplianceDashboard client:load />
+  <PermissionGuard permission={PERMISSIONS.VIEW_AUDIT_LOGS} client:only="react">
+    <ComplianceDashboard client:only="react" />
   </PermissionGuard>
 </Layout>

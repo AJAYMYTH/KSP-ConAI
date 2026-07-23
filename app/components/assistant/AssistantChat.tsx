@@ -824,7 +824,7 @@ export default function AssistantChat() {
                           {msg.sources.map((srcId) => (
                             <a
                               key={srcId}
-                              href={`/cases/${srcId}`}
+                              href={`/app/cases/detail.html?id=${encodeURIComponent(srcId)}`}
                               className="text-[9px] font-bold text-primary hover:underline bg-primary/10 px-2 py-0.5 rounded"
                             >
                               {srcId}

@@ -15,7 +15,7 @@ const { caseId } = Astro.params;
 ---
 
 <Layout title={`Case Details - ${caseId}`}>
-  <PermissionGuard permission={PERMISSIONS.VIEW_CASE_DETAIL_FULL} client:load>
-    <CaseDetailView caseId={caseId || ''} client:load />
+  <PermissionGuard permission={PERMISSIONS.VIEW_CASE_DETAIL_FULL} client:only="react">
+    <CaseDetailView caseId={caseId || ''} client:only="react" />
   </PermissionGuard>
 </Layout>

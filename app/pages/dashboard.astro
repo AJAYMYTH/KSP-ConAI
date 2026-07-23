@@ -6,7 +6,7 @@ import { PERMISSIONS } from '../lib/auth';
 ---
 
 <Layout title="Dashboard">
-  <PermissionGuard permission={PERMISSIONS.VIEW_DASHBOARD} client:load>
-    <DashboardGrid client:load />
+  <PermissionGuard permission={PERMISSIONS.VIEW_DASHBOARD} client:only="react">
+    <DashboardGrid client:only="react" />
   </PermissionGuard>
 </Layout>

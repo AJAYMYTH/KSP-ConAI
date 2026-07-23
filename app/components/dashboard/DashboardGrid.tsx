@@ -429,7 +429,7 @@ export default function DashboardGrid() {
                         <div className="text-[10px] text-stone font-medium">{translateCategory(fir.category, currentLanguage)}</div>
                       </div>
                       <a 
-                        href={`/cases/${fir.caseId}`}
+                        href={`/app/cases/detail.html?id=${encodeURIComponent(fir.caseId)}`}
                         className="p-1.5 rounded-circle bg-canvas border border-hairline-soft text-ink hover:bg-ink-deep hover:text-canvas focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none transition-colors duration-150"
                         aria-label={`View case details for FIR ${fir.firNumber}`}
                       >

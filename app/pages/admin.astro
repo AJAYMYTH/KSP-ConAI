@@ -6,7 +6,7 @@ import { PERMISSIONS } from '../lib/auth';
 ---
 
 <Layout title="Admin Console">
-  <PermissionGuard permission={PERMISSIONS.ACCESS_ADMIN_TOOLS} client:load>
-    <AdminConsole client:load />
+  <PermissionGuard permission={PERMISSIONS.ACCESS_ADMIN_TOOLS} client:only="react">
+    <AdminConsole client:only="react" />
   </PermissionGuard>
 </Layout>

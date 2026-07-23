@@ -1,0 +1,12 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CaseDetailView from '../../components/cases/CaseDetailView.tsx';
+import { PermissionGuard } from '../../components/auth/PermissionGuard.tsx';
+import { PERMISSIONS } from '../../lib/auth';
+---
+
+<Layout title="Case Details — KSP-ConAI">
+  <PermissionGuard permission={PERMISSIONS.VIEW_CASE_DETAIL_FULL} client:only="react">
+    <CaseDetailView caseId="" client:only="react" />
+  </PermissionGuard>
+</Layout>

@@ -6,6 +6,11 @@ import { fileURLToPath } from 'url';
 // https://astro.build/config
 export default defineConfig({
   srcDir: './app',
+  outDir: './client',
+  base: '/app/',
+  build: {
+    format: 'file'
+  },
   integrations: [react()],
   vite: {
     plugins: [tailwindcss()],

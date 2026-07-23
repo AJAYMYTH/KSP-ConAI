@@ -23,7 +23,8 @@ const { title, description = 'KSP-ConAI', hideNav = false, hideFooter = false, t
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title} — KSP-ConAI</title>
     <meta name="description" content={description} />
-    <link class="fav-icon" rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link class="fav-icon" rel="icon" type="image/png" href="/karnataka_emblem.png" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <ViewTransitions />
     
@@ -48,14 +49,14 @@ const { title, description = 'KSP-ConAI', hideNav = false, hideFooter = false, t
     </script>
   </head>
   <body class="min-h-screen bg-canvas flex flex-col">
-    <I18nProvider client:load>
-      {!hideNav && <Nav currentPath={Astro.url.pathname} client:load transition:persist />}
+    <I18nProvider client:only="react">
+      {!hideNav && <Nav currentPath={Astro.url.pathname} client:only="react" transition:persist />}
       
       <main class="flex-1 flex flex-col" transition:animate={transitionAnimate}>
         <slot />
       </main>
 
-      {!hideFooter && <Footer client:load />}
+      {!hideFooter && <Footer client:only="react" />}
     </I18nProvider>
   </body>
 </html>

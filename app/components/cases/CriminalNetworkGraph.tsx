@@ -182,7 +182,7 @@ export default function CriminalNetworkGraph({ caseId }: Props) {
 
   const onNodeDoubleClick = (event: any, node: any) => {
     if (node.data?.type === 'case' && node.id !== caseId) {
-      window.location.href = `/cases/${node.id}`;
+      window.location.href = `/app/cases/detail.html?id=${encodeURIComponent(node.id)}`;
     }
   };
 
@@ -306,7 +306,7 @@ export default function CriminalNetworkGraph({ caseId }: Props) {
 
               {selectedNode.data?.type === 'case' && selectedNode.id !== caseId && (
                 <button
-                  onClick={() => window.location.href = `/cases/${selectedNode.id}`}
+                  onClick={() => window.location.href = `/app/cases/detail.html?id=${encodeURIComponent(selectedNode.id)}`}
                   className="w-full mt-4 py-2 bg-primary hover:bg-primary-deep text-canvas text-xs font-bold rounded-lg transition flex items-center justify-center gap-1 cursor-pointer"
                 >
                   {currentLanguage === 'en' ? 'View Case File' : 'ಪ್ರಕರಣ ಪರಿಶೀಲಿಸಿ'} <ArrowLeft className="w-3.5 h-3.5 rotate-180" />

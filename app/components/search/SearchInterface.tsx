@@ -325,7 +325,7 @@ export default function SearchInterface() {
                     <div className="text-[10px] text-stone font-medium">{translateCategory(c.category, currentLanguage)}</div>
                   </div>
                   <a
-                    href={`/cases/${c.caseId}`}
+                    href={`/app/cases/detail.html?id=${encodeURIComponent(c.caseId)}`}
                     className="flex items-center gap-1 px-3 py-1.5 bg-primary text-canvas rounded-full text-xs font-bold hover:bg-primary-deep focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none transition cursor-pointer"
                   >
                     {currentLanguage === 'en' ? 'View File' : 'ಪ್ರಕರಣ ವೀಕ್ಷಿಸಿ'} <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />

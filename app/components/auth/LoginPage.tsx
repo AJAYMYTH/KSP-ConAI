@@ -34,6 +34,18 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
     }
   }, [view, selectedRole]);
 
+  // Zoho Catalyst Web SDK Auth initialization
+  useEffect(() => {
+    if (typeof window !== 'undefined' && (window as any).catalyst?.auth) {
+      try {
+        const config = { service_url: "/app/dashboard.html" };
+        (window as any).catalyst.auth.signIn("loginDivElementId", config);
+      } catch (err) {
+        console.warn("Catalyst SDK Auth initialization:", err);
+      }
+    }
+  }, []);
+
   const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const userVal = loginUser.trim().toLowerCase();
@@ -63,7 +75,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
       badgeNumber: badgeNum,
       token: `mock-jwt-token-for-ksp-catalyst-${selectedRole}`
     });
-    window.location.href = '/dashboard';
+    window.location.href = '/app/dashboard.html';
   };
 
   const handleRegisterSubmit = (e: React.FormEvent) => {
@@ -92,7 +104,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
       badgeNumber: badgeNum,
       token: `mock-jwt-token-for-ksp-catalyst-${selectedRole}`
     });
-    window.location.href = '/dashboard';
+    window.location.href = '/app/dashboard.html';
   };
 
   const handleGoogleSSO = () => {
@@ -120,7 +132,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
       badgeNumber: badgeNum,
       token: `mock-jwt-token-for-ksp-catalyst-${selectedRole}`
     });
-    window.location.href = '/dashboard';
+    window.location.href = '/app/dashboard.html';
   };
 
   const toggleLanguage = () => {
@@ -130,6 +142,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
 
   const socialLoginBlock = (
     <div className="space-y-4">
+      <div id="loginDivElementId" className="w-full min-h-[10px]"></div>
       <div className="flex items-center gap-3 text-[10px] text-slate-400 font-bold uppercase tracking-wider">
         <div className="h-px flex-1 bg-slate-150"></div>
         <span className="shrink-0">{t('login.divider')}</span>

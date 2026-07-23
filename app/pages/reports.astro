@@ -6,7 +6,7 @@ import { PERMISSIONS } from '../lib/auth';
 ---
 
 <Layout title="Intelligence Reports History">
-  <PermissionGuard permission={PERMISSIONS.GENERATE_REPORTS} client:load>
-    <ReportsManager client:load />
+  <PermissionGuard permission={PERMISSIONS.GENERATE_REPORTS} client:only="react">
+    <ReportsManager client:only="react" />
   </PermissionGuard>
 </Layout>

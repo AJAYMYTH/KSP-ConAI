@@ -26,14 +26,14 @@ export default function Nav({ currentPath = '/' }: NavProps) {
   };
 
   const navItems = mounted && session ? [
-    { name: t('nav.dashboard'), path: '/dashboard', perm: PERMISSIONS.VIEW_DASHBOARD },
-    { name: t('nav.search'), path: '/search', perm: PERMISSIONS.SEARCH_FIRS },
-    { name: t('nav.map'), path: '/map', perm: PERMISSIONS.VIEW_MAP },
-    { name: t('nav.assistant'), path: '/assistant', perm: PERMISSIONS.USE_ASSISTANT },
-    { name: t('nav.graph'), path: '/graph', perm: PERMISSIONS.VIEW_GRAPH },
-    { name: t('nav.reports'), path: '/reports', perm: PERMISSIONS.GENERATE_REPORTS },
-    { name: currentLanguage === 'en' ? 'Profiling' : 'ಪ್ರೊಫೈಲಿಂಗ್', path: '/profiling', perm: PERMISSIONS.VIEW_CASE_DETAIL_FULL },
-    { name: currentLanguage === 'en' ? 'Compliance' : 'ಅನುಸರಣೆ', path: '/compliance', perm: PERMISSIONS.VIEW_AUDIT_LOGS }
+    { name: t('nav.dashboard'), path: '/app/dashboard.html', perm: PERMISSIONS.VIEW_DASHBOARD },
+    { name: t('nav.search'), path: '/app/search.html', perm: PERMISSIONS.SEARCH_FIRS },
+    { name: t('nav.map'), path: '/app/map.html', perm: PERMISSIONS.VIEW_MAP },
+    { name: t('nav.assistant'), path: '/app/assistant.html', perm: PERMISSIONS.USE_ASSISTANT },
+    { name: t('nav.graph'), path: '/app/graph.html', perm: PERMISSIONS.VIEW_GRAPH },
+    { name: t('nav.reports'), path: '/app/reports.html', perm: PERMISSIONS.GENERATE_REPORTS },
+    { name: currentLanguage === 'en' ? 'Profiling' : 'ಪ್ರೊಫೈಲಿಂಗ್', path: '/app/profiling.html', perm: PERMISSIONS.VIEW_CASE_DETAIL_FULL },
+    { name: currentLanguage === 'en' ? 'Compliance' : 'ಅನುಸರಣೆ', path: '/app/compliance.html', perm: PERMISSIONS.VIEW_AUDIT_LOGS }
   ].filter(item => hasPermission(item.perm)) : [];
 
   const hasAdminPermission = mounted && session && hasPermission(PERMISSIONS.ACCESS_ADMIN_TOOLS);
@@ -42,7 +42,7 @@ export default function Nav({ currentPath = '/' }: NavProps) {
     <nav className="sticky top-0 z-50 w-full h-16 bg-canvas border-b border-hairline-soft px-4 md:px-8 flex items-center justify-between">
       {/* Brand Logo and Status Badge */}
       <div className="flex items-center gap-4">
-        <a href="/" className="flex items-center gap-2.5 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none rounded-lg">
+        <a href="/app/dashboard.html" className="flex items-center gap-2.5 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none rounded-lg">
           <img src="/karnataka_emblem.png" alt="Government Seal" className="w-9 h-9 object-contain" width="36" height="36" />
           <div className="flex flex-col">
             <span className="font-display font-bold text-base leading-tight tracking-tight text-ink-deep">
@@ -70,7 +70,8 @@ export default function Nav({ currentPath = '/' }: NavProps) {
       {/* Center Nav Tabs (Desktop & Tablet) */}
       <div className="hidden md:flex items-center gap-1 bg-surface-soft p-1 rounded-full border border-hairline-soft">
         {navItems.map((item) => {
-          const isActive = currentPath.startsWith(item.path);
+          const itemKey = item.path.replace('.html', '').split('/').pop() || '';
+          const isActive = currentPath.includes(itemKey);
           return (
             <a
               key={item.path}
@@ -87,9 +88,9 @@ export default function Nav({ currentPath = '/' }: NavProps) {
         })}
         {hasAdminPermission && (
           <a
-            href="/admin"
+            href="/app/admin.html"
             className={`px-3 lg:px-4 py-1.5 text-[11px] lg:text-xs font-bold transition-all duration-150 rounded-full focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none ${
-              currentPath.startsWith('/admin')
+              currentPath.includes('admin')
                 ? 'bg-ink-deep text-canvas shadow-sm'
                 : 'text-ink hover:bg-hairline-soft'
             }`}
@@ -128,7 +129,7 @@ export default function Nav({ currentPath = '/' }: NavProps) {
             <button
               onClick={() => {
                 clearSession();
-                window.location.href = '/login';
+                window.location.href = '/app/login.html';
               }}
               className="p-2 border border-hairline-soft bg-surface-soft hover:bg-rose-50 hover:text-critical rounded-full transition cursor-pointer select-none text-slate-500 flex items-center justify-center"
               title={currentLanguage === 'en' ? 'Log Out' : 'ನೀರ್ಗಮಿಸಿ'}

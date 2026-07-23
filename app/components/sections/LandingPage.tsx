@@ -32,7 +32,7 @@ export const LandingPage: React.FC = () => {
         {currentLanguage === 'en' ? (
           <span>
             CONFIDENTIAL LAW-ENFORCEMENT PORTAL: Authorized KSP personnel access only.{' '}
-            <a href="/disclaimer" className="underline hover:text-blue-400 ml-1">Read protocol guidelines →</a>
+            <a href="/app/disclaimer.html" className="underline hover:text-blue-400 ml-1">Read protocol guidelines →</a>
           </span>
         ) : (
           <span>

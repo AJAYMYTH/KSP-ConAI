@@ -153,7 +153,7 @@ export default function SimilarCasePanel({ caseId }: Props) {
 
               {/* Action Trigger */}
               <a
-                href={`/cases/${c.caseId}`}
+                href={`/app/cases/detail.html?id=${encodeURIComponent(c.caseId)}`}
                 className="mt-4 w-full py-2 bg-canvas hover:bg-surface-soft border border-hairline-soft text-ink hover:text-ink-deep text-xs font-bold rounded-xl transition flex items-center justify-center gap-1 cursor-pointer"
               >
                 {currentLanguage === 'en' ? 'Cross-Reference File' : 'ಕ್ರಾಸ್-ರೆಫರೆನ್ಸ್ ಫೈಲ್'} 

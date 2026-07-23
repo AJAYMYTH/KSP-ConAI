@@ -34,7 +34,7 @@ export const PermissionGuard: React.FC<PermissionGuardProps> = ({
   const session = getCurrentSession();
   if (!session) {
     if (typeof window !== 'undefined') {
-      window.location.href = '/login';
+      window.location.href = '/app/login.html';
     }
     return null;
   }
@@ -48,14 +48,14 @@ export const PermissionGuard: React.FC<PermissionGuardProps> = ({
   // Handle redirects if requested
   if (fallback === 'login-redirect') {
     if (typeof window !== 'undefined') {
-      window.location.href = '/login';
+      window.location.href = '/app/login.html';
     }
     return null;
   }
 
   if (fallback === 'redirect') {
     if (typeof window !== 'undefined') {
-      window.location.href = '/dashboard';
+      window.location.href = '/app/dashboard.html';
     }
     return null;
   }
@@ -86,14 +86,14 @@ export const PermissionGuard: React.FC<PermissionGuardProps> = ({
       <div className="flex gap-3 mt-2">
         <button
           type="button"
-          onClick={() => window.location.href = '/login'}
+          onClick={() => window.location.href = '/app/login.html'}
           className="px-5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-full transition cursor-pointer select-none"
         >
           {currentLanguage === 'en' ? 'Switch Role' : 'ಪಾತ್ರ ಬದಲಿಸಿ'}
         </button>
         <button
           type="button"
-          onClick={() => window.location.href = '/dashboard'}
+          onClick={() => window.location.href = '/app/dashboard.html'}
           className="px-5 py-2 bg-primary hover:bg-primary-deep text-canvas text-xs font-bold rounded-full transition cursor-pointer select-none"
         >
           {currentLanguage === 'en' ? 'Back to Dashboard' : 'ಡ್ಯಾಶ್‌ಬೋರ್ಡ್‌ಗೆ ಹಿಂತಿರುಗಿ'}

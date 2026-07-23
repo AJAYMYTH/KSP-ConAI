@@ -40,22 +40,20 @@ export default function Footer() {
             {t('footer.tools')}
           </span>
           <ul className="flex flex-col gap-2">
-            <li><a href="/dashboard" className="text-xs text-steel hover:text-primary transition">{t('nav.dashboard')}</a></li>
-            <li><a href="/search" className="text-xs text-steel hover:text-primary transition">{t('nav.search')}</a></li>
-            <li><a href="/map" className="text-xs text-steel hover:text-primary transition">{t('nav.map')}</a></li>
-            <li><a href="/assistant" className="text-xs text-steel hover:text-primary transition">{t('nav.assistant')}</a></li>
-            <li><a href="/graph" className="text-xs text-steel hover:text-primary transition">{t('nav.graph')}</a></li>
-            <li><a href="/reports" className="text-xs text-steel hover:text-primary transition">{t('nav.reports')}</a></li>
+            <li><a href="/app/dashboard.html" className="text-xs text-steel hover:text-primary transition">{t('nav.dashboard')}</a></li>
+            <li><a href="/app/search.html" className="text-xs text-steel hover:text-primary transition">{t('nav.search')}</a></li>
+            <li><a href="/app/map.html" className="text-xs text-steel hover:text-primary transition">{t('nav.map')}</a></li>
+            <li><a href="/app/assistant.html" className="text-xs text-steel hover:text-primary transition">{t('nav.assistant')}</a></li>
+            <li><a href="/app/graph.html" className="text-xs text-steel hover:text-primary transition">{t('nav.graph')}</a></li>
+            <li><a href="/app/reports.html" className="text-xs text-steel hover:text-primary transition">{t('nav.reports')}</a></li>
           </ul>
         </div>
 
         {/* Links Column 3 */}
-        <div className="flex flex-col gap-2.5">
-          <span className="text-xs font-bold text-ink uppercase tracking-wider">
-            {t('footer.platform')}
-          </span>
-          <ul className="flex flex-col gap-2">
-            <li><a href="#" className="text-xs text-steel hover:text-primary transition">{t('footer.auth')}</a></li>
+        <div>
+          <span className="text-[10px] font-bold text-ink-deep uppercase tracking-wider block mb-3">{t('footer.platform')}</span>
+          <ul className="space-y-2">
+            <li><a href="/app/login.html" className="text-xs text-steel hover:text-primary transition">{t('footer.auth')}</a></li>
             <li><a href="#" className="text-xs text-steel hover:text-primary transition">{t('footer.quickml')}</a></li>
             <li><a href="#" className="text-xs text-steel hover:text-primary transition">{t('footer.zia')}</a></li>
             <li><a href="#" className="text-xs text-steel hover:text-primary transition">{t('footer.smartbrowz')}</a></li>
@@ -63,35 +61,29 @@ export default function Footer() {
         </div>
 
         {/* Links Column 4 */}
-        <div className="flex flex-col gap-2.5">
-          <span className="text-xs font-bold text-ink uppercase tracking-wider">
-            {t('footer.support')}
-          </span>
-          <ul className="flex flex-col gap-2">
+        <div>
+          <span className="text-[10px] font-bold text-ink-deep uppercase tracking-wider block mb-3">{t('footer.support')}</span>
+          <ul className="space-y-2">
             <li><a href="#" className="text-xs text-steel hover:text-primary transition">{t('footer.helpdesk')}</a></li>
-            <li><a href="#" className="text-xs text-steel hover:text-primary transition">{t('footer.audit')}</a></li>
+            <li><a href="/app/compliance.html" className="text-xs text-steel hover:text-primary transition">{t('footer.audit')}</a></li>
             <li><a href="#" className="text-xs text-steel hover:text-primary transition">{t('footer.feedback')}</a></li>
-            <li><a href="#" className="text-xs text-steel hover:text-primary transition">{t('footer.admin')}</a></li>
+            <li><a href="/app/admin.html" className="text-xs text-steel hover:text-primary transition">{t('footer.admin')}</a></li>
           </ul>
         </div>
       </div>
 
       {/* Bottom Legal bar */}
-      <div className="max-w-7xl mx-auto border-t border-hairline-soft mt-8 pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-[10px] text-stone">
-        <div className="flex flex-col gap-1 text-center md:text-left">
-          <span>
-            {t('footer.copyright', { year: currentYear })}
-          </span>
-          <span className="text-[9px] text-stone/80">
-            {t('footer.confidentiality')}
-          </span>
+      <div className="pt-6 border-t border-hairline-soft flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-stone">
+        <div className="space-y-1">
+          <p>© 2026 Karnataka State Police — Datathon 2026. All rights reserved.</p>
+          <p className="text-[10px] text-steel">CONFIDENTIALITY NOTICE: This system contains sensitive law enforcement intelligence. Access is restricted to authorized personnel only. All queries are audited.</p>
         </div>
-        <div className="flex items-center gap-4">
-          <a href="/privacy" className="hover:text-primary transition">{t('footer.privacy')}</a>
+        <div className="flex items-center gap-4 shrink-0 font-medium">
+          <a href="/app/privacy.html" className="hover:text-primary transition">{t('footer.privacy')}</a>
           <span>·</span>
-          <a href="/terms" className="hover:text-primary transition">{t('footer.terms')}</a>
+          <a href="/app/terms.html" className="hover:text-primary transition">{t('footer.terms')}</a>
           <span>·</span>
-          <a href="/disclaimer" className="hover:text-primary transition">{t('footer.disclaimer')}</a>
+          <a href="/app/disclaimer.html" className="hover:text-primary transition">{t('footer.disclaimer')}</a>
         </div>
       </div>
     </footer>
