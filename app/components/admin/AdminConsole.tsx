@@ -143,7 +143,7 @@ function AdminConsoleInner() {
           <h2 className="text-base font-bold text-ink-deep">Restricted Workspace</h2>
           <p className="text-xs text-steel">This workspace contains classified administrative configuration files. Your current credential role ({session.role}) lacks permissions.</p>
         </div>
-        <a href="/dashboard" className="inline-block px-6 py-2 bg-primary text-canvas rounded-full text-xs font-bold hover:bg-primary-deep transition">
+        <a href="/app/dashboard.html" className="inline-block px-6 py-2 bg-primary text-canvas rounded-full text-xs font-bold hover:bg-primary-deep transition">
           Return to Dashboard
         </a>
       </div>
@@ -155,7 +155,7 @@ function AdminConsoleInner() {
       {/* Sticky Banner Header */}
       <div className="bg-canvas border border-hairline-soft p-3.5 sm:p-5 rounded-2xl sm:rounded-xxxl flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4 card-product-shadow">
         <div className="flex items-center gap-3">
-          <img src="/karnataka_emblem.png" alt="Government Seal" className="w-9 h-9 sm:w-10 sm:h-10 object-contain animate-pulse-subtle" width="40" height="40" />
+          <img src="/app/karnataka_emblem.png" alt="Government Seal" className="w-9 h-9 sm:w-10 sm:h-10 object-contain animate-pulse-subtle" width="40" height="40" />
           <div>
             <div className="flex items-center gap-2">
               <span className="text-[9px] sm:text-[10px] uppercase tracking-wider text-primary font-bold">Workspace Panel</span>
