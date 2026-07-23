@@ -37,11 +37,14 @@ export const LoginPage: React.FC<LoginPageProps> = ({ defaultView = 'login' }) =
   // Zoho Catalyst Web SDK Auth initialization
   useEffect(() => {
     if (typeof window !== 'undefined' && (window as any).catalyst?.auth) {
-      try {
-        const config = { service_url: "/app/dashboard.html" };
-        (window as any).catalyst.auth.signIn("loginDivElementId", config);
-      } catch (err) {
-        console.warn("Catalyst SDK Auth initialization:", err);
+      const container = document.getElementById('loginDivElementId');
+      if (container) {
+        try {
+          const config = { service_url: "/app/dashboard.html" };
+          (window as any).catalyst?.auth?.signIn?.("loginDivElementId", config);
+        } catch (err) {
+          console.warn("Catalyst SDK Auth initialization:", err);
+        }
       }
     }
   }, []);

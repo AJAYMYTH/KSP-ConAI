@@ -174,24 +174,28 @@ export async function getDashboardSummary(): Promise<DashboardSummary> {
     const result: ApiResponse<any> = await response.json();
     const summary = mapBackendDashboardToSummary(result.data);
 
-    // Fetch recent cases to populate recentFirs list
     try {
       const casesRes = await searchCases({ limit: '5' });
       summary.recentFirs = casesRes.items;
     } catch {
-      summary.recentFirs = [...mock.MOCK_CASES].slice(0, 5);
+      summary.recentFirs = [];
     }
 
     return summary;
   } catch (error) {
-    console.warn('Dashboard API failed, falling back to mock data:', error);
-    return mock.MOCK_DASHBOARD;
+    console.warn('Dashboard API error:', error);
+    return {
+      kpis: { totalFirs: 0, activeCases: 0, chargesheeted: 0, arrests: 0 },
+      topDistricts: [],
+      topCategories: [],
+      recentFirs: []
+    };
   }
 }
 
 // Fetch cases search
 export async function searchCases(params: Record<string, string>): Promise<{ items: CaseSummary[]; total: number }> {
-  const getMockSearch = () => {
+  if (IS_MOCK_MODE) {
     let items = [...mock.MOCK_CASES] as CaseSummary[];
     if (params.query) {
       const q = params.query.toLowerCase();
@@ -208,21 +212,11 @@ export async function searchCases(params: Record<string, string>): Promise<{ ite
     if (params.category && params.category !== 'all') {
       items = items.filter(c => c.category.toLowerCase() === params.category.toLowerCase());
     }
-    return {
-      items,
-      total: items.length
-    };
-  };
-
-  if (IS_MOCK_MODE) {
-    return getMockSearch();
+    return { items, total: items.length };
   }
 
   try {
-    // Translate frontend keys to backend keys
     const backendParams = new URLSearchParams();
-    
-    // Support page-to-offset calculation
     const limitNum = parseInt(params.limit || '10', 10);
     const pageNum = parseInt(params.page || '1', 10);
     const offsetNum = params.offset ? parseInt(params.offset, 10) : (pageNum - 1) * limitNum;
@@ -245,8 +239,8 @@ export async function searchCases(params: Record<string, string>): Promise<{ ite
       total: result.data.total || 0
     };
   } catch (error) {
-    console.warn('Search API failed, falling back to local search filtering:', error);
-    return getMockSearch();
+    console.warn('Search API error:', error);
+    return { items: [], total: 0 };
   }
 }
 
@@ -294,49 +288,36 @@ export async function queryAssistant(
 
 // Fetch single case details (GET /api/v1/cases/:firNumber)
 export async function getCaseDetails(caseIdOrFir: string): Promise<CaseDetail> {
-  const getMockDetails = () => {
-    const match = mock.MOCK_CASES.find(c => c.caseId === caseIdOrFir || c.firNumber.toLowerCase() === caseIdOrFir.toLowerCase());
-    if (!match) throw new Error(`Case ${caseIdOrFir} not found in mock database`);
-    return match;
-  };
-
   if (IS_MOCK_MODE) {
-    return getMockDetails();
+    const match = mock.MOCK_CASES.find(c => c.caseId === caseIdOrFir || c.firNumber.toLowerCase() === caseIdOrFir.toLowerCase());
+    if (!match) throw new Error(`Case ${caseIdOrFir} not found in database`);
+    return match;
   }
 
+  let response;
   try {
-    let response;
-    try {
-      response = await fetch(`${API_BASE_URL}/api/v1/cases/${encodeURIComponent(caseIdOrFir)}`, {
-        headers: getHeaders()
-      });
-    } catch {
-      response = await fetch(`${API_BASE_URL}/cases/${encodeURIComponent(caseIdOrFir)}`, {
-        headers: getHeaders()
-      });
-    }
-    
-    if (!response.ok) throw new Error('API Error');
-    const result: ApiResponse<any> = await response.json();
-    return mapBackendCaseToDetail(result.data);
-  } catch (error) {
-    console.warn(`Case details API failed for ${caseIdOrFir}, using local match:`, error);
-    return getMockDetails();
+    response = await fetch(`${API_BASE_URL}/api/v1/cases/${encodeURIComponent(caseIdOrFir)}`, {
+      headers: getHeaders()
+    });
+  } catch {
+    response = await fetch(`${API_BASE_URL}/cases/${encodeURIComponent(caseIdOrFir)}`, {
+      headers: getHeaders()
+    });
   }
+  
+  if (!response.ok) throw new Error(`Case ${caseIdOrFir} not found in database`);
+  const result: ApiResponse<any> = await response.json();
+  return mapBackendCaseToDetail(result.data);
 }
 
 // Fetch map hotspots
 export async function getMapHotspots(params?: Record<string, string>): Promise<MapHotspot[]> {
-  const getMockHotspots = () => {
+  if (IS_MOCK_MODE) {
     let items = [...mock.MOCK_MAP_HOTSPOTS];
     if (params && params.category && params.category !== 'all') {
       items = items.filter(h => h.category.toLowerCase() === params.category.toLowerCase());
     }
     return items;
-  };
-
-  if (IS_MOCK_MODE) {
-    return getMockHotspots();
   }
 
   try {
@@ -355,8 +336,8 @@ export async function getMapHotspots(params?: Record<string, string>): Promise<M
     const result: ApiResponse<any> = await response.json();
     return mapBackendHotspots(result.data.points || []);
   } catch (error) {
-    console.warn('Map hotspots API failed, using mock hotspots:', error);
-    return getMockHotspots();
+    console.warn('Map hotspots API error:', error);
+    return [];
   }
 }
 
@@ -373,8 +354,8 @@ export async function getCaseGraph(caseId: string): Promise<GraphData> {
     const result: ApiResponse<any> = await response.json();
     return mapBackendGraph(result.data);
   } catch (error) {
-    console.warn(`Graph API failed for ${caseId}, using mock graph:`, error);
-    return mock.MOCK_GRAPHS[caseId] || mock.DEFAULT_GRAPH;
+    console.warn(`Graph API error for ${caseId}:`, error);
+    return { nodes: [], edges: [] };
   }
 }
 
