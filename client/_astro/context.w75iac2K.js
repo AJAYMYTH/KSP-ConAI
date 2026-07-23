@@ -1,0 +1,9 @@
+import{r as c}from"./index.DJO9vBfz.js";var l={exports:{}},o={};/**
+ * @license React
+ * react-jsx-runtime.production.min.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */var d=c,f=Symbol.for("react.element"),_=Symbol.for("react.fragment"),y=Object.prototype.hasOwnProperty,x=d.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.ReactCurrentOwner,g={key:!0,ref:!0,__self:!0,__source:!0};function i(e,t,r){var s,n={},a=null,u=null;r!==void 0&&(a=""+r),t.key!==void 0&&(a=""+t.key),t.ref!==void 0&&(u=t.ref);for(s in t)y.call(t,s)&&!g.hasOwnProperty(s)&&(n[s]=t[s]);if(e&&e.defaultProps)for(s in t=e.defaultProps,t)n[s]===void 0&&(n[s]=t[s]);return{$$typeof:f,type:e,key:a,ref:u,props:n,_owner:x.current}}o.Fragment=_;o.jsx=i;o.jsxs=i;l.exports=o;var O=l.exports;const N=/&(?:amp|#38|lt|#60|gt|#62|apos|#39|quot|#34|nbsp|#160|copy|#169|reg|#174|hellip|#8230|#x2F|#47);/g,h={"&amp;":"&","&#38;":"&","&lt;":"<","&#60;":"<","&gt;":">","&#62;":">","&apos;":"'","&#39;":"'","&quot;":'"',"&#34;":'"',"&nbsp;":" ","&#160;":" ","&copy;":"©","&#169;":"©","&reg;":"®","&#174;":"®","&hellip;":"…","&#8230;":"…","&#x2F;":"/","&#47;":"/"},E=e=>h[e],b=e=>e.replace(N,E);let p={bindI18n:"languageChanged",bindI18nStore:"",transEmptyNodeValue:"",transSupportBasicHtmlNodes:!0,transWrapTextNodes:"",transKeepBasicHtmlNodesFor:["br","strong","i","p"],useSuspense:!0,unescape:b,transDefaultProps:void 0};const R=(e={})=>{p={...p,...e}},v=()=>p;let m;const S=e=>{m=e},j=()=>m,k=c.createContext();class C{constructor(){this.usedNamespaces={}}addUsedNamespaces(t){t.forEach(r=>{this.usedNamespaces[r]||(this.usedNamespaces[r]=!0)})}getUsedNamespaces(){return Object.keys(this.usedNamespaces)}}export{k as I,C as R,j as a,S as b,v as g,O as j,R as s};

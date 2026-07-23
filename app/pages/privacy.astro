@@ -5,8 +5,8 @@ import { Shield, ArrowLeft } from 'lucide-react';
 
 <Layout title="Privacy Policy" hideNav={true} transitionAnimate="fade">
   <div class="min-h-screen bg-canvas flex flex-col">
-    {/* Independent Standalone Legal Header */}
-    <header class="w-full h-16 border-b border-hairline-soft bg-canvas/95 backdrop-blur-md sticky top-0 z-50 px-4 md:px-8 flex items-center justify-between">
+    {/* Independent Standalone Legal Header (Hidden in Print) */}
+    <header class="w-full h-16 border-b border-hairline-soft bg-canvas/95 backdrop-blur-md sticky top-0 z-50 px-4 md:px-8 flex items-center justify-between print:hidden">
       <a href="/app/index.html" class="flex items-center gap-3 group focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none rounded-lg">
         <img src="/app/karnataka_emblem.png" alt="Karnataka State Emblem" class="w-9 h-9 object-contain" width="36" height="36" />
         <div class="flex flex-col">
@@ -30,9 +30,9 @@ import { Shield, ArrowLeft } from 'lucide-react';
     </header>
 
     {/* Main Document Content */}
-    <main class="flex-1 p-4 sm:p-6 md:p-10 max-w-4xl mx-auto w-full space-y-6">
-      {/* Classification Tag & Top Breadcrumb */}
-      <div class="flex items-center justify-between border-b border-hairline-soft pb-3">
+    <main class="flex-1 p-4 sm:p-6 md:p-10 max-w-4xl mx-auto w-full space-y-6 print:p-0 print:max-w-none">
+      {/* Classification Tag & Top Breadcrumb (Hidden in Print) */}
+      <div class="flex items-center justify-between border-b border-hairline-soft pb-3 print:hidden">
         <a href="/app/index.html" class="text-xs font-bold text-steel hover:text-primary transition flex items-center gap-1">
           ← <span class="lang-en">Home</span><span class="lang-kn">ಮುಖಪುಟ</span>
         </a>
@@ -42,43 +42,58 @@ import { Shield, ArrowLeft } from 'lucide-react';
         </span>
       </div>
 
+      {/* Official Print Header Seal (Visible ONLY in Print) */}
+      <div class="hidden print:flex items-center justify-between border-b-2 border-black pb-4 mb-6">
+        <div class="flex items-center gap-3">
+          <img src="/app/karnataka_emblem.png" alt="Government Seal" class="w-12 h-12 object-contain" width="48" height="48" />
+          <div>
+            <h2 class="text-lg font-bold text-black">KARNATAKA STATE POLICE</h2>
+            <p class="text-xs font-semibold text-gray-700">Official Data Privacy Policy Document • KSP-ConAI</p>
+          </div>
+        </div>
+        <div class="text-right text-xs font-mono text-gray-800">
+          <div>Doc ID: KSP-LEG-PRV-2026</div>
+          <div>Date: July 2026</div>
+        </div>
+      </div>
+
       {/* Document Card */}
-      <div class="bg-canvas border border-hairline-soft p-6 sm:p-10 rounded-3xl card-product-shadow space-y-6">
+      <div class="bg-canvas border border-hairline-soft p-6 sm:p-10 rounded-3xl card-product-shadow space-y-6 print:border-none print:shadow-none print:p-0">
         {/* Document Header with Emblem Seal */}
-        <div class="flex items-start sm:items-center justify-between gap-4 pb-6 border-b border-hairline-soft">
+        <div class="flex items-start sm:items-center justify-between gap-4 pb-6 border-b border-hairline-soft print:border-gray-300">
           <div class="flex items-center gap-3.5">
             <img src="/app/karnataka_emblem.png" alt="Government Seal" class="w-12 h-12 object-contain shrink-0" width="48" height="48" />
             <div>
-              <span class="text-[10px] uppercase tracking-wider text-steel font-bold block">
+              <span class="text-[10px] uppercase tracking-wider text-steel font-bold block print:text-black">
                 <span class="lang-en">Karnataka State Police • Compliance & Legal</span>
                 <span class="lang-kn">ಕರ್ನಾಟಕ ರಾಜ್ಯ ಪೊಲೀಸ್ • ಅನುಸರಣೆ ಮತ್ತು ಕಾನೂನು</span>
               </span>
-              <h1 class="text-xl sm:text-2xl font-bold text-ink-deep mt-0.5">
+              <h1 class="text-xl sm:text-2xl font-bold text-ink-deep mt-0.5 print:text-black">
                 <span class="lang-en">Data Privacy Policy</span>
                 <span class="lang-kn">ಡೇಟಾ ಗೌಪ್ಯತಾ ನೀತಿ</span>
               </h1>
             </div>
           </div>
 
-          <div class="hidden sm:flex flex-col items-end text-right">
-            <span class="text-[10px] text-stone font-mono uppercase tracking-wider">Doc ID: KSP-LEG-PRV-2026</span>
-            <span class="text-[10px] text-emerald-600 font-bold flex items-center gap-1">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Active Policy
+          <div class="hidden sm:flex flex-col items-end text-right print:flex">
+            <span class="text-[10px] text-stone font-mono uppercase tracking-wider print:text-black">Doc ID: KSP-LEG-PRV-2026</span>
+            <span class="text-[10px] text-emerald-600 font-bold flex items-center gap-1 print:text-black">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 print:bg-black"></span> Active Policy
             </span>
           </div>
         </div>
 
-        <div class="text-[11px] text-stone font-medium bg-surface-soft p-3 rounded-xl border border-hairline-soft flex items-center justify-between">
+        <div class="text-[11px] text-stone font-medium bg-surface-soft p-3 rounded-xl border border-hairline-soft flex items-center justify-between print:bg-gray-100 print:text-black">
           <span>
             <span class="lang-en">Last Updated: July 2026 | Authority: Karnataka State Police IT Cell</span>
             <span class="lang-kn">ಕೊನೆಯದಾಗಿ ನವೀಕರಿಸಿದ್ದು: ಜುಲೈ 2026 | ಪ್ರಾಧಿಕಾರ: ಕರ್ನಾಟಕ ರಾಜ್ಯ ಪೊಲೀಸ್ ಐಟಿ ಸೆಲ್</span>
           </span>
-          <Shield className="w-4 h-4 text-primary" />
+          <Shield className="w-4 h-4 text-primary print:hidden" />
         </div>
 
-        <div class="space-y-6 text-xs text-steel leading-relaxed">
+        <div class="space-y-6 text-xs text-steel leading-relaxed print:text-black print:text-sm">
           <section class="space-y-2">
-            <h2 class="text-sm font-bold text-ink-deep">
+            <h2 class="text-sm font-bold text-ink-deep print:text-black">
               <span class="lang-en">1. Scope and Authority</span>
               <span class="lang-kn">1. ವ್ಯಾಪ್ತಿ ಮತ್ತು ಪ್ರಾಧಿಕಾರ</span>
             </h2>
@@ -91,7 +106,7 @@ import { Shield, ArrowLeft } from 'lucide-react';
           </section>
 
           <section class="space-y-2">
-            <h2 class="text-sm font-bold text-ink-deep">
+            <h2 class="text-sm font-bold text-ink-deep print:text-black">
               <span class="lang-en">2. Information Collection and Sourcing</span>
               <span class="lang-kn">2. ಮಾಹಿತಿ ಸಂಗ್ರಹಣೆ ಮತ್ತು ಮೂಲ</span>
             </h2>
@@ -110,7 +125,7 @@ import { Shield, ArrowLeft } from 'lucide-react';
           </section>
 
           <section class="space-y-2">
-            <h2 class="text-sm font-bold text-ink-deep">
+            <h2 class="text-sm font-bold text-ink-deep print:text-black">
               <span class="lang-en">3. Data Auditing and Accountability</span>
               <span class="lang-kn">3. ಡೇಟಾ ಆಡಿಟಿಂಗ್ ಮತ್ತು ಹೊಣೆಗಾರಿಕೆ</span>
             </h2>
@@ -123,7 +138,7 @@ import { Shield, ArrowLeft } from 'lucide-react';
           </section>
 
           <section class="space-y-2">
-            <h2 class="text-sm font-bold text-ink-deep">
+            <h2 class="text-sm font-bold text-ink-deep print:text-black">
               <span class="lang-en">4. Security Measures</span>
               <span class="lang-kn">4. ಭದ್ರತಾ ಕ್ರಮಗಳು</span>
             </h2>
@@ -136,7 +151,7 @@ import { Shield, ArrowLeft } from 'lucide-react';
           </section>
 
           <section class="space-y-2">
-            <h2 class="text-sm font-bold text-ink-deep">
+            <h2 class="text-sm font-bold text-ink-deep print:text-black">
               <span class="lang-en">5. Data Retention</span>
               <span class="lang-kn">5. ಡೇಟಾ ಉಳಿಸಿಕೊಳ್ಳುವಿಕೆ</span>
             </h2>
@@ -149,7 +164,7 @@ import { Shield, ArrowLeft } from 'lucide-react';
           </section>
 
           <section class="space-y-2">
-            <h2 class="text-sm font-bold text-ink-deep">
+            <h2 class="text-sm font-bold text-ink-deep print:text-black">
               <span class="lang-en">6. Contact & Grievances</span>
               <span class="lang-kn">6. ಸಂಪರ್ಕ ಮತ್ತು ಕುಂದುಕೊರತೆಗಳು</span>
             </h2>
@@ -163,12 +178,12 @@ import { Shield, ArrowLeft } from 'lucide-react';
         </div>
 
         {/* Footer Seal & Print Action */}
-        <div class="border-t border-hairline-soft pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-[10px] text-stone">
+        <div class="border-t border-hairline-soft pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-[10px] text-stone print:border-gray-300 print:text-black">
           <div class="flex items-center gap-2">
             <img src="/app/karnataka_emblem.png" alt="Seal" class="w-6 h-6 object-contain" width="24" height="24" />
             <span>Karnataka State Police Command Centre • KSP-ConAI Protocol V1.0</span>
           </div>
-          <button onclick="window.print()" class="px-4 py-2 bg-ink-deep text-white rounded-full font-bold hover:bg-charcoal transition cursor-pointer">
+          <button onclick="window.print()" class="px-4 py-2 bg-ink-deep text-white rounded-full font-bold hover:bg-charcoal transition cursor-pointer print:hidden">
             <span class="lang-en">Print Document</span>
             <span class="lang-kn">ದಾಖಲೆಯನ್ನು ಪ್ರಿಂಟ್ ಮಾಡಿ</span>
           </button>

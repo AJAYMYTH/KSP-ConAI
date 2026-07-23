@@ -121,3 +121,34 @@ html.lang-kn-active .lang-en {
 html:not(.lang-kn-active) .lang-kn {
   display: none !important;
 }
+
+/* Optimized Print Styles for Legal Documents & Reports */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  /* Hide interactive web UI headers, footers, and buttons when printing */
+  .no-print,
+  nav,
+  header,
+  .print\:hidden {
+    display: none !important;
+  }
+
+  /* Ensure card containers print cleanly without shadows or borders */
+  .card-product-shadow,
+  .shadow-md,
+  .shadow-xl {
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+  }
+
+  /* Avoid splitting sections across page breaks */
+  section {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}

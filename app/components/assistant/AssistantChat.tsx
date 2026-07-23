@@ -673,7 +673,7 @@ export default function AssistantChat() {
         <div className="flex items-center justify-between border-b border-hairline-soft pb-4 flex-wrap gap-2">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-slate-50 border border-slate-200/80 flex items-center justify-center p-1.5 shrink-0 shadow-xs">
-              <img src="/karnataka_emblem.png" alt="Karnataka Coat of Arms" className="w-full h-full object-contain" width="40" height="40" />
+              <img src="/app/karnataka_emblem.png" alt="Karnataka Coat of Arms" className="w-full h-full object-contain" width="40" height="40" />
             </div>
             <div>
               <h1 className="text-sm font-bold text-ink-deep">
