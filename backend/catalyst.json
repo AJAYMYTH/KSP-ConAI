@@ -1,0 +1,21 @@
+{
+  "functions": {
+    "targets": [
+      "auth",
+      "cases",
+      "analytics",
+      "map",
+      "graph",
+      "assistant",
+      "reports",
+      "voice",
+      "admin",
+      "shared"
+    ],
+    "source": "functions",
+    "ignore": []
+  },
+  "client": {
+    "source": "client"
+  }
+}

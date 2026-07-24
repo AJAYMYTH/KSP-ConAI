@@ -1,0 +1,17 @@
+{
+  "name": "ksp-conai-backend",
+  "version": "1.0.0",
+  "description": "Karnataka State Police (KSP) Crime Intelligence Copilot - Catalyst Backend",
+  "main": "functions/assistant/index.js",
+  "scripts": {
+    "serve": "catalyst serve",
+    "deploy": "catalyst deploy",
+    "seed": "node data/mock/seed_data.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "zcatalyst-sdk-node": "^1.0.0"
+  }
+}

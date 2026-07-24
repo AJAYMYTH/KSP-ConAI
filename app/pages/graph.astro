@@ -1,0 +1,12 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GeneralGraphView from '../components/cases/GeneralGraphView.tsx';
+import { PermissionGuard } from '../components/auth/PermissionGuard.tsx';
+import { PERMISSIONS } from '../lib/auth';
+---
+
+<Layout title="Accused Network Graph">
+  <PermissionGuard permission={PERMISSIONS.VIEW_GRAPH} client:load>
+    <GeneralGraphView client:load />
+  </PermissionGuard>
+</Layout>

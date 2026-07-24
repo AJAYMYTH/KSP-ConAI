@@ -1,0 +1,21 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CaseDetailView from '../../components/cases/CaseDetailView.tsx';
+import { MOCK_CASES } from '../../lib/mockData';
+import { PermissionGuard } from '../../components/auth/PermissionGuard.tsx';
+import { PERMISSIONS } from '../../lib/auth';
+
+export function getStaticPaths() {
+  return MOCK_CASES.map(c => ({
+    params: { caseId: c.caseId }
+  }));
+}
+
+const { caseId } = Astro.params;
+---
+
+<Layout title={`Case Details - ${caseId}`}>
+  <PermissionGuard permission={PERMISSIONS.VIEW_CASE_DETAIL_FULL} client:load>
+    <CaseDetailView caseId={caseId || ''} client:load />
+  </PermissionGuard>
+</Layout>

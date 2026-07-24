@@ -1,0 +1,12 @@
+---
+import Layout from '../layouts/Layout.astro';
+import AdminConsole from '../components/admin/AdminConsole.tsx';
+import { PermissionGuard } from '../components/auth/PermissionGuard.tsx';
+import { PERMISSIONS } from '../lib/auth';
+---
+
+<Layout title="Admin Console">
+  <PermissionGuard permission={PERMISSIONS.ACCESS_ADMIN_TOOLS} client:load>
+    <AdminConsole client:load />
+  </PermissionGuard>
+</Layout>

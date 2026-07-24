@@ -1,0 +1,8 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { LoginPage } from '../components/auth/LoginPage';
+---
+
+<Layout title="Register New Account" hideNav={true} hideFooter={true} transitionAnimate="fade">
+  <LoginPage client:load defaultView="register" />
+</Layout>
