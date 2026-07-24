@@ -1,0 +1,64 @@
+---
+import Nav from '../components/layout/Nav.tsx';
+import Footer from '../components/layout/Footer.tsx';
+import { I18nProvider } from '../i18n/provider.tsx';
+import { ViewTransitions } from 'astro:transitions';
+import '../styles/globals.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  hideNav?: boolean;
+  hideFooter?: boolean;
+  transitionAnimate?: 'slide' | 'fade' | 'none' | 'initial';
+}
+
+const { title, description = 'KSP-ConAI', hideNav = false, hideFooter = false, transitionAnimate = 'slide' } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title} — KSP-ConAI</title>
+    <meta name="description" content={description} />
+    <link class="fav-icon" rel="icon" type="image/png" href="/app/karnataka_emblem.png" />
+    <link rel="icon" type="image/svg+xml" href="/app/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <ViewTransitions />
+    
+    <script is:inline>
+      // Sync document-level language class with localStorage
+      function syncLang() {
+        const lang = localStorage.getItem('ksp_language') || 'EN';
+        if (lang === 'KN') {
+          document.documentElement.classList.add('lang-kn-active');
+          document.documentElement.classList.remove('lang-en-active');
+        } else {
+          document.documentElement.classList.add('lang-en-active');
+          document.documentElement.classList.remove('lang-kn-active');
+        }
+      }
+      
+      syncLang();
+      window.addEventListener('ksp-language-change', syncLang);
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'ksp_language') syncLang();
+      });
+      document.addEventListener('astro:page-load', syncLang);
+      document.addEventListener('astro:after-swap', syncLang);
+    </script>
+  </head>
+  <body class="min-h-screen bg-canvas flex flex-col">
+    <I18nProvider client:only="react">
+      {!hideNav && <Nav currentPath={Astro.url.pathname} client:only="react" transition:persist />}
+      
+      <main class="flex-1 flex flex-col" transition:animate={transitionAnimate}>
+        <slot />
+      </main>
+
+      {!hideFooter && <Footer client:only="react" />}
+    </I18nProvider>
+  </body>
+</html>

@@ -1,0 +1,11 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { LoginPage } from '../components/auth/LoginPage';
+---
+
+<Layout title="Officer Registration" hideNav={true} hideFooter={true} transitionAnimate="fade">
+  <script is:inline src="https://static.zohocdn.com/catalyst/sdk/js/4.6.2/catalystWebSDK.js"></script>
+  <script is:inline src="/__catalyst/sdk/init.js"></script>
+  
+  <LoginPage client:only="react" defaultView="register" />
+</Layout>

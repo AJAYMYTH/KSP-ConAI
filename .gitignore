@@ -1,6 +1,8 @@
-# Dependencies
+# dependencies
 node_modules/
 **/node_modules/
+/.pnp
+.pnp.js
 
 # Zoho Catalyst Local Builds
 .build/
@@ -8,17 +10,35 @@ node_modules/
 catalyst-debug.log
 .catalyst-history
 
-# Scratch folders and system settings
+# testing & production
+/coverage
+/dist
+/client
+frontend/dist
+frontend/client
+
+# astro
+.astro
+**/ .astro
+
+# scratch folders and system settings
 scratch/
 .gemini/
 .vscode/
 .idea/
+.DS_Store
+*.pem
+desktop.ini
 
-# Binary media and assets not required in code repository
-*.png
-*.jpg
-*.jpeg
-*.gif
-*.zip
-*.tar.gz
-*.pdf
+# local env files
+.env.local
+frontend/.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# typescript
+tsconfig.tsbuildinfo
+
+# custom ignores
+skills-lock.json
