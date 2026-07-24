@@ -1,0 +1,12 @@
+---
+import Layout from "../layouts/Layout.astro";
+import HotspotMap from "../components/map/HotspotMap.tsx";
+import { PermissionGuard } from "../components/auth/PermissionGuard.tsx";
+import { PERMISSIONS } from "../lib/auth.ts";
+---
+
+<Layout title="Crime Hotspot Maps">
+  <PermissionGuard permission={PERMISSIONS.VIEW_MAP} client:only="react">
+    <HotspotMap client:only="react" />
+  </PermissionGuard>
+</Layout>
