@@ -1,0 +1,12 @@
+---
+import Layout from "../layouts/Layout.astro";
+import DashboardGrid from "../components/dashboard/DashboardGrid.tsx";
+import { PermissionGuard } from "../components/auth/PermissionGuard.tsx";
+import { PERMISSIONS } from "../lib/auth.ts";
+---
+
+<Layout title="Dashboard">
+  <PermissionGuard permission={PERMISSIONS.VIEW_DASHBOARD} client:only="react">
+    <DashboardGrid client:only="react" />
+  </PermissionGuard>
+</Layout>

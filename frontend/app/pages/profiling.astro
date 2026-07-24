@@ -1,0 +1,15 @@
+---
+import Layout from "../layouts/Layout.astro";
+import BehavioralProfile from "../components/analytics/BehavioralProfile.tsx";
+import { PermissionGuard } from "../components/auth/PermissionGuard.tsx";
+import { PERMISSIONS } from "../lib/auth.ts";
+---
+
+<Layout title="Behavioral Profiler">
+  <PermissionGuard
+    permission={PERMISSIONS.VIEW_CASE_DETAIL_FULL}
+    client:only="react"
+  >
+    <BehavioralProfile client:only="react" />
+  </PermissionGuard>
+</Layout>

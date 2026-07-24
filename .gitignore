@@ -1,0 +1,37 @@
+# dependencies
+node_modules
+frontend/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production & build outputs
+/dist
+/client
+frontend/dist
+frontend/client
+
+# astro
+.astro
+frontend/.astro
+
+# misc
+.DS_Store
+*.pem
+desktop.ini
+
+# local env files
+.env.local
+frontend/.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# typescript
+tsconfig.tsbuildinfo
+
+# custom ignores
+skills-lock.json
+
